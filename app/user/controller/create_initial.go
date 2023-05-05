@@ -24,10 +24,14 @@ func (c *UserControllerImpl) CreateInitialRootAdmin(ctx context.Context) error {
 		}
 		m := &domain.User{
 			UserID:                c.UUID.NewUUID(),
-			Name:                  "Root Administrator",
+			FirstName:             "Root",
+			LastName:              "Administrator",
+			FullName:              "Root Administrator",
+			LexicalName:           "Administrator, Root",
 			Email:                 c.Config.AppServer.InitialAdminEmail,
 			PasswordHash:          passwordHash,
 			PasswordHashAlgorithm: c.Password.AlgorithmName(),
+			Role:                  domain.UserAdministratorRole,
 		}
 		err = c.UserStorer.Create(ctx, m)
 		if err != nil {
@@ -36,35 +40,12 @@ func (c *UserControllerImpl) CreateInitialRootAdmin(ctx context.Context) error {
 		}
 		c.Logger.Info("Root user created.",
 			slog.String("user_id", m.UserID),
-			slog.String("name", m.Name),
+			slog.String("full_name", m.FullName),
 			slog.String("email", m.Email),
 			slog.String("password_hash_algorithm", m.PasswordHashAlgorithm),
 			slog.String("password_hash", m.PasswordHash))
 	} else {
 		c.Logger.Info("Root user already exists, skipping creation.")
 	}
-
-	// #1 FOR TESTING PURPOSES ONLY
-	user, err := c.UserStorer.GetByEmail(ctx, c.Config.AppServer.InitialAdminEmail)
-	if err != nil {
-		c.Logger.Error("GetByEmail.",
-			slog.Any("error", err))
-		return err
-	}
-	c.Logger.Info("retrieved user by email.",
-		slog.String("user_id", user.UserID),
-		slog.String("name", user.Name),
-		slog.String("email", user.Email),
-		slog.String("password_hash_algorithm", user.PasswordHashAlgorithm),
-		slog.String("password_hash", user.PasswordHash))
-
-	// #2 FOR TESTING PURPOSES ONLY
-	user.Name = "Root"
-	if err := c.UserStorer.UpdateByUserID(ctx, user); err != nil {
-		c.Logger.Error("Update.",
-			slog.Any("error", err))
-		return err
-	}
-
 	return nil
 }

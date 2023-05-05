@@ -11,17 +11,23 @@ import (
 )
 
 const (
-	UserActiveState   = 1
-	UserInactiveState = 2
+	UserActiveState       = 1
+	UserInactiveState     = 2
+	UserAdministratorRole = 1
+	UserUserRole          = 2
 )
 
 type User struct {
 	ID                    primitive.ObjectID `bson:"_id"`
 	UserID                string             `bson:"user_id"`
-	Name                  string             `bson:"name"`
+	FirstName             string             `bson:"first_name"`
+	LastName              string             `bson:"last_name"`
+	FullName              string             `bson:"full_name"`
+	LexicalName           string             `bson:"lexical_name"`
 	Email                 string             `bson:"email"`
 	PasswordHashAlgorithm string             `bson:"password_hash_algorithm"`
 	PasswordHash          string             `bson:"password_hash"`
+	Role                  int8               `bson:"role"`
 }
 
 type UserFilter struct {

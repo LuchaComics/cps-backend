@@ -308,12 +308,13 @@ func (mid *middleware) PostJWTProcessorMiddleware(fn http.HandlerFunc) http.Hand
 				slog.Any("ID", user.ID),
 				slog.String("SessionID", sessionID),
 				slog.String("UserID", user.UserID),
-				slog.String("FullName", user.Name),
+				slog.String("FullName", user.FullName),
+				slog.String("FirstName", user.FirstName),
 				slog.String("Email", user.Email))
 
 			// Save individual pieces of the user profile.
 			ctx = context.WithValue(ctx, constants.SessionUserID, user.ID)
-			ctx = context.WithValue(ctx, constants.SessionUserFullName, user.Name)
+			ctx = context.WithValue(ctx, constants.SessionUserFullName, user.FullName)
 		}
 
 		fn(w, r.WithContext(ctx))

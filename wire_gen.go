@@ -10,12 +10,15 @@ import (
 	"github.com/LuchaComics/cps-backend/adapter/cache/redis"
 	"github.com/LuchaComics/cps-backend/adapter/storage/mongodb"
 	"github.com/LuchaComics/cps-backend/app/gateway/controller"
+	controller3 "github.com/LuchaComics/cps-backend/app/tenant/controller"
+	datastore2 "github.com/LuchaComics/cps-backend/app/tenant/datastore"
 	controller2 "github.com/LuchaComics/cps-backend/app/user/controller"
 	"github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/inputport/http"
 	"github.com/LuchaComics/cps-backend/inputport/http/gateway"
 	"github.com/LuchaComics/cps-backend/inputport/http/middleware"
+	"github.com/LuchaComics/cps-backend/inputport/http/tenant"
 	"github.com/LuchaComics/cps-backend/inputport/http/user"
 	"github.com/LuchaComics/cps-backend/provider/jwt"
 	"github.com/LuchaComics/cps-backend/provider/logger"
@@ -41,7 +44,10 @@ func InitializeEvent() Application {
 	handler := gateway.NewHandler(gatewayController)
 	userController := controller2.NewController(conf, slogLogger, provider, passwordProvider, userStorer)
 	userHandler := user.NewHandler(userController)
-	inputPortServer := http.NewInputPort(conf, slogLogger, middlewareMiddleware, handler, userHandler)
+	tenantStorer := datastore2.NewDatastore(conf, slogLogger, client)
+	tenantController := controller3.NewController(conf, slogLogger, provider, passwordProvider, tenantStorer)
+	tenantHandler := tenant.NewHandler(tenantController)
+	inputPortServer := http.NewInputPort(conf, slogLogger, middlewareMiddleware, handler, userHandler, tenantHandler)
 	application := NewApplication(slogLogger, inputPortServer)
 	return application
 }
