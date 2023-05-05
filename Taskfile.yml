@@ -1,0 +1,27 @@
+version: '3'
+
+tasks:
+  start:
+    desc: Start the backend in developer mode
+    cmds:
+      - docker-compose -p cps_backend -f dev.docker-compose.yml up
+
+  end:
+    desc: Stop the backend in developer mode
+    cmds:
+      - docker-compose -p cps_backend -f dev.docker-compose.yml down
+
+  console:
+    desc: Open console in (developer mode) running backend
+    cmds:
+      - docker exec -it cps_backend bash
+
+  wire:
+    desc: Generate new compile-time dependency injection file, called `wire_gen.go`, which is needed by our app.
+    cmds:
+      - go run github.com/google/wire/cmd/wire
+
+  clean:
+    cmds:
+      - go clean -cache
+      - go clean -modcache

@@ -1,0 +1,95 @@
+# HOW TO USE:
+# The purpose of this docker-compose is to setup our application which is
+# dependent on the `MongoDB` database running concurrently with this
+# server for developer purposes. This configuration has hot-reloading activated.
+#
+# $ docker-compose -p cps -f dev.docker-compose.yml up   #
+#
+
+version: '3.8'
+services:
+  # The purpose of this is to provide in-memory storage.
+  cache:
+    container_name: cps_redis
+    image: redis:7.0.11-alpine
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${CPS_BACKEND_CACHE_PASSWORD}  # Special thanks to https://geshan.com.np/blog/2022/01/redis-docker/
+    volumes:
+      - cache_data:/data
+    logging:
+      driver: none
+
+  # The purpose of this service is to store our application data.
+  db:
+    container_name: cps_mongodb
+    image: mongo:6.0.5-jammy
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+    logging:
+      driver: none
+
+  mongo-express:
+    container_name: cps_mongodb_admin
+    image: mongo-express
+    environment:
+        - ME_CONFIG_MONGODB_SERVER=db
+        - ME_CONFIG_MONGODB_PORT=27017
+    ports:
+        - '8081:8081'
+    depends_on:
+      - "db"
+    links:
+      - "db"
+    restart: unless-stopped
+    logging:
+      driver: none
+
+  # The main application.
+  app:
+    container_name: cps_backend_app
+    stdin_open: true
+    environment:
+        CPS_BACKEND_IP: 0.0.0.0
+        CPS_BACKEND_PORT: 8000
+        CPS_BACKEND_HMAC_SECRET: ${CPS_BACKEND_HMAC_SECRET}
+        CPS_BACKEND_HAS_AUTO_MIGRATIONS: ${CPS_BACKEND_HAS_AUTO_MIGRATIONS}
+        CPS_BACKEND_HAS_DEBUGGING: ${CPS_BACKEND_HAS_DEBUGGING}
+        CPS_BACKEND_DB_URI: ${CPS_BACKEND_DB_URI}
+        CPS_BACKEND_DB_NAME: ${CPS_BACKEND_DB_NAME}
+        CPS_BACKEND_CACHE_HOST: ${CPS_BACKEND_CACHE_HOST}
+        CPS_BACKEND_CACHE_PORT: ${CPS_BACKEND_CACHE_PORT}
+        CPS_BACKEND_CACHE_PASSWORD: ${CPS_BACKEND_CACHE_PASSWORD}
+        CPS_BACKEND_SESSION_FILEPATH: ${CPS_BACKEND_SESSION_FILEPATH}
+        CPS_BACKEND_AWS_ACCESS_KEY: ${CPS_BACKEND_AWS_ACCESS_KEY}
+        CPS_BACKEND_AWS_SECRET_KEY: ${CPS_BACKEND_AWS_SECRET_KEY}
+        CPS_BACKEND_AWS_ENDPOINT: ${CPS_BACKEND_AWS_ENDPOINT}
+        CPS_BACKEND_AWS_REGION: ${CPS_BACKEND_AWS_REGION}
+        CPS_BACKEND_AWS_BUCKET_NAME: ${CPS_BACKEND_AWS_BUCKET_NAME}
+        CPS_BACKEND_INITIAL_ADMIN_EMAIL: ${CPS_BACKEND_INITIAL_ADMIN_EMAIL} # Required email for root admin when project starts up
+        CPS_BACKEND_INITIAL_ADMIN_PASSWORD: ${CPS_BACKEND_INITIAL_ADMIN_PASSWORD} # Required password for root admin when project starts up
+        AWS_ACCESS_KEY: ${CPS_BACKEND_AWS_ACCESS_KEY} # AWS SDK requires this exact name.
+        AWS_SECRET_KEY: ${CPS_BACKEND_AWS_SECRET_KEY} # AWS SDK requires this exact name.
+        AWS_REGION: ${CPS_BACKEND_AWS_REGION}         # AWS SDK requires this exact name.
+    build:
+      context: .
+      dockerfile: ./dev.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - cache
+    links:
+      - db
+      - cache
+    volumes: # Connect the local filesystem with the docker filesystem. DO NOT REMOVE.
+      - ./:/go/src/github.com/LuchaComics/cps-backend # IMPORTANT: Required for hotreload via `CompileDaemon`.
+
+volumes:
+    mongodb_data:
+    cache_data:
