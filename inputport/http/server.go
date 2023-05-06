@@ -26,7 +26,7 @@ type httpInputPort struct {
 	Middleware middleware.Middleware
 	Gateway    *gateway.Handler
 	User       *user.Handler
-	Tenant     *submission.Handler
+	Submission *submission.Handler
 }
 
 func NewInputPort(
@@ -59,7 +59,7 @@ func NewInputPort(
 		Middleware: mid,
 		Gateway:    gh,
 		User:       cu,
-		Tenant:     t,
+		Submission: t,
 		Server:     srv,
 	}
 
@@ -110,6 +110,12 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		port.Gateway.RefreshToken(w, r)
 		// case n == 3 && p[1] == "v1" && p[2] == "profile" && r.Method == http.MethodGet:
 		// ...
+
+	// --- SUBMISSIONS --- //
+	case n == 3 && p[1] == "v1" && p[2] == "submissions" && r.Method == http.MethodPost:
+		port.Submission.Create(w, r)
+	case n == 4 && p[1] == "v1" && p[2] == "submission" && r.Method == http.MethodGet:
+		port.Submission.GetBySubmissionID(w, r, p[3])
 
 	// --- CATCH ALL: D.N.E. ---
 	default:

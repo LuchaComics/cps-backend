@@ -1,8 +1,11 @@
 package controller
 
 import (
+	"context"
+
 	"golang.org/x/exp/slog"
 
+	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/provider/password"
@@ -11,7 +14,9 @@ import (
 
 // SubmissionController Interface for submission business logic controller.
 type SubmissionController interface {
-	//TODO: Add more...
+	Create(ctx context.Context, m *domain.Submission) error
+	GetBySubmissionID(ctx context.Context, submissionID string) (*domain.Submission, error)
+	UpdateBySubmissionID(ctx context.Context, m *domain.Submission) error
 }
 
 type SubmissionControllerImpl struct {
