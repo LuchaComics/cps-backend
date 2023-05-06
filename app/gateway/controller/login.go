@@ -9,10 +9,10 @@ import (
 
 	"golang.org/x/exp/slog"
 
-	user_s "github.com/LuchaComics/cps-backend/app/user/datastore"
+	gateway_s "github.com/LuchaComics/cps-backend/app/gateway/datastore"
 )
 
-func (impl *GatewayControllerImpl) Login(ctx context.Context, email, password string) (*user_s.User, string, time.Time, string, time.Time, error) {
+func (impl *GatewayControllerImpl) Login(ctx context.Context, email, password string) (*gateway_s.LoginResponseIDO, error) {
 	// Defensive Code: For security purposes we need to remove all whitespaces from the email and lower the characters.
 	email = strings.ToLower(email)
 	password = strings.ReplaceAll(password, " ", "")
@@ -21,42 +21,52 @@ func (impl *GatewayControllerImpl) Login(ctx context.Context, email, password st
 	u, err := impl.UserStorer.GetByEmail(ctx, email)
 	if err != nil {
 		impl.Logger.Error("database error", slog.Any("err", err))
-		return nil, "", time.Now(), "", time.Now(), err
+		return nil, err
 	}
 	if u == nil {
 		impl.Logger.Warn("user does not exist validation error")
-		return nil, "", time.Now(), "", time.Now(), err
+		return nil, err
 	}
 
 	// Verify the inputted password and hashed password match.
 	passwordMatch, _ := impl.Password.ComparePasswordAndHash(password, u.PasswordHash)
 	if passwordMatch == false {
 		impl.Logger.Warn("password check validation error")
-		return nil, "", time.Now(), "", time.Now(), errors.New("password do not match with record")
+		return nil, errors.New("password do not match with record")
 	}
 
 	uBin, err := json.Marshal(u)
 	if err != nil {
 		impl.Logger.Error("marshalling error", slog.Any("err", err))
-		return nil, "", time.Now(), "", time.Now(), err
+		return nil, err
 	}
+
+	// Set expiry duration.
+	atExpiry := 24 * time.Hour
+	rtExpiry := 14 * 24 * time.Hour
 
 	// Start our session using an access and refresh token.
 	sessionUUID := impl.UUID.NewUUID()
 
-	err = impl.Cache.Set(ctx, sessionUUID, uBin)
+	err = impl.Cache.SetWithExpiry(ctx, sessionUUID, uBin, rtExpiry)
 	if err != nil {
-		impl.Logger.Error("in-memory set error", slog.Any("err", err))
-		return nil, "", time.Now(), "", time.Now(), err
+		impl.Logger.Error("cache set with expiry error", slog.Any("err", err))
+		return nil, err
 	}
 
 	// Generate our JWT token.
-	accessToken, accessTokenExpiry, refreshToken, refreshTokenExpiry, err := impl.JWT.GenerateJWTTokenPair(sessionUUID, 24*time.Hour, 14*24*time.Hour)
+	accessToken, accessTokenExpiry, refreshToken, refreshTokenExpiry, err := impl.JWT.GenerateJWTTokenPair(sessionUUID, atExpiry, rtExpiry)
 	if err != nil {
 		impl.Logger.Error("jwt generate pairs error", slog.Any("err", err))
-		return nil, "", time.Now(), "", time.Now(), err
+		return nil, err
 	}
 
 	// Return our auth keys.
-	return u, accessToken, accessTokenExpiry, refreshToken, refreshTokenExpiry, nil
+	return &gateway_s.LoginResponseIDO{
+		User:                   u,
+		AccessToken:            accessToken,
+		AccessTokenExpiryTime:  accessTokenExpiry,
+		RefreshToken:           refreshToken,
+		RefreshTokenExpiryTime: refreshTokenExpiry,
+	}, nil
 }

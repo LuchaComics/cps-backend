@@ -2,6 +2,7 @@ package datastore
 
 import (
 	"context"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,23 +12,43 @@ import (
 )
 
 const (
-	UserActiveState       = 1
-	UserInactiveState     = 2
-	UserAdministratorRole = 1
-	UserUserRole          = 2
+	UserActiveState   = 1
+	UserInactiveState = 2
+	StaffRole         = 1
+	RetailerRole      = 2
 )
 
 type User struct {
-	ID                    primitive.ObjectID `bson:"_id"`
-	UserID                string             `bson:"user_id"`
-	FirstName             string             `bson:"first_name"`
-	LastName              string             `bson:"last_name"`
-	FullName              string             `bson:"full_name"`
-	LexicalName           string             `bson:"lexical_name"`
-	Email                 string             `bson:"email"`
-	PasswordHashAlgorithm string             `bson:"password_hash_algorithm"`
-	PasswordHash          string             `bson:"password_hash"`
-	Role                  int8               `bson:"role"`
+	ID                        primitive.ObjectID `bson:"_id" json:"_id"`
+	UserID                    string             `bson:"user_id" json:"user_id"`
+	FirstName                 string             `bson:"first_name" json:"first_name"`
+	LastName                  string             `bson:"last_name" json:"last_name"`
+	Name                      string             `bson:"name" json:"name"`
+	LexicalName               string             `bson:"lexical_name" json:"lexical_name"`
+	Email                     string             `bson:"email" json:"email"`
+	PasswordHashAlgorithm     string             `bson:"password_hash_algorithm,omitempty" json:"password_hash_algorithm,omitempty"`
+	PasswordHash              string             `bson:"password_hash,omitempty" json:"password_hash,omitempty"`
+	Role                      int8               `bson:"role" json:"role"`
+	WasEmailActivated         bool               `bson:"was_email_activated" json:"was_email_activated"`
+	EmailActivationCode       string             `bson:"email_activation_code,omitempty" json:"email_activation_code,omitempty"`
+	CompanyName               string             `bson:"company_name,omitempty" json:"company_name,omitempty"`
+	Phone                     string             `bson:"phone,omitempty" json:"phone,omitempty"`
+	Country                   string             `bson:"country,omitempty" json:"country,omitempty"`
+	Region                    string             `bson:"region,omitempty" json:"region,omitempty"`
+	City                      string             `bson:"city,omitempty" json:"city,omitempty"`
+	PostalCode                string             `bson:"postal_code,omitempty" json:"postal_code,omitempty"`
+	AddressLine1              string             `bson:"address_line_1,omitempty" json:"address_line_1,omitempty"`
+	AddressLine2              string             `bson:"address_line_2,omitempty" json:"address_line_2,omitempty"`
+	StoreLogoS3Key            string             `bson:"store_logo_s3_key,omitempty" json:"store_logo_s3_key,omitempty"`
+	StoreLogoTitle            string             `bson:"store_logo_title,omitempty" json:"store_logo_title,omitempty"`
+	StoreLogoFileURL          string             `bson:"store_logo_file_url,omitempty" json:"store_logo_file_url,omitempty"`     // (Optional, added by endpoint)
+	StoreLogoFileURLExpiry    time.Time          `bson:"store_logo_file_url_expiry,omitempty" json:"store_logo_file_url_expiry"` // (Optional, added by endpoint)
+	HowDidYouHearAboutUs      int8               `bson:"how_did_you_hear_about_us,omitempty" json:"how_did_you_hear_about_us,omitempty"`
+	HowDidYouHearAboutUsOther string             `bson:"how_did_you_hear_about_us_other,omitempty" json:"how_did_you_hear_about_us_other,omitempty"`
+	AgreeTOS                  bool               `bson:"agree_tos,omitempty" json:"agree_tos,omitempty"`
+	AgreePromotions           bool               `bson:"agree_promotions,omitempty" json:"agree_promotions,omitempty"`
+	CreatedTime               time.Time          `bson:"created_time,omitempty" json:"created_time,omitempty"`
+	ModifiedTime              time.Time          `bson:"modified_time,omitempty" json:"modified_time,omitempty"`
 }
 
 type UserFilter struct {

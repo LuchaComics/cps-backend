@@ -11,14 +11,9 @@ import (
 	"github.com/LuchaComics/cps-backend/utils/errorx"
 )
 
-type LoginRequestIDO struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-func UnmarshalLoginRequest(ctx context.Context, r *http.Request) (*LoginRequestIDO, error, int) {
+func UnmarshalRegisterRequest(ctx context.Context, r *http.Request) (*gateway_s.RegisterRequestIDO, error, int) {
 	// Initialize our array which will store all the results from the remote server.
-	var requestData LoginRequestIDO
+	var requestData gateway_s.RegisterRequestIDO
 
 	defer r.Body.Close()
 
@@ -34,7 +29,7 @@ func UnmarshalLoginRequest(ctx context.Context, r *http.Request) (*LoginRequestI
 	requestData.Email = strings.ReplaceAll(requestData.Email, " ", "")
 
 	// Perform our validation and return validation error on any issues detected.
-	isValid, errStr := ValidateLoginRequest(&requestData)
+	isValid, errStr := ValidateRegisterRequest(&requestData)
 	if isValid == false {
 		return nil, errors.New(errStr), http.StatusBadRequest
 	}
@@ -42,9 +37,15 @@ func UnmarshalLoginRequest(ctx context.Context, r *http.Request) (*LoginRequestI
 	return &requestData, nil, http.StatusOK
 }
 
-func ValidateLoginRequest(dirtyData *LoginRequestIDO) (bool, string) {
+func ValidateRegisterRequest(dirtyData *gateway_s.RegisterRequestIDO) (bool, string) {
 	e := make(map[string]string)
 
+	if dirtyData.FirstName == "" {
+		e["first_name"] = "missing value"
+	}
+	if dirtyData.LastName == "" {
+		e["last_name"] = "missing value"
+	}
 	if dirtyData.Email == "" {
 		e["email"] = "missing value"
 	}
@@ -53,6 +54,36 @@ func ValidateLoginRequest(dirtyData *LoginRequestIDO) (bool, string) {
 	}
 	if dirtyData.Password == "" {
 		e["password"] = "missing value"
+	}
+	if dirtyData.CompanyName == "" {
+		e["company_name"] = "missing value"
+	}
+	if dirtyData.Phone == "" {
+		e["phone"] = "missing value"
+	}
+	if dirtyData.Country == "" {
+		e["country"] = "missing value"
+	}
+	if dirtyData.Region == "" {
+		e["region"] = "missing value"
+	}
+	if dirtyData.City == "" {
+		e["city"] = "missing value"
+	}
+	if dirtyData.PostalCode == "" {
+		e["postal_code"] = "missing value"
+	}
+	if dirtyData.Password == "" {
+		e["password"] = "missing value"
+	}
+	if dirtyData.AddressLine1 == "" {
+		e["address_line_1"] = "missing value"
+	}
+	if dirtyData.HowDidYouHearAboutUs == 0 {
+		e["how_did_you_hear_about_us"] = "missing value"
+	}
+	if dirtyData.AgreeTOS == false {
+		e["agree_tos"] = "missing value"
 	}
 
 	if len(e) != 0 {
@@ -65,25 +96,26 @@ func ValidateLoginRequest(dirtyData *LoginRequestIDO) (bool, string) {
 	return true, ""
 }
 
-func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	requestData, err, errStatusCode := UnmarshalLoginRequest(ctx, r)
+	requestData, err, errStatusCode := UnmarshalRegisterRequest(ctx, r)
 	if err != nil {
 		http.Error(w, err.Error(), errStatusCode)
 		return
 	}
 
-	res, err := h.Controller.Login(ctx, requestData.Email, requestData.Password)
+	res, err := h.Controller.Register(ctx, requestData)
 	if err != nil {
 		errorx.ResponseError(w, err)
 		return
 	}
-	MarshalLoginResponse(res, w)
+
+	MarshalRegisterResponse(res, w)
 }
 
-func MarshalLoginResponse(responseData *gateway_s.LoginResponseIDO, w http.ResponseWriter) {
-	if err := json.NewEncoder(w).Encode(&responseData); err != nil {
+func MarshalRegisterResponse(res *gateway_s.RegisterResponseIDO, w http.ResponseWriter) {
+	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

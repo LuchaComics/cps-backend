@@ -9,6 +9,7 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/LuchaComics/cps-backend/adapter/cache/redis"
+	gateway_s "github.com/LuchaComics/cps-backend/app/gateway/datastore"
 	user_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/provider/jwt"
@@ -17,7 +18,8 @@ import (
 )
 
 type GatewayController interface {
-	Login(ctx context.Context, email string, password string) (*user_s.User, string, time.Time, string, time.Time, error)
+	Register(ctx context.Context, req *gateway_s.RegisterRequestIDO) (*gateway_s.RegisterResponseIDO, error)
+	Login(ctx context.Context, email, password string) (*gateway_s.LoginResponseIDO, error)
 	GetUserBySessionID(ctx context.Context, sessionID string) (*user_s.User, error)
 	RefreshToken(ctx context.Context, value string) (*user_s.User, string, time.Time, string, time.Time, error)
 	//TODO: Add more...

@@ -44,17 +44,21 @@ func (impl *GatewayControllerImpl) RefreshToken(ctx context.Context, value strin
 	//// Generate new access and refresh tokens and return them.
 	////
 
+	// Set expiry duration.
+	atExpiry := 24 * time.Hour
+	rtExpiry := 14 * 24 * time.Hour
+
 	// Start our session using an access and refresh token.
 	newSessionUUID := impl.UUID.NewUUID()
 
-	err = impl.Cache.Set(ctx, newSessionUUID, uBin)
+	err = impl.Cache.SetWithExpiry(ctx, newSessionUUID, uBin, rtExpiry)
 	if err != nil {
-		impl.Logger.Error("in-memory set error", slog.Any("err", err))
+		impl.Logger.Error("cache set with expiry error", slog.Any("err", err))
 		return nil, "", time.Now(), "", time.Now(), err
 	}
 
 	// Generate our JWT token.
-	accessToken, accessTokenExpiry, refreshToken, refreshTokenExpiry, err := impl.JWT.GenerateJWTTokenPair(newSessionUUID, 100*time.Minute, 200*time.Minute)
+	accessToken, accessTokenExpiry, refreshToken, refreshTokenExpiry, err := impl.JWT.GenerateJWTTokenPair(newSessionUUID, atExpiry, rtExpiry)
 	if err != nil {
 		impl.Logger.Error("jwt generate pairs error", slog.Any("err", err))
 		return nil, "", time.Now(), "", time.Now(), err

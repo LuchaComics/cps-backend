@@ -145,6 +145,7 @@ func (mid *middleware) PreJWTProcessorMiddleware(fn http.HandlerFunc) http.Handl
 			"greeting":      true,
 			"login":         true,
 			"refresh-token": true,
+			"register":      true,
 		}
 
 		// DEVELOPERS NOTE:
@@ -227,12 +228,11 @@ func (mid *middleware) JWTProcessorMiddleware(fn http.HandlerFunc) http.HandlerF
 
 			urlSplit := ctx.Value("url_split").([]string)
 			skipPath := map[string]bool{
-				"register":          true,
-				"submit":            true,
-				"sample-submit":     true,
-				"login":             true,
-				"refresh-token":     true,
-				"evaluation-export": true,
+				"version":       true,
+				"greeting":      true,
+				"login":         true,
+				"refresh-token": true,
+				"register":      true,
 			}
 
 			// DEVELOPERS NOTE:
@@ -308,13 +308,13 @@ func (mid *middleware) PostJWTProcessorMiddleware(fn http.HandlerFunc) http.Hand
 				slog.Any("ID", user.ID),
 				slog.String("SessionID", sessionID),
 				slog.String("UserID", user.UserID),
-				slog.String("FullName", user.FullName),
+				slog.String("Name", user.Name),
 				slog.String("FirstName", user.FirstName),
 				slog.String("Email", user.Email))
 
 			// Save individual pieces of the user profile.
 			ctx = context.WithValue(ctx, constants.SessionUserID, user.ID)
-			ctx = context.WithValue(ctx, constants.SessionUserFullName, user.FullName)
+			ctx = context.WithValue(ctx, constants.SessionUserFullName, user.Name)
 		}
 
 		fn(w, r.WithContext(ctx))

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"time"
 
 	"golang.org/x/exp/slog"
 
@@ -26,12 +27,15 @@ func (c *UserControllerImpl) CreateInitialRootAdmin(ctx context.Context) error {
 			UserID:                c.UUID.NewUUID(),
 			FirstName:             "Root",
 			LastName:              "Administrator",
-			FullName:              "Root Administrator",
+			Name:                  "Root Administrator",
 			LexicalName:           "Administrator, Root",
 			Email:                 c.Config.AppServer.InitialAdminEmail,
 			PasswordHash:          passwordHash,
 			PasswordHashAlgorithm: c.Password.AlgorithmName(),
-			Role:                  domain.UserAdministratorRole,
+			Role:                  domain.StaffRole,
+			WasEmailActivated:     true,
+			CreatedTime:           time.Now(),
+			ModifiedTime:          time.Now(),
 		}
 		err = c.UserStorer.Create(ctx, m)
 		if err != nil {
@@ -40,7 +44,7 @@ func (c *UserControllerImpl) CreateInitialRootAdmin(ctx context.Context) error {
 		}
 		c.Logger.Info("Root user created.",
 			slog.String("user_id", m.UserID),
-			slog.String("full_name", m.FullName),
+			slog.String("name", m.Name),
 			slog.String("email", m.Email),
 			slog.String("password_hash_algorithm", m.PasswordHashAlgorithm),
 			slog.String("password_hash", m.PasswordHash))
