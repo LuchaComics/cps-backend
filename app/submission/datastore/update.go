@@ -7,8 +7,8 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (impl TenantStorerImpl) UpdateByTenantID(ctx context.Context, m *Tenant) error {
-	filter := bson.D{{"tenant_id", m.TenantID}}
+func (impl SubmissionStorerImpl) UpdateBySubmissionID(ctx context.Context, m *Submission) error {
+	filter := bson.D{{"submission_id", m.SubmissionID}}
 
 	update := bson.M{ // DEVELOPERS NOTE: https://stackoverflow.com/a/60946010
 		"$set": m,
@@ -17,7 +17,7 @@ func (impl TenantStorerImpl) UpdateByTenantID(ctx context.Context, m *Tenant) er
 	// execute the UpdateOne() function to update the first matching document
 	result, err := impl.Collection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		impl.Logger.Error("database update by tenant id error", slog.Any("error", err))
+		impl.Logger.Error("database update by submission id error", slog.Any("error", err))
 	}
 
 	// display the number of documents updated

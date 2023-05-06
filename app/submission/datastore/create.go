@@ -8,7 +8,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (impl TenantStorerImpl) Create(ctx context.Context, u *Tenant) error {
+func (impl SubmissionStorerImpl) Create(ctx context.Context, u *Submission) error {
 	// DEVELOPER NOTES:
 	// According to mongodb documentaiton:
 	//     Non-existent Databases and Collections
@@ -17,7 +17,7 @@ func (impl TenantStorerImpl) Create(ctx context.Context, u *Tenant) error {
 
 	if u.ID == primitive.NilObjectID {
 		u.ID = primitive.NewObjectID()
-		impl.Logger.Warn("database insert tenant not included id value, created id now.", slog.Any("id", u.ID))
+		impl.Logger.Warn("database insert submission not included id value, created id now.", slog.Any("id", u.ID))
 	}
 
 	result, err := impl.Collection.InsertOne(ctx, u)

@@ -10,7 +10,7 @@ import (
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/inputport/http/gateway"
 	"github.com/LuchaComics/cps-backend/inputport/http/middleware"
-	"github.com/LuchaComics/cps-backend/inputport/http/tenant"
+	"github.com/LuchaComics/cps-backend/inputport/http/submission"
 	"github.com/LuchaComics/cps-backend/inputport/http/user"
 )
 
@@ -26,7 +26,7 @@ type httpInputPort struct {
 	Middleware middleware.Middleware
 	Gateway    *gateway.Handler
 	User       *user.Handler
-	Tenant     *tenant.Handler
+	Tenant     *submission.Handler
 }
 
 func NewInputPort(
@@ -35,7 +35,7 @@ func NewInputPort(
 	mid middleware.Middleware,
 	gh *gateway.Handler,
 	cu *user.Handler,
-	t *tenant.Handler,
+	t *submission.Handler,
 ) InputPortServer {
 	// Initialize the ServeMux.
 	mux := http.NewServeMux()
