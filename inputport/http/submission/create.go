@@ -38,8 +38,62 @@ func ValidateCreateRequest(dirtyData *sub_s.Submission) (bool, string) {
 	if dirtyData.ServiceType == 0 {
 		e["service_type"] = "missing value"
 	}
-
-	//TODO: Add more validation.
+	if dirtyData.SeriesTitle == "" {
+		e["series_title"] = "missing value"
+	}
+	if dirtyData.IssueVol == "" {
+		e["issue_vol"] = "missing value"
+	}
+	if dirtyData.IssueNo == "" {
+		e["issue_no"] = "missing value"
+	}
+	if dirtyData.IssueCoverDate == "" {
+		e["issue_cover_date"] = "missing value"
+	}
+	if dirtyData.CreasesFinding == 0 {
+		e["creases_finding"] = "missing value"
+	}
+	if dirtyData.TearsFinding == 0 {
+		e["tears_finding"] = "missing value"
+	}
+	if dirtyData.MissingPartsFinding == 0 {
+		e["missing_parts_finding"] = "missing value"
+	}
+	if dirtyData.StainsFinding == 0 {
+		e["stains_finding"] = "missing value"
+	}
+	if dirtyData.DistortionFinding == 0 {
+		e["distortion_finding"] = "missing value"
+	}
+	if dirtyData.PaperQualityFinding == 0 {
+		e["paper_quality_finding"] = "missing value"
+	}
+	if dirtyData.SpineFinding == 0 {
+		e["spine_finding"] = "missing value"
+	}
+	if dirtyData.OtherFinding != 0 {
+		if dirtyData.OtherFindingText == "" {
+			e["other_finding_text"] = "missing value"
+		}
+	}
+	if dirtyData.OverallLetterGrade == "" {
+		e["overall_letter_grade"] = "missing value"
+	}
+	if dirtyData.UserID == "" {
+		e["user_id"] = "missing value"
+	}
+	if dirtyData.UserFirstName == "" {
+		e["user_first_name"] = "missing value"
+	}
+	if dirtyData.UserLastName == "" {
+		e["user_last_name"] = "missing value"
+	}
+	if dirtyData.UserCompanyName == "" {
+		e["user_company_name"] = "missing value"
+	}
+	if dirtyData.UserSignature == "" {
+		e["user_signature"] = "missing value"
+	}
 
 	if len(e) != 0 {
 		b, err := json.Marshal(e)

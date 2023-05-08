@@ -116,6 +116,8 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		port.Submission.Create(w, r)
 	case n == 4 && p[1] == "v1" && p[2] == "submission" && r.Method == http.MethodGet:
 		port.Submission.GetBySubmissionID(w, r, p[3])
+	case n == 4 && p[1] == "v1" && p[2] == "submission" && r.Method == http.MethodPut:
+		port.Submission.UpdateBySubmissionID(w, r, p[3])
 
 	// --- CATCH ALL: D.N.E. ---
 	default:

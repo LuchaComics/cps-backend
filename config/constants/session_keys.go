@@ -8,10 +8,12 @@ const (
 	SessionID
 	SessionIPAddress
 	SessionUser
-	SessionUserTenantID
-	SessionUserRoleID
+	SessionUserCompanyName
+	SessionUserRole
 	SessionUserID
 	SessionUserUUID
 	SessionUserTimezone
-	SessionUserFullName
+	SessionUserName
+	SessionUserFirstName
+	SessionUserLastName
 )
