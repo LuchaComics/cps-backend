@@ -74,7 +74,7 @@ func (port *httpInputPort) Run() {
 	if err := port.Server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		port.Logger.Error("listen failed", slog.Any("error", err))
 
-		// DEVELOPERS NOTE: We terminate app here b/c dependency injection not allowed to fail, so fail here at startup of dynamodb.
+		// DEVELOPERS NOTE: We terminate app here b/c dependency injection not allowed to fail, so fail here at startup of app.
 		panic("failed running")
 	}
 }

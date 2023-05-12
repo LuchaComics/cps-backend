@@ -11,7 +11,7 @@ import (
 
 	gateway_s "github.com/LuchaComics/cps-backend/app/gateway/datastore"
 	user_s "github.com/LuchaComics/cps-backend/app/user/datastore"
-	"github.com/LuchaComics/cps-backend/utils/errorx"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
 func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.RegisterRequestIDO) (*gateway_s.RegisterResponseIDO, error) {
@@ -27,7 +27,7 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 	}
 	if u != nil {
 		impl.Logger.Warn("user already exists validation error")
-		return nil, errorx.NewBadRequestErrorForKV("email", "email is not unique")
+		return nil, httperror.NewForBadRequestWithSingleField("email", "email is not unique")
 	}
 
 	passwordHash, err := impl.Password.GenerateHashFromPassword(req.Password)

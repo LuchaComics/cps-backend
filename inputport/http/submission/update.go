@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
-	"github.com/LuchaComics/cps-backend/utils/errorx"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
 func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*sub_s.Submission, error, int) {
@@ -62,7 +62,7 @@ func (h *Handler) UpdateBySubmissionID(w http.ResponseWriter, r *http.Request, s
 
 	err = h.Controller.UpdateBySubmissionID(ctx, requestData)
 	if err != nil {
-		errorx.ResponseError(w, err)
+		httperror.ResponseError(w, err)
 		return
 	}
 

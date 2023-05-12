@@ -3,14 +3,13 @@ package submission
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
-	"github.com/LuchaComics/cps-backend/utils/errorx"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func UnmarshalCreateRequest(ctx context.Context, r *http.Request) (*sub_s.Submission, error, int) {
+func UnmarshalCreateRequest(ctx context.Context, r *http.Request) (*sub_s.Submission, error) {
 	// Initialize our array which will store all the results from the remote server.
 	var requestData sub_s.Submission
 
@@ -20,19 +19,19 @@ func UnmarshalCreateRequest(ctx context.Context, r *http.Request) (*sub_s.Submis
 	// to send a `400 Bad Request` errror message back to the client,
 	err := json.NewDecoder(r.Body).Decode(&requestData) // [1]
 	if err != nil {
-		return nil, err, http.StatusBadRequest
+		return nil, httperror.NewForSingleField(http.StatusBadRequest, "non_field_error", "payload structure is wrong")
 	}
 
 	// Perform our validation and return validation error on any issues detected.
-	isValid, errStr := ValidateCreateRequest(&requestData)
-	if isValid == false {
-		return nil, errors.New(errStr), http.StatusBadRequest
+	err = ValidateCreateRequest(&requestData)
+	if err == nil {
+		return nil, err
 	}
 
-	return &requestData, nil, http.StatusOK
+	return &requestData, nil
 }
 
-func ValidateCreateRequest(dirtyData *sub_s.Submission) (bool, string) {
+func ValidateCreateRequest(dirtyData *sub_s.Submission) error {
 	e := make(map[string]string)
 
 	if dirtyData.ServiceType == 0 {
@@ -96,31 +95,27 @@ func ValidateCreateRequest(dirtyData *sub_s.Submission) (bool, string) {
 	}
 
 	if len(e) != 0 {
-		b, err := json.Marshal(e)
-		if err != nil { // Defensive code
-			return false, err.Error()
-		}
-		return false, string(b)
+		return httperror.NewForBadRequest(&e)
 	}
-	return true, ""
+	return nil
 }
 
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	requestData, err, errStatusCode := UnmarshalCreateRequest(ctx, r)
+	data, err := UnmarshalCreateRequest(ctx, r)
 	if err != nil {
-		http.Error(w, err.Error(), errStatusCode)
+		httperror.ResponseError(w, err)
 		return
 	}
 
-	err = h.Controller.Create(ctx, requestData)
+	err = h.Controller.Create(ctx, data)
 	if err != nil {
-		errorx.ResponseError(w, err)
+		httperror.ResponseError(w, err)
 		return
 	}
 
-	MarshalCreateResponse(requestData, w)
+	MarshalCreateResponse(data, w)
 }
 
 func MarshalCreateResponse(res *sub_s.Submission, w http.ResponseWriter) {

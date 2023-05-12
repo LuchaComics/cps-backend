@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
-	"github.com/LuchaComics/cps-backend/utils/errorx"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
 func (h *Handler) GetBySubmissionID(w http.ResponseWriter, r *http.Request, submissionID string) {
@@ -13,7 +13,7 @@ func (h *Handler) GetBySubmissionID(w http.ResponseWriter, r *http.Request, subm
 
 	m, err := h.Controller.GetBySubmissionID(ctx, submissionID)
 	if err != nil {
-		errorx.ResponseError(w, err)
+		httperror.ResponseError(w, err)
 		return
 	}
 

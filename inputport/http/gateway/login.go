@@ -3,12 +3,11 @@ package gateway
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"strings"
 
 	gateway_s "github.com/LuchaComics/cps-backend/app/gateway/datastore"
-	"github.com/LuchaComics/cps-backend/utils/errorx"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
 type LoginRequestIDO struct {
@@ -16,7 +15,7 @@ type LoginRequestIDO struct {
 	Password string `json:"password"`
 }
 
-func UnmarshalLoginRequest(ctx context.Context, r *http.Request) (*LoginRequestIDO, error, int) {
+func UnmarshalLoginRequest(ctx context.Context, r *http.Request) (*LoginRequestIDO, error) {
 	// Initialize our array which will store all the results from the remote server.
 	var requestData LoginRequestIDO
 
@@ -26,7 +25,7 @@ func UnmarshalLoginRequest(ctx context.Context, r *http.Request) (*LoginRequestI
 	// to send a `400 Bad Request` errror message back to the client,
 	err := json.NewDecoder(r.Body).Decode(&requestData) // [1]
 	if err != nil {
-		return nil, err, http.StatusBadRequest
+		return nil, httperror.NewForSingleField(http.StatusBadRequest, "non_field_error", "payload structure is wrong")
 	}
 
 	// Defensive Code: For security purposes we need to remove all whitespaces from the email and lower the characters.
@@ -34,15 +33,15 @@ func UnmarshalLoginRequest(ctx context.Context, r *http.Request) (*LoginRequestI
 	requestData.Email = strings.ReplaceAll(requestData.Email, " ", "")
 
 	// Perform our validation and return validation error on any issues detected.
-	isValid, errStr := ValidateLoginRequest(&requestData)
-	if isValid == false {
-		return nil, errors.New(errStr), http.StatusBadRequest
+	err = ValidateLoginRequest(&requestData)
+	if err != nil {
+		return nil, err
 	}
 
-	return &requestData, nil, http.StatusOK
+	return &requestData, nil
 }
 
-func ValidateLoginRequest(dirtyData *LoginRequestIDO) (bool, string) {
+func ValidateLoginRequest(dirtyData *LoginRequestIDO) error {
 	e := make(map[string]string)
 
 	if dirtyData.Email == "" {
@@ -56,27 +55,23 @@ func ValidateLoginRequest(dirtyData *LoginRequestIDO) (bool, string) {
 	}
 
 	if len(e) != 0 {
-		b, err := json.Marshal(e)
-		if err != nil { // Defensive code
-			return false, err.Error()
-		}
-		return false, string(b)
+		return httperror.NewForBadRequest(&e)
 	}
-	return true, ""
+	return nil
 }
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	requestData, err, errStatusCode := UnmarshalLoginRequest(ctx, r)
+	data, err := UnmarshalLoginRequest(ctx, r)
 	if err != nil {
-		http.Error(w, err.Error(), errStatusCode)
+		httperror.ResponseError(w, err)
 		return
 	}
 
-	res, err := h.Controller.Login(ctx, requestData.Email, requestData.Password)
+	res, err := h.Controller.Login(ctx, data.Email, data.Password)
 	if err != nil {
-		errorx.ResponseError(w, err)
+		httperror.ResponseError(w, err)
 		return
 	}
 	MarshalLoginResponse(res, w)

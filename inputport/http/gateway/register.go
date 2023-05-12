@@ -3,15 +3,14 @@ package gateway
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"strings"
 
 	gateway_s "github.com/LuchaComics/cps-backend/app/gateway/datastore"
-	"github.com/LuchaComics/cps-backend/utils/errorx"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func UnmarshalRegisterRequest(ctx context.Context, r *http.Request) (*gateway_s.RegisterRequestIDO, error, int) {
+func UnmarshalRegisterRequest(ctx context.Context, r *http.Request) (*gateway_s.RegisterRequestIDO, error) {
 	// Initialize our array which will store all the results from the remote server.
 	var requestData gateway_s.RegisterRequestIDO
 
@@ -21,7 +20,7 @@ func UnmarshalRegisterRequest(ctx context.Context, r *http.Request) (*gateway_s.
 	// to send a `400 Bad Request` errror message back to the client,
 	err := json.NewDecoder(r.Body).Decode(&requestData) // [1]
 	if err != nil {
-		return nil, err, http.StatusBadRequest
+		return nil, httperror.NewForSingleField(http.StatusBadRequest, "non_field_error", "payload structure is wrong")
 	}
 
 	// Defensive Code: For security purposes we need to remove all whitespaces from the email and lower the characters.
@@ -29,15 +28,15 @@ func UnmarshalRegisterRequest(ctx context.Context, r *http.Request) (*gateway_s.
 	requestData.Email = strings.ReplaceAll(requestData.Email, " ", "")
 
 	// Perform our validation and return validation error on any issues detected.
-	isValid, errStr := ValidateRegisterRequest(&requestData)
-	if isValid == false {
-		return nil, errors.New(errStr), http.StatusBadRequest
+	err = ValidateRegisterRequest(&requestData)
+	if err != nil {
+		return nil, err
 	}
 
-	return &requestData, nil, http.StatusOK
+	return &requestData, nil
 }
 
-func ValidateRegisterRequest(dirtyData *gateway_s.RegisterRequestIDO) (bool, string) {
+func ValidateRegisterRequest(dirtyData *gateway_s.RegisterRequestIDO) error {
 	e := make(map[string]string)
 
 	if dirtyData.FirstName == "" {
@@ -87,27 +86,23 @@ func ValidateRegisterRequest(dirtyData *gateway_s.RegisterRequestIDO) (bool, str
 	}
 
 	if len(e) != 0 {
-		b, err := json.Marshal(e)
-		if err != nil { // Defensive code
-			return false, err.Error()
-		}
-		return false, string(b)
+		return httperror.NewForBadRequest(&e)
 	}
-	return true, ""
+	return nil
 }
 
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	requestData, err, errStatusCode := UnmarshalRegisterRequest(ctx, r)
+	data, err := UnmarshalRegisterRequest(ctx, r)
 	if err != nil {
-		http.Error(w, err.Error(), errStatusCode)
+		httperror.ResponseError(w, err)
 		return
 	}
 
-	res, err := h.Controller.Register(ctx, requestData)
+	res, err := h.Controller.Register(ctx, data)
 	if err != nil {
-		errorx.ResponseError(w, err)
+		httperror.ResponseError(w, err)
 		return
 	}
 

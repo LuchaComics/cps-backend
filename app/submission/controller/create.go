@@ -17,6 +17,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	if ok {
 		switch userRole {
 		case u_d.RetailerRole:
+			// Override state.
 			m.State = s_d.SubmissionPendingState
 
 			// Auto-assign the user-if
