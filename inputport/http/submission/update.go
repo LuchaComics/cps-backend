@@ -51,7 +51,7 @@ func ValidateUpdateRequest(dirtyData *sub_s.Submission) (bool, string) {
 	return true, ""
 }
 
-func (h *Handler) UpdateBySubmissionID(w http.ResponseWriter, r *http.Request, submissionID string) {
+func (h *Handler) UpdateByID(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := r.Context()
 
 	requestData, err, errStatusCode := UnmarshalUpdateRequest(ctx, r)
@@ -60,7 +60,7 @@ func (h *Handler) UpdateBySubmissionID(w http.ResponseWriter, r *http.Request, s
 		return
 	}
 
-	err = h.Controller.UpdateBySubmissionID(ctx, requestData)
+	err = h.Controller.UpdateByID(ctx, requestData)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return

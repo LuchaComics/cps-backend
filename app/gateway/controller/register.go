@@ -58,7 +58,7 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 		HowDidYouHearAboutUs:      req.HowDidYouHearAboutUs,
 		HowDidYouHearAboutUsOther: req.HowDidYouHearAboutUsOther,
 		AgreeTOS:                  req.AgreeTOS,
-		AgreePromotions:           req.AgreePromotions,
+		AgreePromotionsEmail:      req.AgreePromotionsEmail,
 		CreatedTime:               time.Now(),
 		ModifiedTime:              time.Now(),
 	}

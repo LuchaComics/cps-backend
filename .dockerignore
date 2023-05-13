@@ -11,7 +11,6 @@ private.txt
 docker-compose.yml
 
 # Project artificats we don't want include.
-badgerdb_data
 private.md
 private.txt
 .DS_Store

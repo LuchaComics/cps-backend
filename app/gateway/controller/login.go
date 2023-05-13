@@ -3,13 +3,13 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"strings"
 	"time"
 
 	"golang.org/x/exp/slog"
 
 	gateway_s "github.com/LuchaComics/cps-backend/app/gateway/datastore"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
 func (impl *GatewayControllerImpl) Login(ctx context.Context, email, password string) (*gateway_s.LoginResponseIDO, error) {
@@ -25,14 +25,14 @@ func (impl *GatewayControllerImpl) Login(ctx context.Context, email, password st
 	}
 	if u == nil {
 		impl.Logger.Warn("user does not exist validation error")
-		return nil, err
+		return nil, httperror.NewForBadRequestWithSingleField("email", "does not exist")
 	}
 
 	// Verify the inputted password and hashed password match.
 	passwordMatch, _ := impl.Password.ComparePasswordAndHash(password, u.PasswordHash)
 	if passwordMatch == false {
 		impl.Logger.Warn("password check validation error")
-		return nil, errors.New("password do not match with record")
+		return nil, httperror.NewForBadRequestWithSingleField("password", "password do not match with record")
 	}
 
 	uBin, err := json.Marshal(u)

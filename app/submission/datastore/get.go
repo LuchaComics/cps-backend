@@ -8,8 +8,8 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (impl SubmissionStorerImpl) GetBySubmissionID(ctx context.Context, submissionID string) (*Submission, error) {
-	filter := bson.D{{"submission_id", submissionID}}
+func (impl SubmissionStorerImpl) GetByID(ctx context.Context, id string) (*Submission, error) {
+	filter := bson.D{{"_id", id}}
 
 	var result Submission
 	err := impl.Collection.FindOne(ctx, filter).Decode(&result)
@@ -18,7 +18,7 @@ func (impl SubmissionStorerImpl) GetBySubmissionID(ctx context.Context, submissi
 			// This error means your query did not match any documents.
 			return nil, nil
 		}
-		impl.Logger.Error("database get by submission id error", slog.Any("error", err))
+		impl.Logger.Error("database get by id error", slog.Any("error", err))
 		return nil, err
 	}
 	return &result, nil

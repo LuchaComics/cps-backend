@@ -7,10 +7,10 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (c *SubmissionControllerImpl) GetBySubmissionID(ctx context.Context, submissionID string) (*domain.Submission, error) {
-	m, err := c.SubmissionStorer.GetBySubmissionID(ctx, submissionID)
+func (c *SubmissionControllerImpl) GetByID(ctx context.Context, id string) (*domain.Submission, error) {
+	m, err := c.SubmissionStorer.GetByID(ctx, id)
 	if err != nil {
-		c.Logger.Error("database get by submission id error", slog.Any("error", err))
+		c.Logger.Error("database get by id error", slog.Any("error", err))
 		return nil, err
 	}
 	return m, err

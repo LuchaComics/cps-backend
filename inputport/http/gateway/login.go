@@ -33,11 +33,9 @@ func UnmarshalLoginRequest(ctx context.Context, r *http.Request) (*LoginRequestI
 	requestData.Email = strings.ReplaceAll(requestData.Email, " ", "")
 
 	// Perform our validation and return validation error on any issues detected.
-	err = ValidateLoginRequest(&requestData)
-	if err != nil {
+	if err = ValidateLoginRequest(&requestData); err != nil {
 		return nil, err
 	}
-
 	return &requestData, nil
 }
 

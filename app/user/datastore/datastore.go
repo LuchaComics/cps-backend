@@ -46,7 +46,7 @@ type User struct {
 	HowDidYouHearAboutUs      int8               `bson:"how_did_you_hear_about_us,omitempty" json:"how_did_you_hear_about_us,omitempty"`
 	HowDidYouHearAboutUsOther string             `bson:"how_did_you_hear_about_us_other,omitempty" json:"how_did_you_hear_about_us_other,omitempty"`
 	AgreeTOS                  bool               `bson:"agree_tos,omitempty" json:"agree_tos,omitempty"`
-	AgreePromotions           bool               `bson:"agree_promotions,omitempty" json:"agree_promotions,omitempty"`
+	AgreePromotionsEmail      bool               `bson:"agree_promotions_email,omitempty" json:"agree_promotions_email,omitempty"`
 	CreatedTime               time.Time          `bson:"created_time,omitempty" json:"created_time,omitempty"`
 	ModifiedTime              time.Time          `bson:"modified_time,omitempty" json:"modified_time,omitempty"`
 }
@@ -63,9 +63,11 @@ type UserFilter struct {
 // UserStorer Interface for user.
 type UserStorer interface {
 	Create(ctx context.Context, m *User) error
+	GetByID(ctx context.Context, id primitive.ObjectID) (*User, error)
 	GetByUserID(ctx context.Context, userID string) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 	CheckIfExistsByEmail(ctx context.Context, email string) (bool, error)
+	UpdateByID(ctx context.Context, m *User) error
 	UpdateByUserID(ctx context.Context, m *User) error
 	// //TODO: Add more...
 }

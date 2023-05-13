@@ -8,19 +8,25 @@ import (
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request, id string) {
+func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	m, err := h.Controller.GetByID(ctx, id)
+	f := &sub_s.SubmissionListFilter{
+		PageSize:  10,
+		LastID:    "",
+		SortField: "_id",
+	}
+
+	m, err := h.Controller.ListByFilter(ctx, f)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return
 	}
 
-	MarshalDetailResponse(m, w)
+	MarshalListResponse(m, w)
 }
 
-func MarshalDetailResponse(res *sub_s.Submission, w http.ResponseWriter) {
+func MarshalListResponse(res *sub_s.SubmissionListResult, w http.ResponseWriter) {
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

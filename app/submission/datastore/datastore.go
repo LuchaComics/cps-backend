@@ -29,7 +29,7 @@ const (
 )
 
 type Submission struct {
-	ID                       primitive.ObjectID `bson:"_id"`
+	ID                       primitive.ObjectID `bson:"_id" json:"id"`
 	SubmissionID             string             `bson:"submission_id" json:"submission_id"`
 	CreatedTime              time.Time          `bson:"created_time,omitempty" json:"created_time,omitempty"`
 	ModifiedTime             time.Time          `bson:"modified_time,omitempty" json:"modified_time,omitempty"`
@@ -41,15 +41,15 @@ type Submission struct {
 	IssueNo                  string             `bson:"issue_no" json:"issue_no"`
 	IssueCoverDate           string             `bson:"issue_cover_date" json:"issue_cover_date"`
 	IssueSpecialDetails      string             `bson:"issue_special_details" json:"issue_special_details"`
-	CreasesFinding           uint8              `bson:"creases_finding" json:"creases_finding"`
-	TearsFinding             uint8              `bson:"tears_finding" json:"tears_finding"`
-	MissingPartsFinding      uint8              `bson:"missing_parts_finding" json:"missing_parts_finding"`
-	StainsFinding            uint8              `bson:"stains_finding" json:"stains_finding"`
-	DistortionFinding        uint8              `bson:"distortion_finding" json:"distortion_finding"`
-	PaperQualityFinding      uint8              `bson:"paper_quality_finding" json:"paper_quality_finding"`
-	SpineFinding             uint8              `bson:"spine_finding" json:"spine_finding"`
-	CoverFinding             uint8              `bson:"cover_finding" json:"cover_finding"`
-	OtherFinding             uint8              `bson:"other_finding" json:"other_finding"`
+	CreasesFinding           string             `bson:"creases_finding" json:"creases_finding"`
+	TearsFinding             string             `bson:"tears_finding" json:"tears_finding"`
+	MissingPartsFinding      string             `bson:"missing_parts_finding" json:"missing_parts_finding"`
+	StainsFinding            string             `bson:"stains_finding" json:"stains_finding"`
+	DistortionFinding        string             `bson:"distortion_finding" json:"distortion_finding"`
+	PaperQualityFinding      string             `bson:"paper_quality_finding" json:"paper_quality_finding"`
+	SpineFinding             string             `bson:"spine_finding" json:"spine_finding"`
+	CoverFinding             string             `bson:"cover_finding" json:"cover_finding"`
+	OtherFinding             string             `bson:"other_finding" json:"other_finding"`
 	OtherFindingText         string             `bson:"other_finding_text" json:"other_finding_text"`
 	OverallLetterGrade       string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
 	UserID                   string             `bson:"user_id" json:"user_id"`
@@ -75,20 +75,30 @@ type Submission struct {
 	// Note: Add company logo.
 }
 
-type SubmissionFilter struct {
-	SortOrder string   `json:"sort_order"`
-	SortField string   `json:"sort_field"`
-	Offset    uint64   `json:"offset"`
-	Limit     uint64   `json:"limit"`
-	States    []int8   `json:"states"`
-	UUIDs     []string `json:"uuids"`
+type SubmissionListFilter struct {
+	PageSize  int64
+	LastID    string
+	SortField string
+	UserID    primitive.ObjectID
+
+	// SortOrder string   `json:"sort_order"`
+	// SortField string   `json:"sort_field"`
+	// Offset    uint64   `json:"offset"`
+	// Limit     uint64   `json:"limit"`
+	// States    []int8   `json:"states"`
+	// UUIDs     []string `json:"uuids"`
+}
+
+type SubmissionListResult struct {
+	Results []*Submission `json:"results"`
 }
 
 // SubmissionStorer Interface for submission.
 type SubmissionStorer interface {
 	Create(ctx context.Context, m *Submission) error
-	GetBySubmissionID(ctx context.Context, submissionID string) (*Submission, error)
-	UpdateBySubmissionID(ctx context.Context, m *Submission) error
+	GetByID(ctx context.Context, id string) (*Submission, error)
+	UpdateByID(ctx context.Context, m *Submission) error
+	ListByFilter(ctx context.Context, m *SubmissionListFilter) (*SubmissionListResult, error)
 	// //TODO: Add more...
 }
 

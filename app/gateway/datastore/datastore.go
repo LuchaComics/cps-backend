@@ -16,6 +16,7 @@ type RegisterRequestIDO struct {
 	LastName                  string `json:"last_name"`
 	Email                     string `json:"email"`
 	Password                  string `json:"password"`
+	PasswordRepeated          string `json:"password_repeated"`
 	CompanyName               string `json:"company_name,omitempty"`
 	Phone                     string `json:"phone,omitempty"`
 	Country                   string `json:"country,omitempty"`
@@ -28,7 +29,7 @@ type RegisterRequestIDO struct {
 	HowDidYouHearAboutUs      int8   `json:"how_did_you_hear_about_us,omitempty"`
 	HowDidYouHearAboutUsOther string `json:"how_did_you_hear_about_us_other,omitempty"`
 	AgreeTOS                  bool   `json:"agree_tos,omitempty"`
-	AgreePromotions           bool   `json:"agree_promotions,omitempty"`
+	AgreePromotionsEmail      bool   `json:"agree_promotions_email,omitempty"`
 }
 
 type RegisterResponseIDO struct {

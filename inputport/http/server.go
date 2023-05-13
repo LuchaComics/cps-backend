@@ -111,13 +111,15 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		// case n == 3 && p[1] == "v1" && p[2] == "profile" && r.Method == http.MethodGet:
 		// ...
 
-	// --- SUBMISSIONS --- //
+		// --- SUBMISSIONS --- //
+	case n == 3 && p[1] == "v1" && p[2] == "submissions" && r.Method == http.MethodGet:
+		port.Submission.List(w, r)
 	case n == 3 && p[1] == "v1" && p[2] == "submissions" && r.Method == http.MethodPost:
 		port.Submission.Create(w, r)
 	case n == 4 && p[1] == "v1" && p[2] == "submission" && r.Method == http.MethodGet:
-		port.Submission.GetBySubmissionID(w, r, p[3])
+		port.Submission.GetByID(w, r, p[3])
 	case n == 4 && p[1] == "v1" && p[2] == "submission" && r.Method == http.MethodPut:
-		port.Submission.UpdateBySubmissionID(w, r, p[3])
+		port.Submission.UpdateByID(w, r, p[3])
 
 	// --- CATCH ALL: D.N.E. ---
 	default:

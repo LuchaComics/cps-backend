@@ -28,8 +28,7 @@ func UnmarshalRegisterRequest(ctx context.Context, r *http.Request) (*gateway_s.
 	requestData.Email = strings.ReplaceAll(requestData.Email, " ", "")
 
 	// Perform our validation and return validation error on any issues detected.
-	err = ValidateRegisterRequest(&requestData)
-	if err != nil {
+	if err := ValidateRegisterRequest(&requestData); err != nil {
 		return nil, err
 	}
 
@@ -53,6 +52,13 @@ func ValidateRegisterRequest(dirtyData *gateway_s.RegisterRequestIDO) error {
 	}
 	if dirtyData.Password == "" {
 		e["password"] = "missing value"
+	}
+	if dirtyData.PasswordRepeated == "" {
+		e["password_repeated"] = "missing value"
+	}
+	if dirtyData.PasswordRepeated != dirtyData.Password {
+		e["password"] = "does not match"
+		e["password_repeated"] = "does not match"
 	}
 	if dirtyData.CompanyName == "" {
 		e["company_name"] = "missing value"
@@ -78,11 +84,11 @@ func ValidateRegisterRequest(dirtyData *gateway_s.RegisterRequestIDO) error {
 	if dirtyData.AddressLine1 == "" {
 		e["address_line_1"] = "missing value"
 	}
-	if dirtyData.HowDidYouHearAboutUs == 0 {
-		e["how_did_you_hear_about_us"] = "missing value"
-	}
+	// if dirtyData.HowDidYouHearAboutUs == 0 {
+	// 	e["how_did_you_hear_about_us"] = "missing value"
+	// }
 	if dirtyData.AgreeTOS == false {
-		e["agree_tos"] = "missing value"
+		e["agree_tos"] = "you must agree to the terms before proceeding"
 	}
 
 	if len(e) != 0 {
