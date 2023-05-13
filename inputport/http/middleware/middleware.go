@@ -307,7 +307,6 @@ func (mid *middleware) PostJWTProcessorMiddleware(fn http.HandlerFunc) http.Hand
 			mid.Logger.Info("Fetched session record",
 				slog.Any("ID", user.ID),
 				slog.String("SessionID", sessionID),
-				slog.String("UserID", user.UserID),
 				slog.String("Name", user.Name),
 				slog.String("FirstName", user.FirstName),
 				slog.String("Email", user.Email))

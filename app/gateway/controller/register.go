@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 
 	gateway_s "github.com/LuchaComics/cps-backend/app/gateway/datastore"
@@ -39,7 +40,7 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 	//TODO: Handle s3.
 
 	u = &user_s.User{
-		UserID:                    impl.UUID.NewUUID(),
+		ID:                        primitive.NewObjectID(),
 		FirstName:                 req.FirstName,
 		LastName:                  req.LastName,
 		Name:                      fmt.Sprintf("%s %s", req.FirstName, req.LastName),
@@ -68,7 +69,7 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 		return nil, err
 	}
 	impl.Logger.Info("User created.",
-		slog.String("user_id", u.UserID),
+		slog.Any("_id", u.ID),
 		slog.String("full_name", u.Name),
 		slog.String("email", u.Email),
 		slog.String("password_hash_algorithm", u.PasswordHashAlgorithm),

@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 
 	domain "github.com/LuchaComics/cps-backend/app/user/datastore"
@@ -24,7 +25,7 @@ func (c *UserControllerImpl) CreateInitialRootAdmin(ctx context.Context) error {
 			return err
 		}
 		m := &domain.User{
-			UserID:                c.UUID.NewUUID(),
+			ID:                    primitive.NewObjectID(),
 			FirstName:             "Root",
 			LastName:              "Administrator",
 			Name:                  "Root Administrator",
@@ -43,7 +44,7 @@ func (c *UserControllerImpl) CreateInitialRootAdmin(ctx context.Context) error {
 			return err
 		}
 		c.Logger.Info("Root user created.",
-			slog.String("user_id", m.UserID),
+			slog.Any("_id", m.ID),
 			slog.String("name", m.Name),
 			slog.String("email", m.Email),
 			slog.String("password_hash_algorithm", m.PasswordHashAlgorithm),

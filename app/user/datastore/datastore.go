@@ -20,7 +20,6 @@ const (
 
 type User struct {
 	ID                        primitive.ObjectID `bson:"_id" json:"_id"`
-	UserID                    string             `bson:"user_id" json:"user_id"`
 	FirstName                 string             `bson:"first_name" json:"first_name"`
 	LastName                  string             `bson:"last_name" json:"last_name"`
 	Name                      string             `bson:"name" json:"name"`
@@ -64,11 +63,9 @@ type UserFilter struct {
 type UserStorer interface {
 	Create(ctx context.Context, m *User) error
 	GetByID(ctx context.Context, id primitive.ObjectID) (*User, error)
-	GetByUserID(ctx context.Context, userID string) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 	CheckIfExistsByEmail(ctx context.Context, email string) (bool, error)
 	UpdateByID(ctx context.Context, m *User) error
-	UpdateByUserID(ctx context.Context, m *User) error
 	// //TODO: Add more...
 }
 
