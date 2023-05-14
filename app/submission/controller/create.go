@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 
 	s_d "github.com/LuchaComics/cps-backend/app/submission/datastore"
@@ -21,7 +22,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 			m.State = s_d.SubmissionPendingState
 
 			// Auto-assign the user-if
-			m.UserID = ctx.Value(constants.SessionUserID).(string)
+			m.UserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
 			m.UserFirstName = ctx.Value(constants.SessionUserFirstName).(string)
 			m.UserLastName = ctx.Value(constants.SessionUserLastName).(string)
 			m.UserCompanyName = ctx.Value(constants.SessionUserCompanyName).(string)
@@ -36,7 +37,6 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	// Add defaults.
 	m.CreatedTime = time.Now()
 	m.ModifiedTime = time.Now()
-	m.SubmissionID = c.UUID.NewUUID()
 
 	// Save to our database.
 	err := c.SubmissionStorer.Create(ctx, m)

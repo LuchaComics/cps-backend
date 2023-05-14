@@ -31,7 +31,9 @@ func (impl SubmissionStorerImpl) ListByFilter(ctx context.Context, f *Submission
 		SetSort(bson.D{{sortField, sortOrder}})
 
 	// Add filter conditions to the query
-	// TODO
+	if f.UserID.Hex() != "" {
+		query["user_id"] = f.UserID
+	}
 
 	if startAfter != "" {
 		// Find the document with the given startAfter ID

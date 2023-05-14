@@ -30,7 +30,6 @@ const (
 
 type Submission struct {
 	ID                       primitive.ObjectID `bson:"_id" json:"id"`
-	SubmissionID             string             `bson:"submission_id" json:"submission_id"`
 	CreatedTime              time.Time          `bson:"created_time,omitempty" json:"created_time,omitempty"`
 	ModifiedTime             time.Time          `bson:"modified_time,omitempty" json:"modified_time,omitempty"`
 	ServiceType              int8               `bson:"service_type" json:"service_type"`
@@ -52,7 +51,7 @@ type Submission struct {
 	OtherFinding             string             `bson:"other_finding" json:"other_finding"`
 	OtherFindingText         string             `bson:"other_finding_text" json:"other_finding_text"`
 	OverallLetterGrade       string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
-	UserID                   string             `bson:"user_id" json:"user_id"`
+	UserID                   primitive.ObjectID `bson:"user_id" json:"user_id"`
 	UserFirstName            string             `bson:"user_first_name" json:"user_first_name"`
 	UserLastName             string             `bson:"user_last_name" json:"user_last_name"`
 	UserCompanyName          string             `bson:"user_company_name" json:"user_company_name"`
@@ -80,6 +79,7 @@ type SubmissionListFilter struct {
 	LastID    string
 	SortField string
 	UserID    primitive.ObjectID
+	UserRole  int8
 
 	// SortOrder string   `json:"sort_order"`
 	// SortField string   `json:"sort_field"`
