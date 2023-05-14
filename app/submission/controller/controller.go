@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 
 	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
@@ -15,7 +16,7 @@ import (
 // SubmissionController Interface for submission business logic controller.
 type SubmissionController interface {
 	Create(ctx context.Context, m *domain.Submission) error
-	GetByID(ctx context.Context, id string) (*domain.Submission, error)
+	GetByID(ctx context.Context, id primitive.ObjectID) (*domain.Submission, error)
 	UpdateByID(ctx context.Context, m *domain.Submission) error
 	ListByFilter(ctx context.Context, f *domain.SubmissionListFilter) (*domain.SubmissionListResult, error)
 }

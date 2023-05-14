@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
+
 	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
@@ -11,7 +13,13 @@ import (
 func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := r.Context()
 
-	m, err := h.Controller.GetByID(ctx, id)
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		httperror.ResponseError(w, err)
+		return
+	}
+
+	m, err := h.Controller.GetByID(ctx, objectID)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return

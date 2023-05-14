@@ -3,14 +3,13 @@ package submission
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*sub_s.Submission, error, int) {
+func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*sub_s.Submission, error) {
 	// Initialize our array which will store all the results from the remote server.
 	var requestData sub_s.Submission
 
@@ -20,53 +19,87 @@ func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*sub_s.Submis
 	// to send a `400 Bad Request` errror message back to the client,
 	err := json.NewDecoder(r.Body).Decode(&requestData) // [1]
 	if err != nil {
-		return nil, err, http.StatusBadRequest
+		return nil, httperror.NewForSingleField(http.StatusBadRequest, "non_field_error", "payload structure is wrong")
 	}
 
 	// Perform our validation and return validation error on any issues detected.
-	isValid, errStr := ValidateUpdateRequest(&requestData)
-	if isValid == false {
-		return nil, errors.New(errStr), http.StatusBadRequest
+	if err := ValidateUpdateRequest(&requestData); err != nil {
+		return nil, err
 	}
 
-	return &requestData, nil, http.StatusOK
+	return &requestData, nil
 }
 
-func ValidateUpdateRequest(dirtyData *sub_s.Submission) (bool, string) {
+func ValidateUpdateRequest(dirtyData *sub_s.Submission) error {
 	e := make(map[string]string)
 
-	if dirtyData.ServiceType == 0 {
-		e["service_type"] = "missing value"
+	// if dirtyData.ServiceType == 0 {
+	// 	e["service_type"] = "missing value"
+	// }
+	if dirtyData.SeriesTitle == "" {
+		e["series_title"] = "missing value"
 	}
-
-	//TODO: Add more validation.
+	if dirtyData.IssueVol == "" {
+		e["issue_vol"] = "missing value"
+	}
+	if dirtyData.IssueNo == "" {
+		e["issue_no"] = "missing value"
+	}
+	if dirtyData.IssueCoverDate == "" {
+		e["issue_cover_date"] = "missing value"
+	}
+	if dirtyData.CreasesFinding == "" {
+		e["creases_finding"] = "missing choice"
+	}
+	if dirtyData.TearsFinding == "" {
+		e["tears_finding"] = "missing choice"
+	}
+	if dirtyData.MissingPartsFinding == "" {
+		e["missing_parts_finding"] = "missing choice"
+	}
+	if dirtyData.StainsFinding == "" {
+		e["stains_finding"] = "missing choice"
+	}
+	if dirtyData.DistortionFinding == "" {
+		e["distortion_finding"] = "missing choice"
+	}
+	if dirtyData.PaperQualityFinding == "" {
+		e["paper_quality_finding"] = "missing choice"
+	}
+	if dirtyData.SpineFinding == "" {
+		e["spine_finding"] = "missing choice"
+	}
+	if dirtyData.OtherFinding != "" {
+		if dirtyData.OtherFindingText == "" {
+			e["other_finding_text"] = "missing choice"
+		}
+	}
+	if dirtyData.OverallLetterGrade == "" {
+		e["overall_letter_grade"] = "missing value"
+	}
 
 	if len(e) != 0 {
-		b, err := json.Marshal(e)
-		if err != nil { // Defensive code
-			return false, err.Error()
-		}
-		return false, string(b)
+		return httperror.NewForBadRequest(&e)
 	}
-	return true, ""
+	return nil
 }
 
 func (h *Handler) UpdateByID(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := r.Context()
 
-	requestData, err, errStatusCode := UnmarshalUpdateRequest(ctx, r)
-	if err != nil {
-		http.Error(w, err.Error(), errStatusCode)
-		return
-	}
-
-	err = h.Controller.UpdateByID(ctx, requestData)
+	data, err := UnmarshalUpdateRequest(ctx, r)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return
 	}
 
-	MarshalUpdateResponse(requestData, w)
+	err = h.Controller.UpdateByID(ctx, data)
+	if err != nil {
+		httperror.ResponseError(w, err)
+		return
+	}
+
+	MarshalUpdateResponse(data, w)
 }
 
 func MarshalUpdateResponse(res *sub_s.Submission, w http.ResponseWriter) {

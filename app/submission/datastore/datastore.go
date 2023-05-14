@@ -96,7 +96,7 @@ type SubmissionListResult struct {
 // SubmissionStorer Interface for submission.
 type SubmissionStorer interface {
 	Create(ctx context.Context, m *Submission) error
-	GetByID(ctx context.Context, id string) (*Submission, error)
+	GetByID(ctx context.Context, id primitive.ObjectID) (*Submission, error)
 	UpdateByID(ctx context.Context, m *Submission) error
 	ListByFilter(ctx context.Context, m *SubmissionListFilter) (*SubmissionListResult, error)
 	// //TODO: Add more...

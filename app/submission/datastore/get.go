@@ -4,12 +4,13 @@ import (
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/exp/slog"
 )
 
-func (impl SubmissionStorerImpl) GetByID(ctx context.Context, id string) (*Submission, error) {
-	filter := bson.D{{"_id", id}}
+func (impl SubmissionStorerImpl) GetByID(ctx context.Context, id primitive.ObjectID) (*Submission, error) {
+	filter := bson.M{"_id": id}
 
 	var result Submission
 	err := impl.Collection.FindOne(ctx, filter).Decode(&result)
