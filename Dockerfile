@@ -27,6 +27,9 @@ FROM alpine:latest
 # Copy only required data into this image
 COPY --from=build-env /app/cps-backend .
 
+# Copy all the static content necessary for this application to run.
+COPY --from=build-env /app/static ./static
+
 EXPOSE 8000
 
 # Run the server executable

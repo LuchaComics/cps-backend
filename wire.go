@@ -7,6 +7,7 @@ import (
 	"github.com/google/wire"
 
 	"github.com/LuchaComics/cps-backend/adapter/cache/redis"
+	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	"github.com/LuchaComics/cps-backend/adapter/storage/mongodb"
 	gateway_c "github.com/LuchaComics/cps-backend/app/gateway/controller"
 	submission_c "github.com/LuchaComics/cps-backend/app/submission/controller"
@@ -39,6 +40,7 @@ func InitializeEvent() Application {
 		password.NewProvider,
 		mongodb.NewStorage,
 		redis.NewCache,
+		pdfbuilder.NewCBFFBuilder,
 		user_s.NewDatastore,
 		user_c.NewController,
 		submission_s.NewDatastore,

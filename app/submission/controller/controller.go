@@ -2,10 +2,12 @@ package controller
 
 import (
 	"context"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 
+	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	"github.com/LuchaComics/cps-backend/config"
@@ -26,6 +28,7 @@ type SubmissionControllerImpl struct {
 	Logger           *slog.Logger
 	UUID             uuid.Provider
 	Password         password.Provider
+	CBFFBuilder      pdfbuilder.CBFFBuilder
 	SubmissionStorer submission_s.SubmissionStorer
 }
 
@@ -34,13 +37,21 @@ func NewController(
 	loggerp *slog.Logger,
 	uuidp uuid.Provider,
 	passwordp password.Provider,
+	cbffb pdfbuilder.CBFFBuilder,
 	sub_storer submission_s.SubmissionStorer,
 ) SubmissionController {
+
+	// FOR TESTING PURPOSES ONLY.
+	r := &pdfbuilder.CBFFBuilderRequestDTO{}
+	res, err := cbffb.GeneratePDF(r)
+	log.Println("===--->", res, err, "<---===")
+
 	s := &SubmissionControllerImpl{
 		Config:           appCfg,
 		Logger:           loggerp,
 		UUID:             uuidp,
 		Password:         passwordp,
+		CBFFBuilder:      cbffb,
 		SubmissionStorer: sub_storer,
 	}
 	s.Logger.Debug("submission controller initialization started...")

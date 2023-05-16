@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/LuchaComics/cps-backend/adapter/cache/redis"
+	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	"github.com/LuchaComics/cps-backend/adapter/storage/mongodb"
 	"github.com/LuchaComics/cps-backend/app/gateway/controller"
 	controller3 "github.com/LuchaComics/cps-backend/app/submission/controller"
@@ -44,8 +45,9 @@ func InitializeEvent() Application {
 	handler := gateway.NewHandler(gatewayController)
 	userController := controller2.NewController(conf, slogLogger, provider, passwordProvider, userStorer)
 	userHandler := user.NewHandler(userController)
+	cbffBuilder := pdfbuilder.NewCBFFBuilder(conf, slogLogger, provider)
 	submissionStorer := datastore2.NewDatastore(conf, slogLogger, client)
-	submissionController := controller3.NewController(conf, slogLogger, provider, passwordProvider, submissionStorer)
+	submissionController := controller3.NewController(conf, slogLogger, provider, passwordProvider, cbffBuilder, submissionStorer)
 	submissionHandler := submission.NewHandler(submissionController)
 	inputPortServer := http.NewInputPort(conf, slogLogger, middlewareMiddleware, handler, userHandler, submissionHandler)
 	application := NewApplication(slogLogger, inputPortServer)

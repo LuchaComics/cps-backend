@@ -25,3 +25,10 @@ tasks:
     cmds:
       - go clean -cache
       - go clean -modcache
+
+  deploy:
+    desc: The following `task` will build our project's containers and push them to the public registry
+    cmds:
+      - docker build -f ./Dockerfile -t rodolfossp/cps-backend:latest --platform linux/amd64 .
+      - docker tag rodolfossp/cps-backend:latest rodolfossp/cps-backend:latest
+      - docker push rodolfossp/cps-backend:latest

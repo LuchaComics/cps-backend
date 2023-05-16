@@ -7,10 +7,11 @@ import (
 )
 
 type Conf struct {
-	AppServer serverConf
-	DB        dbConfig
-	Cache     cacheConfig
-	AWS       awsConfig
+	AppServer  serverConf
+	DB         dbConfig
+	Cache      cacheConfig
+	AWS        awsConfig
+	PDFBuilder pdfBuilderConfig
 }
 
 type serverConf struct {
@@ -39,6 +40,11 @@ type awsConfig struct {
 	Endpoint   string `env:"CPS_BACKEND_AWS_ENDPOINT,required"`
 	Region     string `env:"CPS_BACKEND_AWS_REGION,required"`
 	BucketName string `env:"CPS_BACKEND_AWS_BUCKET_NAME,required"`
+}
+
+type pdfBuilderConfig struct {
+	CBFFTemplatePath  string `env:"CPS_BACKEND_PDF_BUILDER_CBFF_TEMPLATE_FILE_PATH,required"`
+	DataDirectoryPath string `env:"CPS_BACKEND_PDF_BUILDER_DATA_DIRECTORY_PATH,required"`
 }
 
 func New() *Conf {

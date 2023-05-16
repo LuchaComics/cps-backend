@@ -1,13 +1,24 @@
 # HOW TO USE:
-# The purpose of this docker-compose is to setup our application which is
-# dependent on the `MongoDB` database running concurrently with this
-# server for developer purposes. This configuration has hot-reloading activated.
-#
-# $ docker-compose -p cps -f dev.docker-compose.yml up   #
+# $ docker-compose -p cps -f docker-compose.yml up   #
 #
 
 version: '3.8'
 services:
+  caddy:
+    container_name: cps_backend_caddy
+    image: 'caddy:2-alpine'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - '$PWD/Caddyfile:/etc/caddy/Caddyfile'
+      - 'caddy_data:/data'
+      - 'caddy_config:/config'
+    networks:
+      - web
+      - caddy_internal
+
   # The purpose of this is to provide in-memory storage.
   cache:
     container_name: cps_redis
@@ -20,6 +31,8 @@ services:
       - cache_data:/data
     logging:
       driver: none
+    networks:
+      - caddy_internal
 
   # The purpose of this service is to store our application data.
   db:
@@ -32,27 +45,15 @@ services:
     restart: unless-stopped
     logging:
       driver: none
-
-  mongo-express:
-    container_name: cps_mongodb_admin
-    image: mongo-express
-    environment:
-        - ME_CONFIG_MONGODB_SERVER=db
-        - ME_CONFIG_MONGODB_PORT=27017
-    ports:
-        - '8081:8081'
-    depends_on:
-      - "db"
-    links:
-      - "db"
-    restart: unless-stopped
-    logging:
-      driver: none
+    networks:
+      - caddy_internal
 
   # The main application.
   app:
     container_name: cps_backend_app
+    image: 'rodolfossp/cps-backend:latest'
     stdin_open: true
+    restart: unless-stopped
     environment:
         CPS_BACKEND_IP: 0.0.0.0
         CPS_BACKEND_PORT: 8000
@@ -75,21 +76,28 @@ services:
         AWS_REGION: ${CPS_BACKEND_AWS_REGION}         # AWS SDK requires this exact name.
         CPS_BACKEND_PDF_BUILDER_CBFF_TEMPLATE_FILE_PATH: ${CPS_BACKEND_PDF_BUILDER_CBFF_TEMPLATE_FILE_PATH}
         CPS_BACKEND_PDF_BUILDER_DATA_DIRECTORY_PATH: ${CPS_BACKEND_PDF_BUILDER_DATA_DIRECTORY_PATH} # The directory to save our generated PDF files before we upload to S3.
-    build:
-      context: .
-      dockerfile: ./dev.Dockerfile
-    restart: unless-stopped
-    ports:
-      - "8000:8000"
     depends_on:
       - db
       - cache
     links:
       - db
       - cache
-    volumes: # Connect the local filesystem with the docker filesystem. DO NOT REMOVE.
-      - ./:/go/src/github.com/LuchaComics/cps-backend # IMPORTANT: Required for hotreload via `CompileDaemon`.
+    networks:
+      - caddy_internal
+
+networks:
+  web:
+    external: true
+  caddy_internal:
+    external: false
+    driver: bridge
 
 volumes:
-    mongodb_data:
-    cache_data:
+  mongodb_data:
+    external: true
+  cache_data:
+    external: true
+  caddy_data:
+    external: true
+  caddy_config:
+    external: true
