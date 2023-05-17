@@ -2,8 +2,6 @@ package controller
 
 import (
 	"context"
-	"log"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
@@ -42,41 +40,41 @@ func NewController(
 	sub_storer submission_s.SubmissionStorer,
 ) SubmissionController {
 
-	// FOR TESTING PURPOSES ONLY.
-	r := &pdfbuilder.CBFFBuilderRequestDTO{
-		ID:                                 primitive.NewObjectID(),
-		Date:                               time.Now(),
-		SeriesTitle:                        "Winter World",
-		IssueVol:                           "Vol 1",
-		IssueNo:                            "#1",
-		IssueCoverDate:                     "16/05/2000",
-		PublisherName:                      "Some publisher",
-		SpecialNotesLine1:                  "XXXXXXXXXXXXXXXXX",
-		SpecialNotesLine2:                  "XXXXXXXXXXXXXXXXX",
-		SpecialNotesLine3:                  "XXXXXXXXXXXXXXXXX",
-		SpecialNotesLine4:                  "XXXXXXXXXXXXXXXXX",
-		SpecialNotesLine5:                  "XXXXXXXXXXXXXXXXX",
-		GradingNotesLine1:                  "XXXXXXXXXXXXXXXXX",
-		GradingNotesLine2:                  "XXXXXXXXXXXXXXXXX",
-		GradingNotesLine3:                  "XXXXXXXXXXXXXXXXX",
-		GradingNotesLine4:                  "XXXXXXXXXXXXXXXXX",
-		GradingNotesLine5:                  "XXXXXXXXXXXXXXXXX",
-		CreasesFinding:                     "VF",
-		TearsFinding:                       "FN",
-		MissingPartsFinding:                "PR",
-		StainsFinding:                      "NM",
-		DistortionFinding:                  "NM",
-		PaperQualityFinding:                "VF",
-		SpineFinding:                       "FN",
-		CoverFinding:                       "VG",
-		ShowsSignsOfTamperingOrRestoration: true,
-		OverallLetterGrade:                 "VG",
-		UserFirstName:                      "Bartlomiej",
-		UserLastName:                       "Miks",
-		UserCompanyName:                    "Mika Software Corporation",
-	}
-	res, err := cbffb.GeneratePDF(r)
-	log.Println("===--->", res, err, "<---===")
+	// // FOR TESTING PURPOSES ONLY.
+	// r := &pdfbuilder.CBFFBuilderRequestDTO{
+	// 	ID:                                 primitive.NewObjectID(),
+	// 	SubmissionDate:                               time.Now(),
+	// 	SeriesTitle:                        "Winter World",
+	// 	IssueVol:                           "Vol 1",
+	// 	IssueNo:                            "#1",
+	// 	IssueCoverDate:                     "16/05/2000",
+	// 	PublisherName:                      "Some publisher",
+	// 	SpecialNotesLine1:                  "XXXXXXXXXXXXXXXXX",
+	// 	SpecialNotesLine2:                  "XXXXXXXXXXXXXXXXX",
+	// 	SpecialNotesLine3:                  "XXXXXXXXXXXXXXXXX",
+	// 	SpecialNotesLine4:                  "XXXXXXXXXXXXXXXXX",
+	// 	SpecialNotesLine5:                  "XXXXXXXXXXXXXXXXX",
+	// 	GradingNotesLine1:                  "XXXXXXXXXXXXXXXXX",
+	// 	GradingNotesLine2:                  "XXXXXXXXXXXXXXXXX",
+	// 	GradingNotesLine3:                  "XXXXXXXXXXXXXXXXX",
+	// 	GradingNotesLine4:                  "XXXXXXXXXXXXXXXXX",
+	// 	GradingNotesLine5:                  "XXXXXXXXXXXXXXXXX",
+	// 	CreasesFinding:                     "VF",
+	// 	TearsFinding:                       "FN",
+	// 	MissingPartsFinding:                "PR",
+	// 	StainsFinding:                      "NM",
+	// 	DistortionFinding:                  "NM",
+	// 	PaperQualityFinding:                "VF",
+	// 	SpineFinding:                       "FN",
+	// 	CoverFinding:                       "VG",
+	// 	ShowsSignsOfTamperingOrRestoration: true,
+	// 	OverallLetterGrade:                 "VG",
+	// 	UserFirstName:                      "Bartlomiej",
+	// 	UserLastName:                       "Miks",
+	// 	UserCompanyName:                    "Mika Software Corporation",
+	// }
+	// res, err := cbffb.GeneratePDF(r)
+	// log.Println("===--->", res, err, "<---===")
 
 	s := &SubmissionControllerImpl{
 		Config:           appCfg,

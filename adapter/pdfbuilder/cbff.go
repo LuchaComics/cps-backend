@@ -19,8 +19,9 @@ import (
 
 type CBFFBuilderRequestDTO struct {
 	ID                                 primitive.ObjectID `bson:"_id" json:"id"`
-	Date                               time.Time          `bson:"date" json:"date"`
-	Item                               string             `bson:"item" json:"item"` // Created by system.
+	Filename                           string             `bson:"filename" json:"filename"`
+	SubmissionDate                     time.Time          `bson:"submission_date" json:"submission_date"`
+	Item                               string             `bson:"item" json:"item"`
 	SeriesTitle                        string             `bson:"series_title" json:"series_title"`
 	IssueVol                           string             `bson:"issue_vol" json:"issue_vol"`
 	IssueNo                            string             `bson:"issue_no" json:"issue_no"`
@@ -110,11 +111,11 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	// ROW 1
 	pdf.SetXY(113, 39)
-	pdf.Cell(0, 0, fmt.Sprintf("%v", r.Date.Day())) // Day
+	pdf.Cell(0, 0, fmt.Sprintf("%v", r.SubmissionDate.Day())) // Day
 	pdf.SetXY(126, 39)
-	pdf.Cell(0, 0, fmt.Sprintf("%v", int(r.Date.Month()))) // Month (number)
+	pdf.Cell(0, 0, fmt.Sprintf("%v", int(r.SubmissionDate.Month()))) // Month (number)
 	pdf.SetXY(135, 39)
-	pdf.Cell(0, 0, fmt.Sprintf("%v", r.Date.Year())) // Day
+	pdf.Cell(0, 0, fmt.Sprintf("%v", r.SubmissionDate.Year())) // Day
 
 	// ROW 2
 	pdf.SetXY(82, 47)
@@ -154,52 +155,52 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	// ROW 1 - Creases
 	switch r.CreasesFinding {
-	case "PR":
+	case "pr":
 		pdf.SetXY(92, 75)
 		pdf.Cell(0, 0, "PR")
-	case "FR":
+	case "fr":
 		pdf.SetXY(110, 75)
 		pdf.Cell(0, 0, "FR")
-	case "GD":
+	case "gd":
 		pdf.SetXY(127, 75)
 		pdf.Cell(0, 0, "GD")
-	case "VG":
+	case "vg":
 		pdf.SetXY(144, 75)
 		pdf.Cell(0, 0, "VG")
-	case "FN":
+	case "fn":
 		pdf.SetXY(163, 75)
 		pdf.Cell(0, 0, "FN")
-	case "VF":
+	case "vf":
 		pdf.SetXY(180, 75)
 		pdf.Cell(0, 0, "VF")
-	case "NM":
+	case "nm":
 		pdf.SetXY(197, 75)
 		pdf.Cell(0, 0, "NM")
 	default:
-		return nil, errors.New("missing value for crease finding")
+		return nil, fmt.Errorf("missing value for crease finding with %v", r.CreasesFinding)
 	}
 
 	// ROW 2 - Tears
 	switch r.TearsFinding {
-	case "PR":
+	case "pr":
 		pdf.SetXY(92, 83)
 		pdf.Cell(0, 0, "PR")
-	case "FR":
+	case "fr":
 		pdf.SetXY(110, 83)
 		pdf.Cell(0, 0, "FR")
-	case "GD":
+	case "gd":
 		pdf.SetXY(127, 83)
 		pdf.Cell(0, 0, "GD")
-	case "VG":
+	case "vg":
 		pdf.SetXY(144, 83)
 		pdf.Cell(0, 0, "VG")
-	case "FN":
+	case "fn":
 		pdf.SetXY(163, 83)
 		pdf.Cell(0, 0, "FN")
-	case "VF":
+	case "vf":
 		pdf.SetXY(180, 83)
 		pdf.Cell(0, 0, "VF")
-	case "NM":
+	case "nm":
 		pdf.SetXY(197, 83)
 		pdf.Cell(0, 0, "NM")
 	default:
@@ -208,25 +209,25 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	// ROW 3 - Missing Parts
 	switch r.MissingPartsFinding {
-	case "PR":
+	case "pr":
 		pdf.SetXY(92, 91)
 		pdf.Cell(0, 0, "PR")
-	case "FR":
+	case "fr":
 		pdf.SetXY(110, 91)
 		pdf.Cell(0, 0, "FR")
-	case "GD":
+	case "gd":
 		pdf.SetXY(127, 91)
 		pdf.Cell(0, 0, "GD")
-	case "VG":
+	case "vg":
 		pdf.SetXY(144, 91)
 		pdf.Cell(0, 0, "VG")
-	case "FN":
+	case "fn":
 		pdf.SetXY(163, 91)
 		pdf.Cell(0, 0, "FN")
-	case "VF":
+	case "vf":
 		pdf.SetXY(180, 91)
 		pdf.Cell(0, 0, "VF")
-	case "NM":
+	case "nm":
 		pdf.SetXY(197, 91)
 		pdf.Cell(0, 0, "NM")
 	default:
@@ -235,25 +236,25 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	// ROW 4 - Stains / Marks / Substances
 	switch r.StainsFinding {
-	case "PR":
+	case "pr":
 		pdf.SetXY(92, 98)
 		pdf.Cell(0, 0, "PR")
-	case "FR":
+	case "fr":
 		pdf.SetXY(110, 98)
 		pdf.Cell(0, 0, "FR")
-	case "GD":
+	case "gd":
 		pdf.SetXY(127, 98)
 		pdf.Cell(0, 0, "GD")
-	case "VG":
+	case "vg":
 		pdf.SetXY(144, 98)
 		pdf.Cell(0, 0, "VG")
-	case "FN":
+	case "fn":
 		pdf.SetXY(163, 98)
 		pdf.Cell(0, 0, "FN")
-	case "VF":
+	case "vf":
 		pdf.SetXY(180, 98)
 		pdf.Cell(0, 0, "VF")
-	case "NM":
+	case "nm":
 		pdf.SetXY(197, 98)
 		pdf.Cell(0, 0, "NM")
 	default:
@@ -262,25 +263,25 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	// ROW 5 - Distortion / Colour
 	switch r.DistortionFinding {
-	case "PR":
+	case "pr":
 		pdf.SetXY(92, 106)
 		pdf.Cell(0, 0, "PR")
-	case "FR":
+	case "fr":
 		pdf.SetXY(110, 106)
 		pdf.Cell(0, 0, "FR")
-	case "GD":
+	case "gd":
 		pdf.SetXY(127, 106)
 		pdf.Cell(0, 0, "GD")
-	case "VG":
+	case "vg":
 		pdf.SetXY(144, 106)
 		pdf.Cell(0, 0, "VG")
-	case "FN":
+	case "fn":
 		pdf.SetXY(163, 106)
 		pdf.Cell(0, 0, "FN")
-	case "VF":
+	case "vf":
 		pdf.SetXY(180, 106)
 		pdf.Cell(0, 0, "VF")
-	case "NM":
+	case "nm":
 		pdf.SetXY(197, 106)
 		pdf.Cell(0, 0, "NM")
 	default:
@@ -289,25 +290,25 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	// ROW 6 - Paper Quality
 	switch r.PaperQualityFinding {
-	case "PR":
+	case "pr":
 		pdf.SetXY(92, 113)
 		pdf.Cell(0, 0, "PR")
-	case "FR":
+	case "fr":
 		pdf.SetXY(110, 113)
 		pdf.Cell(0, 0, "FR")
-	case "GD":
+	case "gd":
 		pdf.SetXY(127, 113)
 		pdf.Cell(0, 0, "GD")
-	case "VG":
+	case "vg":
 		pdf.SetXY(144, 113)
 		pdf.Cell(0, 0, "VG")
-	case "FN":
+	case "fn":
 		pdf.SetXY(163, 113)
 		pdf.Cell(0, 0, "FN")
-	case "VF":
+	case "vf":
 		pdf.SetXY(180, 113)
 		pdf.Cell(0, 0, "VF")
-	case "NM":
+	case "nm":
 		pdf.SetXY(197, 113)
 		pdf.Cell(0, 0, "NM")
 	default:
@@ -316,25 +317,25 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	// ROW 7 - Spine / Staples
 	switch r.SpineFinding {
-	case "PR":
+	case "pr":
 		pdf.SetXY(92, 121)
 		pdf.Cell(0, 0, "PR")
-	case "FR":
+	case "fr":
 		pdf.SetXY(110, 121)
 		pdf.Cell(0, 0, "FR")
-	case "GD":
+	case "gd":
 		pdf.SetXY(127, 121)
 		pdf.Cell(0, 0, "GD")
-	case "VG":
+	case "vg":
 		pdf.SetXY(144, 121)
 		pdf.Cell(0, 0, "VG")
-	case "FN":
+	case "fn":
 		pdf.SetXY(163, 121)
 		pdf.Cell(0, 0, "FN")
-	case "VF":
+	case "vf":
 		pdf.SetXY(180, 121)
 		pdf.Cell(0, 0, "VF")
-	case "NM":
+	case "nm":
 		pdf.SetXY(197, 121)
 		pdf.Cell(0, 0, "NM")
 	default:
@@ -343,25 +344,25 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	// ROW 8 - Cover (Front & Back)
 	switch r.CoverFinding {
-	case "PR":
+	case "pr":
 		pdf.SetXY(92, 129)
 		pdf.Cell(0, 0, "PR")
-	case "FR":
+	case "fr":
 		pdf.SetXY(110, 129)
 		pdf.Cell(0, 0, "FR")
-	case "GD":
+	case "gd":
 		pdf.SetXY(127, 129)
 		pdf.Cell(0, 0, "GD")
-	case "VG":
+	case "vg":
 		pdf.SetXY(144, 129)
 		pdf.Cell(0, 0, "VG")
-	case "FN":
+	case "fn":
 		pdf.SetXY(163, 129)
 		pdf.Cell(0, 0, "FN")
-	case "VF":
+	case "vf":
 		pdf.SetXY(180, 129)
 		pdf.Cell(0, 0, "VF")
-	case "NM":
+	case "nm":
 		pdf.SetXY(197, 129)
 		pdf.Cell(0, 0, "NM")
 	default:

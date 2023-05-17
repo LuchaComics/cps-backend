@@ -47,6 +47,9 @@ func ValidateCreateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.IssueCoverDate == "" {
 		e["issue_cover_date"] = "missing value"
 	}
+	if dirtyData.PublisherName == "" {
+		e["publisher_name"] = "missing choice"
+	}
 	if dirtyData.CreasesFinding == "" {
 		e["creases_finding"] = "missing choice"
 	}
@@ -68,10 +71,8 @@ func ValidateCreateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.SpineFinding == "" {
 		e["spine_finding"] = "missing choice"
 	}
-	if dirtyData.OtherFinding != "" {
-		if dirtyData.OtherFindingText == "" {
-			e["other_finding_text"] = "missing choice"
-		}
+	if dirtyData.CoverFinding == "" {
+		e["cover_finding"] = "missing choice"
 	}
 	if dirtyData.OverallLetterGrade == "" {
 		e["overall_letter_grade"] = "missing value"

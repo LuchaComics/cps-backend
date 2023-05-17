@@ -29,49 +29,59 @@ const (
 )
 
 type Submission struct {
-	ID                       primitive.ObjectID `bson:"_id" json:"id"`
-	CreatedTime              time.Time          `bson:"created_time,omitempty" json:"created_time,omitempty"`
-	ModifiedTime             time.Time          `bson:"modified_time,omitempty" json:"modified_time,omitempty"`
-	ServiceType              int8               `bson:"service_type" json:"service_type"`
-	State                    int8               `bson:"state" json:"state"`
-	Item                     string             `bson:"item" json:"item"` // Created by system.
-	SeriesTitle              string             `bson:"series_title" json:"series_title"`
-	IssueVol                 string             `bson:"issue_vol" json:"issue_vol"`
-	IssueNo                  string             `bson:"issue_no" json:"issue_no"`
-	IssueCoverDate           string             `bson:"issue_cover_date" json:"issue_cover_date"`
-	IssueSpecialDetails      string             `bson:"issue_special_details" json:"issue_special_details"`
-	CreasesFinding           string             `bson:"creases_finding" json:"creases_finding"`
-	TearsFinding             string             `bson:"tears_finding" json:"tears_finding"`
-	MissingPartsFinding      string             `bson:"missing_parts_finding" json:"missing_parts_finding"`
-	StainsFinding            string             `bson:"stains_finding" json:"stains_finding"`
-	DistortionFinding        string             `bson:"distortion_finding" json:"distortion_finding"`
-	PaperQualityFinding      string             `bson:"paper_quality_finding" json:"paper_quality_finding"`
-	SpineFinding             string             `bson:"spine_finding" json:"spine_finding"`
-	CoverFinding             string             `bson:"cover_finding" json:"cover_finding"`
-	OtherFinding             string             `bson:"other_finding" json:"other_finding"`
-	OtherFindingText         string             `bson:"other_finding_text" json:"other_finding_text"`
-	OverallLetterGrade       string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
-	UserID                   primitive.ObjectID `bson:"user_id" json:"user_id"`
-	UserFirstName            string             `bson:"user_first_name" json:"user_first_name"`
-	UserLastName             string             `bson:"user_last_name" json:"user_last_name"`
-	UserCompanyName          string             `bson:"user_company_name" json:"user_company_name"`
-	UserSignature            string             `bson:"user_signature" json:"user_signature"`
-	InspectorSignature       string             `bson:"inspector_signature" json:"inspector_signature"`
-	InspectorDate            time.Time          `bson:"inspector_date" json:"inspector_date"`
-	InspectorFirstName       string             `bson:"inspector_first_name" json:"inspector_first_name"`
-	InspectorLastName        string             `bson:"inspector_last_name" json:"inspector_last_name"`
-	InspectorCompany         string             `bson:"inspector_company_name" json:"inspector_company_name"`
-	SecondInspectorSignature string             `bson:"second_inspector_signature" json:"second_inspector_signature"`
-	SecondInspectorFirstName string             `bson:"second_inspector_first_name" json:"second_inspector_first_name"`
-	SecondInspectorLastName  string             `bson:"second_inspector_last_name" json:"second_inspector_last_name"`
-	SecondInspectorCompany   string             `bson:"second_inspector_company" json:"second_inspector_company"`
-	SecondInspectorDate      time.Time          `bson:"second_inspector_date" json:"second_inspector_date"`
-	ThirdInspectorSignature  string             `bson:"third_inspector_signature" json:"third_inspector_signature"`
-	ThirdInspectorFirstName  string             `bson:"third_inspector_first_name" json:"third_inspector_first_name"`
-	ThirdInspectorLastName   string             `bson:"third_inspector_last_name" json:"third_inspector_last_name"`
-	ThirdInspectorCompany    string             `bson:"third_inspector_company" json:"third_inspector_company"`
-	ThirdInspectorDate       time.Time          `bson:"third_inspector_date" json:"third_inspector_date"`
-	// Note: Add company logo.
+	ID                                 primitive.ObjectID `bson:"_id" json:"id"`
+	CreatedTime                        time.Time          `bson:"created_time,omitempty" json:"created_time,omitempty"`
+	ModifiedTime                       time.Time          `bson:"modified_time,omitempty" json:"modified_time,omitempty"`
+	ServiceType                        int8               `bson:"service_type" json:"service_type"`
+	State                              int8               `bson:"state" json:"state"`
+	SubmissionDate                     time.Time          `bson:"submission_date" json:"submission_date"`
+	Item                               string             `bson:"item" json:"item"` // Created by system.
+	SeriesTitle                        string             `bson:"series_title" json:"series_title"`
+	IssueVol                           string             `bson:"issue_vol" json:"issue_vol"`
+	IssueNo                            string             `bson:"issue_no" json:"issue_no"`
+	IssueCoverDate                     string             `bson:"issue_cover_date" json:"issue_cover_date"`
+	PublisherName                      string             `bson:"publisher_name" json:"publisher_name"`
+	SpecialNotesLine1                  string             `bson:"special_notes_line_1" json:"special_notes_line_1"`
+	SpecialNotesLine2                  string             `bson:"special_notes_line_2" json:"special_notes_line_2"`
+	SpecialNotesLine3                  string             `bson:"special_notes_line_3" json:"special_notes_line_3"`
+	SpecialNotesLine4                  string             `bson:"special_notes_line_4" json:"special_notes_line_4"`
+	SpecialNotesLine5                  string             `bson:"special_notes_line_5" json:"special_notes_line_5"`
+	GradingNotesLine1                  string             `bson:"grading_notes_line_1" json:"grading_notes_line_1"`
+	GradingNotesLine2                  string             `bson:"grading_notes_line_2" json:"grading_notes_line_2"`
+	GradingNotesLine3                  string             `bson:"grading_notes_line_3" json:"grading_notes_line_3"`
+	GradingNotesLine4                  string             `bson:"grading_notes_line_4" json:"grading_notes_line_4"`
+	GradingNotesLine5                  string             `bson:"grading_notes_line_5" json:"grading_notes_line_5"`
+	CreasesFinding                     string             `bson:"creases_finding" json:"creases_finding"`
+	TearsFinding                       string             `bson:"tears_finding" json:"tears_finding"`
+	MissingPartsFinding                string             `bson:"missing_parts_finding" json:"missing_parts_finding"`
+	StainsFinding                      string             `bson:"stains_finding" json:"stains_finding"`
+	DistortionFinding                  string             `bson:"distortion_finding" json:"distortion_finding"`
+	PaperQualityFinding                string             `bson:"paper_quality_finding" json:"paper_quality_finding"`
+	SpineFinding                       string             `bson:"spine_finding" json:"spine_finding"`
+	CoverFinding                       string             `bson:"cover_finding" json:"cover_finding"`
+	ShowsSignsOfTamperingOrRestoration bool               `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
+	OverallLetterGrade                 string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
+	UserID                             primitive.ObjectID `bson:"user_id" json:"user_id"`
+	UserFirstName                      string             `bson:"user_first_name" json:"user_first_name"`
+	UserLastName                       string             `bson:"user_last_name" json:"user_last_name"`
+	UserCompanyName                    string             `bson:"user_company_name" json:"user_company_name"`
+	UserSignature                      string             `bson:"user_signature" json:"user_signature"`
+	InspectorSignature                 string             `bson:"inspector_signature" json:"inspector_signature"`
+	InspectorDate                      time.Time          `bson:"inspector_date" json:"inspector_date"`
+	InspectorFirstName                 string             `bson:"inspector_first_name" json:"inspector_first_name"`
+	InspectorLastName                  string             `bson:"inspector_last_name" json:"inspector_last_name"`
+	InspectorCompany                   string             `bson:"inspector_company_name" json:"inspector_company_name"`
+	SecondInspectorSignature           string             `bson:"second_inspector_signature" json:"second_inspector_signature"`
+	SecondInspectorFirstName           string             `bson:"second_inspector_first_name" json:"second_inspector_first_name"`
+	SecondInspectorLastName            string             `bson:"second_inspector_last_name" json:"second_inspector_last_name"`
+	SecondInspectorCompany             string             `bson:"second_inspector_company" json:"second_inspector_company"`
+	SecondInspectorDate                time.Time          `bson:"second_inspector_date" json:"second_inspector_date"`
+	ThirdInspectorSignature            string             `bson:"third_inspector_signature" json:"third_inspector_signature"`
+	ThirdInspectorFirstName            string             `bson:"third_inspector_first_name" json:"third_inspector_first_name"`
+	ThirdInspectorLastName             string             `bson:"third_inspector_last_name" json:"third_inspector_last_name"`
+	ThirdInspectorCompany              string             `bson:"third_inspector_company" json:"third_inspector_company"`
+	ThirdInspectorDate                 time.Time          `bson:"third_inspector_date" json:"third_inspector_date"`
+	Filename                           string             `bson:"filename" json:"filename"`
 }
 
 type SubmissionListFilter struct {
