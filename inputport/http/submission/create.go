@@ -3,6 +3,7 @@ package submission
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
@@ -19,6 +20,7 @@ func UnmarshalCreateRequest(ctx context.Context, r *http.Request) (*sub_s.Submis
 	// to send a `400 Bad Request` errror message back to the client,
 	err := json.NewDecoder(r.Body).Decode(&requestData) // [1]
 	if err != nil {
+		log.Println(err)
 		return nil, httperror.NewForSingleField(http.StatusBadRequest, "non_field_error", "payload structure is wrong")
 	}
 

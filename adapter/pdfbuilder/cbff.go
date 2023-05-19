@@ -379,6 +379,8 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 		pdf.Cell(0, 0, "X")
 	}
 
+	pdf.SetFont("Helvetica", "B", 36)
+
 	// ROW 10 - Grading
 	pdf.SetXY(176, 153)
 	pdf.Cell(0, 0, r.OverallLetterGrade)
@@ -386,6 +388,8 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	//
 	// LEFT
 	//
+
+	pdf.SetFont("Helvetica", "B", 12)
 
 	// ROW 1 - Special Notes
 	pdf.SetXY(217, 75)
