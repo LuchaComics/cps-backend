@@ -14,7 +14,7 @@ import (
 	"github.com/LuchaComics/cps-backend/config/constants"
 )
 
-func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission) error {
+func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission) (*s_d.Submission, error) {
 	// Modify the submission based on role.
 	userRole, ok := ctx.Value(constants.SessionUserRole).(int8)
 	if ok {
@@ -46,7 +46,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	err := c.SubmissionStorer.Create(ctx, m)
 	if err != nil {
 		c.Logger.Error("database create error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 
 	// The next following lines of code will create the PDF file gnerator
@@ -90,21 +90,28 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	// file is saved remotely, we will have a connection to it through a "key"
 	// unique reference to the uploaded file.
 	path := fmt.Sprintf("uploads/%v", response.FileName)
-	key, err := c.S3.UploadContent(ctx, path, response.Content)
+	err = c.S3.UploadContent(ctx, path, response.Content)
 	if err != nil {
 		c.Logger.Error("s3 upload error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 
 	// The following will save the S3 key of our file upload into our record.
-	m.FileUploadS3Key = key
-	m.FileUploadS3Path = path
+	m.FileUploadS3ObjectKey = path
 	m.ModifiedTime = time.Now()
 
 	if err := c.SubmissionStorer.UpdateByID(ctx, m); err != nil {
 		c.Logger.Error("database update error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 
-	return err
+	// The following will generate a pre-signed URL so user can download the file.
+	downloadableURL, err := c.S3.GetDownloadablePresignedURL(ctx, m.FileUploadS3ObjectKey, time.Minute*15)
+	if err != nil {
+		c.Logger.Error("s3 presign error", slog.Any("error", err))
+		return nil, err
+	}
+	m.FileUploadDownloadableFileURL = downloadableURL
+
+	return m, nil
 }

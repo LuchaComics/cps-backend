@@ -82,8 +82,8 @@ type Submission struct {
 	ThirdInspectorCompany              string             `bson:"third_inspector_company" json:"third_inspector_company"`
 	ThirdInspectorDate                 time.Time          `bson:"third_inspector_date" json:"third_inspector_date"`
 	Filename                           string             `bson:"filename" json:"filename"`
-	FileUploadS3Key                    string             `bson:"file_upload_s3_key" json:"file_upload_s3_key"`
-	FileUploadS3Path                   string             `bson:"file_upload_s3_path" json:"file_upload_s3_path"`
+	FileUploadS3ObjectKey              string             `bson:"file_upload_s3_key" json:"file_upload_s3_object_key"`
+	FileUploadDownloadableFileURL      string
 }
 
 type SubmissionListFilter struct {

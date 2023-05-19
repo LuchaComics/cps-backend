@@ -17,7 +17,7 @@ import (
 
 // SubmissionController Interface for submission business logic controller.
 type SubmissionController interface {
-	Create(ctx context.Context, m *domain.Submission) error
+	Create(ctx context.Context, m *domain.Submission) (*domain.Submission, error)
 	GetByID(ctx context.Context, id primitive.ObjectID) (*domain.Submission, error)
 	UpdateByID(ctx context.Context, m *domain.Submission) error
 	ListByFilter(ctx context.Context, f *domain.SubmissionListFilter) (*domain.SubmissionListResult, error)

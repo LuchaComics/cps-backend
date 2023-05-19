@@ -93,7 +93,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Controller.Create(ctx, data)
+	data, err = h.Controller.Create(ctx, data)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return

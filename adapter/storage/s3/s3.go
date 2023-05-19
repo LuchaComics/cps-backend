@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -19,15 +20,18 @@ import (
 )
 
 type S3Storager interface {
-	UploadContent(ctx context.Context, path string, content []byte) (string, error)
+	UploadContent(ctx context.Context, objectKey string, content []byte) error
 	BucketExists(ctx context.Context, bucketName string) (bool, error)
+	GetDownloadablePresignedURL(ctx context.Context, key string, duration time.Duration) (string, error)
+	GetPresignedURL(ctx context.Context, key string, duration time.Duration) (string, error)
 }
 
 type s3Storager struct {
-	S3Client   *s3.Client
-	UUID       uuid.Provider
-	Logger     *slog.Logger
-	BucketName string
+	S3Client      *s3.Client
+	PresignClient *s3.PresignClient
+	UUID          uuid.Provider
+	Logger        *slog.Logger
+	BucketName    string
 }
 
 // NewStorage connects to a specific S3 bucket instance and returns a connected
@@ -60,10 +64,11 @@ func NewStorage(appConf *c.Conf, logger *slog.Logger, uuidp uuid.Provider) S3Sto
 
 	// Create our storage handler.
 	s3Storage := &s3Storager{
-		S3Client:   s3Client,
-		Logger:     logger,
-		UUID:       uuidp,
-		BucketName: appConf.AWS.BucketName,
+		S3Client:      s3Client,
+		PresignClient: s3.NewPresignClient(s3Client),
+		Logger:        logger,
+		UUID:          uuidp,
+		BucketName:    appConf.AWS.BucketName,
 	}
 
 	// STEP 4: Connect to the s3 bucket instance and confirm that bucket exists.
@@ -79,17 +84,16 @@ func NewStorage(appConf *c.Conf, logger *slog.Logger, uuidp uuid.Provider) S3Sto
 	return s3Storage
 }
 
-func (s *s3Storager) UploadContent(ctx context.Context, path string, content []byte) (string, error) {
-	objectKey := s.UUID.NewUUID()
+func (s *s3Storager) UploadContent(ctx context.Context, objectKey string, content []byte) error {
 	_, err := s.S3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(s.BucketName),
-		Key:    aws.String(path),
+		Key:    aws.String(objectKey),
 		Body:   bytes.NewReader(content),
 	})
 	if err != nil {
-		return "", err
+		return err
 	}
-	return objectKey, nil
+	return nil
 }
 
 func (s *s3Storager) BucketExists(ctx context.Context, bucketName string) (bool, error) {
@@ -115,4 +119,37 @@ func (s *s3Storager) BucketExists(ctx context.Context, bucketName string) (bool,
 	}
 
 	return exists, err
+}
+
+func (s *s3Storager) GetDownloadablePresignedURL(ctx context.Context, key string, duration time.Duration) (string, error) {
+	// DEVELOPERS NOTE:
+	// AWS S3 Bucket — presigned URL APIs with Go (2022) via https://ronen-niv.medium.com/aws-s3-handling-presigned-urls-2718ab247d57
+
+	presignedUrl, err := s.PresignClient.PresignGetObject(context.Background(),
+		&s3.GetObjectInput{
+			Bucket:                     aws.String(s.BucketName),
+			Key:                        aws.String(key),
+			ResponseContentDisposition: aws.String("attachment"), // This field allows the file to download it directly from your browser
+		},
+		s3.WithPresignExpires(duration))
+	if err != nil {
+		return "", err
+	}
+	return presignedUrl.URL, nil
+}
+
+func (s *s3Storager) GetPresignedURL(ctx context.Context, objectKey string, duration time.Duration) (string, error) {
+	// DEVELOPERS NOTE:
+	// AWS S3 Bucket — presigned URL APIs with Go (2022) via https://ronen-niv.medium.com/aws-s3-handling-presigned-urls-2718ab247d57
+
+	presignedUrl, err := s.PresignClient.PresignGetObject(context.Background(),
+		&s3.GetObjectInput{
+			Bucket: aws.String(s.BucketName),
+			Key:    aws.String(objectKey),
+		},
+		s3.WithPresignExpires(duration))
+	if err != nil {
+		return "", err
+	}
+	return presignedUrl.URL, nil
 }
