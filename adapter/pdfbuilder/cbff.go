@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -155,7 +156,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	pdf.SetFont("Helvetica", "B", 14) // This controls the next text.
 
 	// ROW 1 - Creases
-	switch r.CreasesFinding {
+	switch strings.ToLower(r.CreasesFinding) {
 	case "pr":
 		pdf.SetXY(92, 75)
 		pdf.Cell(0, 0, "PR")
@@ -182,7 +183,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	}
 
 	// ROW 2 - Tears
-	switch r.TearsFinding {
+	switch strings.ToLower(r.TearsFinding) {
 	case "pr":
 		pdf.SetXY(92, 83)
 		pdf.Cell(0, 0, "PR")
@@ -209,7 +210,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	}
 
 	// ROW 3 - Missing Parts
-	switch r.MissingPartsFinding {
+	switch strings.ToLower(r.MissingPartsFinding) {
 	case "pr":
 		pdf.SetXY(92, 91)
 		pdf.Cell(0, 0, "PR")
@@ -236,7 +237,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	}
 
 	// ROW 4 - Stains / Marks / Substances
-	switch r.StainsFinding {
+	switch strings.ToLower(r.StainsFinding) {
 	case "pr":
 		pdf.SetXY(92, 98)
 		pdf.Cell(0, 0, "PR")
@@ -263,7 +264,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	}
 
 	// ROW 5 - Distortion / Colour
-	switch r.DistortionFinding {
+	switch strings.ToLower(r.DistortionFinding) {
 	case "pr":
 		pdf.SetXY(92, 106)
 		pdf.Cell(0, 0, "PR")
@@ -290,7 +291,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	}
 
 	// ROW 6 - Paper Quality
-	switch r.PaperQualityFinding {
+	switch strings.ToLower(r.PaperQualityFinding) {
 	case "pr":
 		pdf.SetXY(92, 113)
 		pdf.Cell(0, 0, "PR")
@@ -317,7 +318,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	}
 
 	// ROW 7 - Spine / Staples
-	switch r.SpineFinding {
+	switch strings.ToLower(r.SpineFinding) {
 	case "pr":
 		pdf.SetXY(92, 121)
 		pdf.Cell(0, 0, "PR")
@@ -344,7 +345,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	}
 
 	// ROW 8 - Cover (Front & Back)
-	switch r.CoverFinding {
+	switch strings.ToLower(r.CoverFinding) {
 	case "pr":
 		pdf.SetXY(92, 129)
 		pdf.Cell(0, 0, "PR")
@@ -379,10 +380,10 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 		pdf.Cell(0, 0, "X")
 	}
 
-	pdf.SetFont("Helvetica", "B", 36)
+	pdf.SetFont("Helvetica", "B", 40)
 
 	// ROW 10 - Grading
-	pdf.SetXY(176, 153)
+	pdf.SetXY(171, 153.5)
 	pdf.Cell(0, 0, r.OverallLetterGrade)
 
 	//

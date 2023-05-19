@@ -46,7 +46,7 @@ func NewController(
 	// // FOR TESTING PURPOSES ONLY.
 	// r := &pdfbuilder.CBFFBuilderRequestDTO{
 	// 	ID:                                 primitive.NewObjectID(),
-	// 	SubmissionDate:                               time.Now(),
+	// 	SubmissionDate:                     time.Now(),
 	// 	SeriesTitle:                        "Winter World",
 	// 	IssueVol:                           "Vol 1",
 	// 	IssueNo:                            "#1",
