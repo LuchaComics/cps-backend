@@ -58,6 +58,8 @@ func NewController(
 }
 
 func (impl *GatewayControllerImpl) GetUserBySessionID(ctx context.Context, sessionID string) (*user_s.User, error) {
+	impl.Logger.Debug("gateway controller initialization started...")
+
 	userBytes, err := impl.Cache.Get(ctx, sessionID)
 	if err != nil {
 		return nil, err
@@ -72,5 +74,7 @@ func (impl *GatewayControllerImpl) GetUserBySessionID(ctx context.Context, sessi
 		impl.Logger.Error("unmarshalling failed", slog.Any("err", err))
 		return nil, err
 	}
+
+	impl.Logger.Debug("gateway controller initialized")
 	return &user, nil
 }

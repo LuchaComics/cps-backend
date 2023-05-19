@@ -7,6 +7,7 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
+	s3_storage "github.com/LuchaComics/cps-backend/adapter/storage/s3"
 	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	"github.com/LuchaComics/cps-backend/config"
@@ -26,6 +27,7 @@ type SubmissionControllerImpl struct {
 	Config           *config.Conf
 	Logger           *slog.Logger
 	UUID             uuid.Provider
+	S3               s3_storage.S3Storager
 	Password         password.Provider
 	CBFFBuilder      pdfbuilder.CBFFBuilder
 	SubmissionStorer submission_s.SubmissionStorer
@@ -35,6 +37,7 @@ func NewController(
 	appCfg *config.Conf,
 	loggerp *slog.Logger,
 	uuidp uuid.Provider,
+	s3 s3_storage.S3Storager,
 	passwordp password.Provider,
 	cbffb pdfbuilder.CBFFBuilder,
 	sub_storer submission_s.SubmissionStorer,
@@ -80,6 +83,7 @@ func NewController(
 		Config:           appCfg,
 		Logger:           loggerp,
 		UUID:             uuidp,
+		S3:               s3,
 		Password:         passwordp,
 		CBFFBuilder:      cbffb,
 		SubmissionStorer: sub_storer,

@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -50,6 +49,8 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		return err
 	}
 
+	// The next following lines of code will create the PDF file gnerator
+	// request to be submitted into our PDF file generator to generate the data.
 	r := &pdfbuilder.CBFFBuilderRequestDTO{
 		ID:                                 m.ID,
 		Filename:                           fmt.Sprintf("%v.pdf", m.ID.Hex()),
@@ -83,8 +84,27 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		UserLastName:                       m.UserLastName,
 		UserCompanyName:                    m.UserCompanyName,
 	}
-	res, err := c.CBFFBuilder.GeneratePDF(r)
-	log.Println("===--->", res, err, "<---===") //TODO: IMPL SAVING TO S3.
+	response, err := c.CBFFBuilder.GeneratePDF(r)
+
+	// The next few lines will upload our PDF to our remote storage. Once the
+	// file is saved remotely, we will have a connection to it through a "key"
+	// unique reference to the uploaded file.
+	path := fmt.Sprintf("uploads/%v", response.FileName)
+	key, err := c.S3.UploadContent(ctx, path, response.Content)
+	if err != nil {
+		c.Logger.Error("s3 upload error", slog.Any("error", err))
+		return err
+	}
+
+	// The following will save the S3 key of our file upload into our record.
+	m.FileUploadS3Key = key
+	m.FileUploadS3Path = path
+	m.ModifiedTime = time.Now()
+
+	if err := c.SubmissionStorer.UpdateByID(ctx, m); err != nil {
+		c.Logger.Error("database update error", slog.Any("error", err))
+		return err
+	}
 
 	return err
 }

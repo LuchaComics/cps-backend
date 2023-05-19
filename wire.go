@@ -9,6 +9,7 @@ import (
 	"github.com/LuchaComics/cps-backend/adapter/cache/redis"
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	"github.com/LuchaComics/cps-backend/adapter/storage/mongodb"
+	s3_storage "github.com/LuchaComics/cps-backend/adapter/storage/s3"
 	gateway_c "github.com/LuchaComics/cps-backend/app/gateway/controller"
 	submission_c "github.com/LuchaComics/cps-backend/app/submission/controller"
 	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
@@ -39,6 +40,7 @@ func InitializeEvent() Application {
 		jwt.NewProvider,
 		password.NewProvider,
 		mongodb.NewStorage,
+		s3_storage.NewStorage,
 		redis.NewCache,
 		pdfbuilder.NewCBFFBuilder,
 		user_s.NewDatastore,

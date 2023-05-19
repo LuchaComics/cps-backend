@@ -53,6 +53,7 @@ type CBFFBuilderRequestDTO struct {
 }
 type CBFFBuilderResponseDTO struct {
 	FileName string `json:"file_name"`
+	FilePath string `json:"file_path"`
 	Content  []byte `json:"content"`
 }
 
@@ -458,6 +459,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	return &CBFFBuilderResponseDTO{
 		FileName: fileName,
+		FilePath: filePath,
 		Content:  bin,
 	}, err
 }
