@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
@@ -64,6 +63,11 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		return err
 	}
 
+	// Delete previous record.
+	// (TODO)
+
+	// The next following lines of code will create the PDF file gnerator
+	// request to be submitted into our PDF file generator to generate the data.
 	r := &pdfbuilder.CBFFBuilderRequestDTO{
 		ID:                                 ns.ID,
 		Filename:                           fmt.Sprintf("%v.pdf", ns.ID.Hex()),
@@ -97,8 +101,34 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		UserLastName:                       ns.UserLastName,
 		UserCompanyName:                    ns.UserCompanyName,
 	}
-	res, err := c.CBFFBuilder.GeneratePDF(r)
-	log.Println("===--->", res, err, "<---===")
+	response, err := c.CBFFBuilder.GeneratePDF(r)
 
-	return err
+	// The next few lines will upload our PDF to our remote storage. Once the
+	// file is saved remotely, we will have a connection to it through a "key"
+	// unique reference to the uploaded file.
+	path := fmt.Sprintf("uploads/%v", response.FileName)
+	err = c.S3.UploadContent(ctx, path, response.Content)
+	if err != nil {
+		c.Logger.Error("s3 upload error", slog.Any("error", err))
+		return err
+	}
+
+	// The following will save the S3 key of our file upload into our record.
+	os.FileUploadS3ObjectKey = path
+	os.ModifiedTime = time.Now()
+
+	if err := c.SubmissionStorer.UpdateByID(ctx, os); err != nil {
+		c.Logger.Error("database update error", slog.Any("error", err))
+		return err
+	}
+
+	// The following will generate a pre-signed URL so user can download the file.
+	downloadableURL, err := c.S3.GetDownloadablePresignedURL(ctx, os.FileUploadS3ObjectKey, time.Minute*15)
+	if err != nil {
+		c.Logger.Error("s3 presign error", slog.Any("error", err))
+		return err
+	}
+	os.FileUploadDownloadableFileURL = downloadableURL
+
+	return nil
 }
