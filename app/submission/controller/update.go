@@ -2,7 +2,9 @@ package controller
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	go_os "os"
 	"time"
 
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
@@ -63,8 +65,11 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		return err
 	}
 
-	// Delete previous record.
-	// (TODO)
+	// Delete previous record from remote storage.
+	if err := c.S3.DeleteByKeys(ctx, []string{os.FileUploadS3ObjectKey}); err != nil {
+		c.Logger.Warn("s3 delete by keys error", slog.Any("error", err))
+		// Continue even if we get an s3 error...
+	}
 
 	// The next following lines of code will create the PDF file gnerator
 	// request to be submitted into our PDF file generator to generate the data.
@@ -102,6 +107,14 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		UserCompanyName:                    ns.UserCompanyName,
 	}
 	response, err := c.CBFFBuilder.GeneratePDF(r)
+	if err != nil {
+		c.Logger.Error("generate pdf error", slog.Any("error", err))
+		return err
+	}
+	if response == nil {
+		c.Logger.Error("generate pdf error does not return a response")
+		return errors.New("no response from pdf generator")
+	}
 
 	// The next few lines will upload our PDF to our remote storage. Once the
 	// file is saved remotely, we will have a connection to it through a "key"
@@ -129,6 +142,12 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		return err
 	}
 	os.FileUploadDownloadableFileURL = downloadableURL
+
+	// Removing local file from the directory and don't do anything if we have errors.
+	if err := go_os.Remove(response.FilePath); err != nil {
+		c.Logger.Warn("removing local file error", slog.Any("error", err))
+		// Just continue even if we get an error...
+	}
 
 	return nil
 }

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"log"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
@@ -12,10 +11,12 @@ func (impl *SubmissionControllerImpl) DeleteByID(ctx context.Context, id primiti
 	// STEP 1: Lookup the record or error.
 	submission, err := impl.GetByID(ctx, id)
 	if err != nil {
-		log.Fatal("GetByID:", err)
+		impl.Logger.Error("database get by id error", slog.Any("error", err))
+		return err
 	}
 	if submission == nil {
-		log.Fatal("GetByID: null")
+		impl.Logger.Error("database returns nothing from get by id")
+		return err
 	}
 
 	// STEP 2: Delete from remote storage.
