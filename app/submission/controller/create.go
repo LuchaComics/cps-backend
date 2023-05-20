@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -121,6 +122,12 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		return nil, err
 	}
 	m.FileUploadDownloadableFileURL = downloadableURL
+
+	// Removing local file from the directory and don't do anything if we have errors.
+	if err := os.Remove(response.FilePath); err != nil {
+		c.Logger.Warn("removing local file error", slog.Any("error", err))
+		// Just continue even if we get an error...
+	}
 
 	return m, nil
 }
