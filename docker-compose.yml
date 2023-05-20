@@ -82,6 +82,8 @@ services:
     links:
       - db
       - cache
+    volumes:
+      - app_data:/
     networks:
       - caddy_internal
 
@@ -93,6 +95,8 @@ networks:
     driver: bridge
 
 volumes:
+  app_data:
+    external: true
   mongodb_data:
     external: true
   cache_data:

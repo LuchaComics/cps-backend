@@ -72,7 +72,7 @@ func ValidateUpdateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.SpineFinding == "" {
 		e["spine_finding"] = "missing choice"
 	}
-	if dirtyData.CoverFinding != "" {
+	if dirtyData.CoverFinding == "" {
 		e["cover_finding"] = "missing choice"
 	}
 	if dirtyData.OverallLetterGrade == "" {
