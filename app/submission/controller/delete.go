@@ -22,7 +22,9 @@ func (impl *SubmissionControllerImpl) DeleteByID(ctx context.Context, id primiti
 	// STEP 2: Delete from remote storage.
 	if err := impl.S3.DeleteByKeys(ctx, []string{submission.FileUploadS3ObjectKey}); err != nil {
 		impl.Logger.Warn("s3 delete by keys error", slog.Any("error", err))
-		// Continue even if we get an s3 error...
+		// Do not return an error, simply continue this function as there might
+		// be a case were the file was removed on the s3 bucket by ourselves
+		// or some other reason.
 	}
 
 	// STEP 3: Delete from database.

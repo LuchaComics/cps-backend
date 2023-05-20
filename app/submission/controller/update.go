@@ -68,7 +68,9 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	// Delete previous record from remote storage.
 	if err := c.S3.DeleteByKeys(ctx, []string{os.FileUploadS3ObjectKey}); err != nil {
 		c.Logger.Warn("s3 delete by keys error", slog.Any("error", err))
-		// Continue even if we get an s3 error...
+		// Do not return an error, simply continue this function as there might
+		// be a case were the file was removed on the s3 bucket by ourselves
+		// or some other reason.
 	}
 
 	// The next following lines of code will create the PDF file gnerator
