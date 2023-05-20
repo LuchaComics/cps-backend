@@ -384,7 +384,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	// ROW 10 - Grading
 	pdf.SetXY(171, 153.5)
-	pdf.Cell(0, 0, r.OverallLetterGrade)
+	pdf.Cell(0, 0, strings.ToUpper(r.OverallLetterGrade))
 
 	//
 	// LEFT
