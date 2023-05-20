@@ -111,6 +111,7 @@ type SubmissionStorer interface {
 	GetByID(ctx context.Context, id primitive.ObjectID) (*Submission, error)
 	UpdateByID(ctx context.Context, m *Submission) error
 	ListByFilter(ctx context.Context, m *SubmissionListFilter) (*SubmissionListResult, error)
+	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 	// //TODO: Add more...
 }
 

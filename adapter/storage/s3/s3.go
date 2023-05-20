@@ -24,6 +24,7 @@ type S3Storager interface {
 	BucketExists(ctx context.Context, bucketName string) (bool, error)
 	GetDownloadablePresignedURL(ctx context.Context, key string, duration time.Duration) (string, error)
 	GetPresignedURL(ctx context.Context, key string, duration time.Duration) (string, error)
+	DeleteByKeys(ctx context.Context, key []string) error
 }
 
 type s3Storager struct {
@@ -152,4 +153,19 @@ func (s *s3Storager) GetPresignedURL(ctx context.Context, objectKey string, dura
 		return "", err
 	}
 	return presignedUrl.URL, nil
+}
+
+func (s *s3Storager) DeleteByKeys(ctx context.Context, objectKeys []string) error {
+	var objectIds []types.ObjectIdentifier
+	for _, key := range objectKeys {
+		objectIds = append(objectIds, types.ObjectIdentifier{Key: aws.String(key)})
+	}
+	_, err := s.S3Client.DeleteObjects(ctx, &s3.DeleteObjectsInput{
+		Bucket: aws.String(s.BucketName),
+		Delete: &types.Delete{Objects: objectIds},
+	})
+	if err != nil {
+		log.Printf("Couldn't delete objects from bucket %v. Here's why: %v\n", s.BucketName, err)
+	}
+	return err
 }
