@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -85,6 +86,14 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		UserCompanyName:                    m.UserCompanyName,
 	}
 	response, err := c.CBFFBuilder.GeneratePDF(r)
+	if err != nil {
+		c.Logger.Error("generate pdf error", slog.Any("error", err))
+		return nil, err
+	}
+	if response == nil {
+		c.Logger.Error("generate pdf error does not return a response")
+		return nil, errors.New("no response from pdf generator")
+	}
 
 	// The next few lines will upload our PDF to our remote storage. Once the
 	// file is saved remotely, we will have a connection to it through a "key"

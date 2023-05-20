@@ -156,6 +156,9 @@ func (s *s3Storager) GetPresignedURL(ctx context.Context, objectKey string, dura
 }
 
 func (s *s3Storager) DeleteByKeys(ctx context.Context, objectKeys []string) error {
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+
 	var objectIds []types.ObjectIdentifier
 	for _, key := range objectKeys {
 		objectIds = append(objectIds, types.ObjectIdentifier{Key: aws.String(key)})
