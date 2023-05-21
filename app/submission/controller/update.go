@@ -34,6 +34,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	os.IssueNo = ns.IssueNo
 	os.IssueCoverDate = ns.IssueCoverDate
 	os.PublisherName = ns.PublisherName
+	os.PublisherNameOther = ns.PublisherNameOther
 	os.SpecialNotesLine1 = ns.SpecialNotesLine1
 	os.SpecialNotesLine2 = ns.SpecialNotesLine2
 	os.SpecialNotesLine3 = ns.SpecialNotesLine3

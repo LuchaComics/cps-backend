@@ -50,6 +50,8 @@ func ValidateUpdateRequest(dirtyData *sub_s.Submission) error {
 	}
 	if dirtyData.PublisherName == "" {
 		e["publisher_name"] = "missing choice"
+	} else if dirtyData.PublisherName == "Other" && dirtyData.PublisherNameOther == "" {
+		e["publisher_name_other"] = "missing choice"
 	}
 	if dirtyData.CreasesFinding == "" {
 		e["creases_finding"] = "missing choice"
