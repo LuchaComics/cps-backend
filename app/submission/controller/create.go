@@ -80,7 +80,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		PaperQualityFinding:                m.PaperQualityFinding,
 		SpineFinding:                       m.SpineFinding,
 		CoverFinding:                       m.CoverFinding,
-		ShowsSignsOfTamperingOrRestoration: m.ShowsSignsOfTamperingOrRestoration,
+		ShowsSignsOfTamperingOrRestoration: m.ShowsSignsOfTamperingOrRestoration == 1,
 		OverallLetterGrade:                 m.OverallLetterGrade,
 		UserFirstName:                      m.UserFirstName,
 		UserLastName:                       m.UserLastName,

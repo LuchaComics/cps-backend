@@ -79,6 +79,15 @@ func ValidateCreateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.OverallLetterGrade == "" {
 		e["overall_letter_grade"] = "missing value"
 	}
+	if dirtyData.OverallGrade <= 0 {
+		e["overall_grade"] = "missing value"
+	}
+	if dirtyData.OverallGrade > 10 {
+		e["overall_grade"] = "value must be less then or equal to 10"
+	}
+	if dirtyData.ShowsSignsOfTamperingOrRestoration != sub_s.YesItShowsSignsOfTamperingOrRestoration && dirtyData.ShowsSignsOfTamperingOrRestoration != sub_s.NoItDoesNotShowsSignsOfTamperingOrRestoration {
+		e["shows_signs_of_tampering_or_restoration"] = "missing value"
+	}
 
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)

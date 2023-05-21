@@ -12,20 +12,22 @@ import (
 )
 
 const (
-	SubmissionPendingState        = 1
-	SubmissionActiveState         = 2
-	SubmissionErrorState          = 3
-	SubmissionInactiveState       = 4
-	PreScreeningServiceType       = 1
-	PedigreeServiceType           = 2
-	CPSCapsuleYougradeServiceType = 3
-	PoorFinding                   = 1
-	FairFinding                   = 2
-	GoodFinding                   = 3
-	VeryGoodFinding               = 4
-	FineFinding                   = 5
-	VeryFineFinding               = 6
-	NearMintFinding               = 7
+	SubmissionPendingState                        = 1
+	SubmissionActiveState                         = 2
+	SubmissionErrorState                          = 3
+	SubmissionInactiveState                       = 4
+	PreScreeningServiceType                       = 1
+	PedigreeServiceType                           = 2
+	CPSCapsuleYougradeServiceType                 = 3
+	PoorFinding                                   = 1
+	FairFinding                                   = 2
+	GoodFinding                                   = 3
+	VeryGoodFinding                               = 4
+	FineFinding                                   = 5
+	VeryFineFinding                               = 6
+	NearMintFinding                               = 7
+	YesItShowsSignsOfTamperingOrRestoration       = 1
+	NoItDoesNotShowsSignsOfTamperingOrRestoration = 2
 )
 
 type Submission struct {
@@ -59,8 +61,9 @@ type Submission struct {
 	PaperQualityFinding                string             `bson:"paper_quality_finding" json:"paper_quality_finding"`
 	SpineFinding                       string             `bson:"spine_finding" json:"spine_finding"`
 	CoverFinding                       string             `bson:"cover_finding" json:"cover_finding"`
-	ShowsSignsOfTamperingOrRestoration bool               `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
+	ShowsSignsOfTamperingOrRestoration int8               `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
 	OverallLetterGrade                 string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
+	OverallGrade                       float64            `bson:"overall_grade" json:"overall_grade"`
 	UserID                             primitive.ObjectID `bson:"user_id" json:"user_id"`
 	UserFirstName                      string             `bson:"user_first_name" json:"user_first_name"`
 	UserLastName                       string             `bson:"user_last_name" json:"user_last_name"`

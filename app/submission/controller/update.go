@@ -102,7 +102,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		PaperQualityFinding:                ns.PaperQualityFinding,
 		SpineFinding:                       ns.SpineFinding,
 		CoverFinding:                       ns.CoverFinding,
-		ShowsSignsOfTamperingOrRestoration: ns.ShowsSignsOfTamperingOrRestoration,
+		ShowsSignsOfTamperingOrRestoration: ns.ShowsSignsOfTamperingOrRestoration == 1,
 		OverallLetterGrade:                 ns.OverallLetterGrade,
 		UserFirstName:                      ns.UserFirstName,
 		UserLastName:                       ns.UserLastName,
