@@ -54,7 +54,10 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	os.SpineFinding = ns.SpineFinding
 	os.CoverFinding = ns.CoverFinding
 	os.ShowsSignsOfTamperingOrRestoration = ns.ShowsSignsOfTamperingOrRestoration
+	os.GradingScale = ns.GradingScale
 	os.OverallLetterGrade = ns.OverallLetterGrade
+	os.OverallNumberGrade = ns.OverallNumberGrade
+	os.CpsPercentageGrade = ns.CpsPercentageGrade
 	os.UserFirstName = ns.UserFirstName
 	os.UserLastName = ns.UserLastName
 	os.UserCompanyName = ns.UserCompanyName

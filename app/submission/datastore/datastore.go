@@ -28,6 +28,9 @@ const (
 	NearMintFinding                               = 7
 	YesItShowsSignsOfTamperingOrRestoration       = 1
 	NoItDoesNotShowsSignsOfTamperingOrRestoration = 2
+	LetterGradeScale                              = 1
+	NumberGradeScale                              = 2
+	CPSPercentageGradingScale                     = 3
 )
 
 type Submission struct {
@@ -63,8 +66,10 @@ type Submission struct {
 	SpineFinding                       string             `bson:"spine_finding" json:"spine_finding"`
 	CoverFinding                       string             `bson:"cover_finding" json:"cover_finding"`
 	ShowsSignsOfTamperingOrRestoration int8               `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
+	GradingScale                       int8               `bson:"grading_scale" json:"grading_scale"`
 	OverallLetterGrade                 string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
-	OverallGrade                       float64            `bson:"overall_grade" json:"overall_grade"`
+	OverallNumberGrade                 float64            `bson:"overall_number_grade" json:"overall_number_grade"`
+	CpsPercentageGrade                 float64            `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
 	UserID                             primitive.ObjectID `bson:"user_id" json:"user_id"`
 	UserFirstName                      string             `bson:"user_first_name" json:"user_first_name"`
 	UserLastName                       string             `bson:"user_last_name" json:"user_last_name"`

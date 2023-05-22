@@ -77,16 +77,19 @@ func ValidateUpdateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.CoverFinding == "" {
 		e["cover_finding"] = "missing choice"
 	}
-	if dirtyData.OverallLetterGrade == "" {
-		e["overall_letter_grade"] = "missing value"
+	if dirtyData.GradingScale <= 0 || dirtyData.GradingScale > 3 {
+		e["grading_scale"] = "missing choice"
+	} else {
+		if dirtyData.OverallLetterGrade == "" && dirtyData.GradingScale == sub_s.LetterGradeScale {
+			e["overall_letter_grade"] = "missing value"
+		}
+		if dirtyData.OverallNumberGrade <= 0 && dirtyData.OverallNumberGrade > 10 && dirtyData.GradingScale == sub_s.NumberGradeScale {
+			e["overall_number_grade"] = "missing value"
+		}
+		if dirtyData.CpsPercentageGrade < 5 && dirtyData.CpsPercentageGrade > 100 && dirtyData.GradingScale == sub_s.CPSPercentageGradingScale {
+			e["cps_percentage_grade"] = "missing value"
+		}
 	}
-	if dirtyData.OverallGrade <= 0 {
-		e["overall_grade"] = "missing value"
-	}
-	if dirtyData.OverallGrade > 10 {
-		e["overall_grade"] = "value must be less then or equal to 10"
-	}
-
 	if dirtyData.ShowsSignsOfTamperingOrRestoration != sub_s.YesItShowsSignsOfTamperingOrRestoration && dirtyData.ShowsSignsOfTamperingOrRestoration != sub_s.NoItDoesNotShowsSignsOfTamperingOrRestoration {
 		e["shows_signs_of_tampering_or_restoration"] = "missing value"
 	}
