@@ -9,13 +9,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jung-kurt/gofpdf"
+	"github.com/jung-kurt/gofpdf/contrib/gofpdi"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 
+	s_d "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	c "github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/provider/uuid"
-	"github.com/jung-kurt/gofpdf"
-	"github.com/jung-kurt/gofpdf/contrib/gofpdi"
 )
 
 type CBFFBuilderRequestDTO struct {
@@ -47,7 +48,10 @@ type CBFFBuilderRequestDTO struct {
 	SpineFinding                       string             `bson:"spine_finding" json:"spine_finding"`
 	CoverFinding                       string             `bson:"cover_finding" json:"cover_finding"`
 	ShowsSignsOfTamperingOrRestoration bool               `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
+	GradingScale                       int8               `bson:"grading_scale" json:"grading_scale"`
 	OverallLetterGrade                 string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
+	OverallNumberGrade                 float64            `bson:"overall_number_grade" json:"overall_number_grade"`
+	CpsPercentageGrade                 float64            `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
 	UserFirstName                      string             `bson:"user_first_name" json:"user_first_name"`
 	UserLastName                       string             `bson:"user_last_name" json:"user_last_name"`
 	UserCompanyName                    string             `bson:"user_company_name" json:"user_company_name"`
@@ -383,8 +387,17 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	pdf.SetFont("Helvetica", "B", 40)
 
 	// ROW 10 - Grading
-	pdf.SetXY(171, 153.5)
-	pdf.Cell(0, 0, strings.ToUpper(r.OverallLetterGrade))
+	switch r.GradingScale {
+	case s_d.LetterGradeScale:
+		pdf.SetXY(171, 153.5)
+		pdf.Cell(0, 0, strings.ToUpper(r.OverallLetterGrade))
+	case s_d.NumberGradeScale:
+		pdf.SetXY(171, 153.5)
+		pdf.Cell(0, 0, fmt.Sprintf("%v", r.OverallNumberGrade))
+	case s_d.CPSPercentageGradingScale:
+		pdf.SetXY(171, 153.5)
+		pdf.Cell(0, 0, fmt.Sprintf("%v%%", r.CpsPercentageGrade))
+	}
 
 	//
 	// LEFT
