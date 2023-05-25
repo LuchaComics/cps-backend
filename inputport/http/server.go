@@ -108,6 +108,14 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		port.Gateway.Register(w, r)
 	case n == 3 && p[1] == "v1" && p[2] == "refresh-token" && r.Method == http.MethodPost:
 		port.Gateway.RefreshToken(w, r)
+	case n == 3 && p[1] == "v1" && p[2] == "verify" && r.Method == http.MethodPost:
+		port.Gateway.Verify(w, r)
+	case n == 3 && p[1] == "v1" && p[2] == "logout" && r.Method == http.MethodPost:
+		port.Gateway.Logout(w, r)
+	case n == 3 && p[1] == "v1" && p[2] == "profile" && r.Method == http.MethodGet:
+		port.Gateway.Profile(w, r)
+	case n == 3 && p[1] == "v1" && p[2] == "profile" && r.Method == http.MethodPut:
+		port.Gateway.ProfileUpdate(w, r)
 		// case n == 3 && p[1] == "v1" && p[2] == "profile" && r.Method == http.MethodGet:
 		// ...
 

@@ -12,6 +12,7 @@ type Conf struct {
 	Cache      cacheConfig
 	AWS        awsConfig
 	PDFBuilder pdfBuilderConfig
+	Emailer    mailgunConfig
 }
 
 type serverConf struct {
@@ -21,6 +22,7 @@ type serverConf struct {
 	HasDebugging         bool   `env:"CPS_BACKEND_HAS_DEBUGGING,default=true"`
 	InitialAdminEmail    string `env:"CPS_BACKEND_INITIAL_ADMIN_EMAIL,required"`
 	InitialAdminPassword string `env:"CPS_BACKEND_INITIAL_ADMIN_PASSWORD,required"`
+	DomainName           string `env:"CPS_BACKEND_DOMAIN_NAME,required"`
 }
 
 type dbConfig struct {
@@ -45,6 +47,13 @@ type awsConfig struct {
 type pdfBuilderConfig struct {
 	CBFFTemplatePath  string `env:"CPS_BACKEND_PDF_BUILDER_CBFF_TEMPLATE_FILE_PATH,required"`
 	DataDirectoryPath string `env:"CPS_BACKEND_PDF_BUILDER_DATA_DIRECTORY_PATH,required"`
+}
+
+type mailgunConfig struct {
+	APIKey      string `env:"CPS_BACKEND_MAILGUN_API_KEY,required"`
+	Domain      string `env:"CPS_BACKEND_MAILGUN_DOMAIN,required"`
+	APIBase     string `env:"CPS_BACKEND_MAILGUN_API_BASE,required"`
+	SenderEmail string `env:"CPS_BACKEND_MAILGUN_SENDER_EMAIL,required"`
 }
 
 func New() *Conf {

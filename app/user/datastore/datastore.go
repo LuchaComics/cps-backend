@@ -28,8 +28,9 @@ type User struct {
 	PasswordHashAlgorithm     string             `bson:"password_hash_algorithm,omitempty" json:"password_hash_algorithm,omitempty"`
 	PasswordHash              string             `bson:"password_hash,omitempty" json:"password_hash,omitempty"`
 	Role                      int8               `bson:"role" json:"role"`
-	WasEmailActivated         bool               `bson:"was_email_activated" json:"was_email_activated"`
-	EmailActivationCode       string             `bson:"email_activation_code,omitempty" json:"email_activation_code,omitempty"`
+	WasEmailVerified          bool               `bson:"was_email_verified" json:"was_email_verified"`
+	EmailVerificationCode     string             `bson:"email_verification_code,omitempty" json:"email_verification_code,omitempty"`
+	EmailVerificationExpiry   time.Time          `bson:"email_verification_expiry,omitempty" json:"email_verification_expiry,omitempty"`
 	CompanyName               string             `bson:"company_name,omitempty" json:"company_name,omitempty"`
 	Phone                     string             `bson:"phone,omitempty" json:"phone,omitempty"`
 	Country                   string             `bson:"country,omitempty" json:"country,omitempty"`
@@ -64,6 +65,7 @@ type UserStorer interface {
 	Create(ctx context.Context, m *User) error
 	GetByID(ctx context.Context, id primitive.ObjectID) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
+	GetByVerificationCode(ctx context.Context, verificationCode string) (*User, error)
 	CheckIfExistsByEmail(ctx context.Context, email string) (bool, error)
 	UpdateByID(ctx context.Context, m *User) error
 	// //TODO: Add more...

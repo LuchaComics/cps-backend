@@ -9,6 +9,7 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/LuchaComics/cps-backend/adapter/cache/redis"
+	mg "github.com/LuchaComics/cps-backend/adapter/emailer/mailgun"
 	gateway_s "github.com/LuchaComics/cps-backend/app/gateway/datastore"
 	user_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config"
@@ -18,10 +19,14 @@ import (
 )
 
 type GatewayController interface {
-	Register(ctx context.Context, req *gateway_s.RegisterRequestIDO) (*gateway_s.RegisterResponseIDO, error)
+	Register(ctx context.Context, req *gateway_s.RegisterRequestIDO) error
 	Login(ctx context.Context, email, password string) (*gateway_s.LoginResponseIDO, error)
 	GetUserBySessionID(ctx context.Context, sessionID string) (*user_s.User, error)
 	RefreshToken(ctx context.Context, value string) (*user_s.User, string, time.Time, string, time.Time, error)
+	Verify(ctx context.Context, code string) error
+	Logout(ctx context.Context) error
+	Profile(ctx context.Context) (*user_s.User, error)
+	ProfileUpdate(ctx context.Context, nu *user_s.User) error
 	//TODO: Add more...
 }
 
@@ -32,6 +37,7 @@ type GatewayControllerImpl struct {
 	JWT        jwt.Provider
 	Password   password.Provider
 	Cache      redis.Cacher
+	Emailer    mg.Emailer
 	UserStorer user_s.UserStorer
 }
 
@@ -42,6 +48,7 @@ func NewController(
 	jwtp jwt.Provider,
 	passwordp password.Provider,
 	cache redis.Cacher,
+	emailer mg.Emailer,
 	usr_storer user_s.UserStorer,
 ) GatewayController {
 	s := &GatewayControllerImpl{
@@ -51,6 +58,7 @@ func NewController(
 		JWT:        jwtp,
 		Password:   passwordp,
 		Cache:      cache,
+		Emailer:    emailer,
 		UserStorer: usr_storer,
 	}
 

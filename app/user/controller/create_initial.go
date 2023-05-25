@@ -34,7 +34,7 @@ func (c *UserControllerImpl) CreateInitialRootAdmin(ctx context.Context) error {
 			PasswordHash:          passwordHash,
 			PasswordHashAlgorithm: c.Password.AlgorithmName(),
 			Role:                  domain.StaffRole,
-			WasEmailActivated:     true,
+			WasEmailVerified:      true,
 			CreatedTime:           time.Now(),
 			ModifiedTime:          time.Now(),
 		}

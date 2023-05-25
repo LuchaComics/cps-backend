@@ -16,6 +16,7 @@ type Cacher interface {
 	Get(ctx context.Context, key string) ([]byte, error)
 	Set(ctx context.Context, key string, val []byte) error
 	SetWithExpiry(ctx context.Context, key string, val []byte, expiry time.Duration) error
+	Delete(ctx context.Context, key string) error
 }
 
 type cache struct {
@@ -71,6 +72,15 @@ func (s *cache) SetWithExpiry(ctx context.Context, key string, val []byte, expir
 	err := s.Client.Set(ctx, key, val, expiry).Err()
 	if err != nil {
 		s.Logger.Error("cache set with expiry failed", slog.Any("error", err))
+		return err
+	}
+	return nil
+}
+
+func (s *cache) Delete(ctx context.Context, key string) error {
+	err := s.Client.Del(ctx, key).Err()
+	if err != nil {
+		s.Logger.Error("cache delete failed", slog.Any("error", err))
 		return err
 	}
 	return nil

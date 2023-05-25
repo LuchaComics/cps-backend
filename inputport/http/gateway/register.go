@@ -105,19 +105,9 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		httperror.ResponseError(w, err)
 		return
 	}
-
-	res, err := h.Controller.Register(ctx, data)
-	if err != nil {
+	if err := h.Controller.Register(ctx, data); err != nil {
 		httperror.ResponseError(w, err)
 		return
 	}
-
-	MarshalRegisterResponse(res, w)
-}
-
-func MarshalRegisterResponse(res *gateway_s.RegisterResponseIDO, w http.ResponseWriter) {
-	if err := json.NewEncoder(w).Encode(&res); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	w.WriteHeader(http.StatusCreated)
 }

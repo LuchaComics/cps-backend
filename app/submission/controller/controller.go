@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 
+	mg "github.com/LuchaComics/cps-backend/adapter/emailer/mailgun"
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	s3_storage "github.com/LuchaComics/cps-backend/adapter/storage/s3"
 	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
@@ -31,6 +32,7 @@ type SubmissionControllerImpl struct {
 	S3               s3_storage.S3Storager
 	Password         password.Provider
 	CBFFBuilder      pdfbuilder.CBFFBuilder
+	Emailer          mg.Emailer
 	SubmissionStorer submission_s.SubmissionStorer
 }
 
@@ -41,6 +43,7 @@ func NewController(
 	s3 s3_storage.S3Storager,
 	passwordp password.Provider,
 	cbffb pdfbuilder.CBFFBuilder,
+	emailer mg.Emailer,
 	sub_storer submission_s.SubmissionStorer,
 ) SubmissionController {
 
@@ -87,6 +90,7 @@ func NewController(
 		S3:               s3,
 		Password:         passwordp,
 		CBFFBuilder:      cbffb,
+		Emailer:          emailer,
 		SubmissionStorer: sub_storer,
 	}
 	s.Logger.Debug("submission controller initialization started...")

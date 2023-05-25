@@ -146,6 +146,7 @@ func (mid *middleware) PreJWTProcessorMiddleware(fn http.HandlerFunc) http.Handl
 			"login":         true,
 			"refresh-token": true,
 			"register":      true,
+			"verify":        true,
 		}
 
 		// DEVELOPERS NOTE:
@@ -233,6 +234,7 @@ func (mid *middleware) JWTProcessorMiddleware(fn http.HandlerFunc) http.HandlerF
 				"login":         true,
 				"refresh-token": true,
 				"register":      true,
+				"verify":        true,
 			}
 
 			// DEVELOPERS NOTE:
@@ -312,6 +314,7 @@ func (mid *middleware) PostJWTProcessorMiddleware(fn http.HandlerFunc) http.Hand
 				slog.String("Email", user.Email))
 
 			// Save individual pieces of the user profile.
+			ctx = context.WithValue(ctx, constants.SessionID, sessionID)
 			ctx = context.WithValue(ctx, constants.SessionUserID, user.ID)
 			ctx = context.WithValue(ctx, constants.SessionUserRole, user.Role)
 			ctx = context.WithValue(ctx, constants.SessionUserName, user.Name)
@@ -367,6 +370,7 @@ func (mid *middleware) ProtectedURLsMiddleware(fn http.HandlerFunc) http.Handler
 			"greeting":      true,
 			"login":         true,
 			"refresh-token": true,
+			"verify":        true,
 		}
 
 		// DEVELOPERS NOTE:

@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/LuchaComics/cps-backend/adapter/cache/redis"
+	"github.com/LuchaComics/cps-backend/adapter/emailer/mailgun"
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	"github.com/LuchaComics/cps-backend/adapter/storage/mongodb"
 	"github.com/LuchaComics/cps-backend/adapter/storage/s3"
@@ -39,9 +40,10 @@ func InitializeEvent() Application {
 	jwtProvider := jwt.NewProvider(conf)
 	passwordProvider := password.NewProvider()
 	cacher := redis.NewCache(conf, slogLogger)
+	emailer := mailgun.NewEmailer(conf, slogLogger, provider)
 	client := mongodb.NewStorage(conf, slogLogger)
 	userStorer := datastore.NewDatastore(conf, slogLogger, client)
-	gatewayController := controller.NewController(conf, slogLogger, provider, jwtProvider, passwordProvider, cacher, userStorer)
+	gatewayController := controller.NewController(conf, slogLogger, provider, jwtProvider, passwordProvider, cacher, emailer, userStorer)
 	middlewareMiddleware := middleware.NewMiddleware(conf, slogLogger, provider, timeProvider, jwtProvider, gatewayController)
 	handler := gateway.NewHandler(gatewayController)
 	userController := controller2.NewController(conf, slogLogger, provider, passwordProvider, userStorer)
@@ -49,7 +51,7 @@ func InitializeEvent() Application {
 	s3Storager := s3.NewStorage(conf, slogLogger, provider)
 	cbffBuilder := pdfbuilder.NewCBFFBuilder(conf, slogLogger, provider)
 	submissionStorer := datastore2.NewDatastore(conf, slogLogger, client)
-	submissionController := controller3.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, submissionStorer)
+	submissionController := controller3.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, emailer, submissionStorer)
 	submissionHandler := submission.NewHandler(submissionController)
 	inputPortServer := http.NewInputPort(conf, slogLogger, middlewareMiddleware, handler, userHandler, submissionHandler)
 	application := NewApplication(slogLogger, inputPortServer)

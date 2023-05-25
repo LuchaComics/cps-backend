@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -15,7 +14,7 @@ import (
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.RegisterRequestIDO) (*gateway_s.RegisterResponseIDO, error) {
+func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.RegisterRequestIDO) error {
 	// Defensive Code: For security purposes we need to remove all whitespaces from the email and lower the characters.
 	req.Email = strings.ToLower(req.Email)
 	req.Password = strings.ReplaceAll(req.Password, " ", "")
@@ -24,17 +23,17 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 	u, err := impl.UserStorer.GetByEmail(ctx, req.Email)
 	if err != nil {
 		impl.Logger.Error("database error", slog.Any("err", err))
-		return nil, err
+		return err
 	}
 	if u != nil {
 		impl.Logger.Warn("user already exists validation error")
-		return nil, httperror.NewForBadRequestWithSingleField("email", "email is not unique")
+		return httperror.NewForBadRequestWithSingleField("email", "email is not unique")
 	}
 
 	passwordHash, err := impl.Password.GenerateHashFromPassword(req.Password)
 	if err != nil {
 		impl.Logger.Error("hashing error", slog.Any("error", err))
-		return nil, err
+		return err
 	}
 
 	//TODO: Handle s3.
@@ -62,11 +61,14 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 		AgreePromotionsEmail:      req.AgreePromotionsEmail,
 		CreatedTime:               time.Now(),
 		ModifiedTime:              time.Now(),
+		WasEmailVerified:          false,
+		EmailVerificationCode:     impl.UUID.NewUUID(),
+		EmailVerificationExpiry:   time.Now().Add(72 * time.Hour),
 	}
 	err = impl.UserStorer.Create(ctx, u)
 	if err != nil {
 		impl.Logger.Error("database create error", slog.Any("error", err))
-		return nil, err
+		return err
 	}
 	impl.Logger.Info("User created.",
 		slog.Any("_id", u.ID),
@@ -75,42 +77,16 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 		slog.String("password_hash_algorithm", u.PasswordHashAlgorithm),
 		slog.String("password_hash", u.PasswordHash))
 
-	uBin, err := json.Marshal(u)
-	if err != nil {
-		impl.Logger.Error("marshalling error", slog.Any("err", err))
-		return nil, err
+	// uBin, err := json.Marshal(u)
+	// if err != nil {
+	// 	impl.Logger.Error("marshalling error", slog.Any("err", err))
+	// 	return nil, err
+	// }
+
+	if err := impl.SendVerificationEmail(u.Email, u.EmailVerificationCode, u.FirstName); err != nil {
+		impl.Logger.Error("failed sending verification email with error", slog.Any("err", err))
+		return err
 	}
 
-	// Set expiry duration.
-	atExpiry := 24 * time.Hour
-	rtExpiry := 14 * 24 * time.Hour
-
-	// Start our session using an access and refresh token.
-	sessionUUID := impl.UUID.NewUUID()
-
-	err = impl.Cache.SetWithExpiry(ctx, sessionUUID, uBin, rtExpiry)
-	if err != nil {
-		impl.Logger.Error("cache set with expiry error", slog.Any("err", err))
-		return nil, err
-	}
-
-	// Generate our JWT token.
-	accessToken, accessTokenExpiry, refreshToken, refreshTokenExpiry, err := impl.JWT.GenerateJWTTokenPair(sessionUUID, atExpiry, rtExpiry)
-	if err != nil {
-		impl.Logger.Error("jwt generate pairs error", slog.Any("err", err))
-		return nil, err
-	}
-
-	// For security.
-	u.PasswordHash = ""
-	u.PasswordHashAlgorithm = ""
-
-	// Return our auth keys.
-	return &gateway_s.RegisterResponseIDO{
-		User:                   u,
-		AccessToken:            accessToken,
-		AccessTokenExpiryTime:  accessTokenExpiry,
-		RefreshToken:           refreshToken,
-		RefreshTokenExpiryTime: refreshTokenExpiry,
-	}, nil
+	return nil
 }

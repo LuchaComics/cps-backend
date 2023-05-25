@@ -7,6 +7,7 @@ import (
 	"github.com/google/wire"
 
 	"github.com/LuchaComics/cps-backend/adapter/cache/redis"
+	"github.com/LuchaComics/cps-backend/adapter/emailer/mailgun"
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	"github.com/LuchaComics/cps-backend/adapter/storage/mongodb"
 	s3_storage "github.com/LuchaComics/cps-backend/adapter/storage/s3"
@@ -38,6 +39,7 @@ func InitializeEvent() Application {
 		time.NewProvider,
 		logger.NewProvider,
 		jwt.NewProvider,
+		mailgun.NewEmailer,
 		password.NewProvider,
 		mongodb.NewStorage,
 		s3_storage.NewStorage,

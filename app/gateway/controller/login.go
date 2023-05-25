@@ -35,6 +35,12 @@ func (impl *GatewayControllerImpl) Login(ctx context.Context, email, password st
 		return nil, httperror.NewForBadRequestWithSingleField("password", "password do not match with record")
 	}
 
+	// Enforce the verification code of the email.
+	if u.WasEmailVerified == false {
+		impl.Logger.Warn("email verification validation error", slog.Any("u", u))
+		return nil, httperror.NewForBadRequestWithSingleField("email", "was not verified")
+	}
+
 	uBin, err := json.Marshal(u)
 	if err != nil {
 		impl.Logger.Error("marshalling error", slog.Any("err", err))

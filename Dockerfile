@@ -30,6 +30,9 @@ COPY --from=build-env /app/cps-backend .
 # Copy all the static content necessary for this application to run.
 COPY --from=build-env /app/static ./static
 
+# Copy all the static content necessary for this application to run.
+COPY --from=build-env /app/templates ./templates
+
 EXPOSE 8000
 
 # Run the server executable
