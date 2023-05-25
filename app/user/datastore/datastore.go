@@ -20,6 +20,7 @@ const (
 
 type User struct {
 	ID                        primitive.ObjectID `bson:"_id" json:"_id"`
+	OrganizationID            primitive.ObjectID `bson:"organization_id" json:"organization_id,omitempty"`
 	FirstName                 string             `bson:"first_name" json:"first_name"`
 	LastName                  string             `bson:"last_name" json:"last_name"`
 	Name                      string             `bson:"name" json:"name"`
@@ -47,8 +48,8 @@ type User struct {
 	HowDidYouHearAboutUsOther string             `bson:"how_did_you_hear_about_us_other,omitempty" json:"how_did_you_hear_about_us_other,omitempty"`
 	AgreeTOS                  bool               `bson:"agree_tos,omitempty" json:"agree_tos,omitempty"`
 	AgreePromotionsEmail      bool               `bson:"agree_promotions_email,omitempty" json:"agree_promotions_email,omitempty"`
-	CreatedTime               time.Time          `bson:"created_time,omitempty" json:"created_time,omitempty"`
-	ModifiedTime              time.Time          `bson:"modified_time,omitempty" json:"modified_time,omitempty"`
+	CreatedAt                 time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
+	ModifiedAt                time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
 }
 
 type UserFilter struct {

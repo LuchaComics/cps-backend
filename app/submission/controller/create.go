@@ -40,8 +40,8 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 
 	// Add defaults.
 	m.ID = primitive.NewObjectID()
-	m.CreatedTime = time.Now()
-	m.ModifiedTime = time.Now()
+	m.CreatedAt = time.Now()
+	m.ModifiedAt = time.Now()
 	m.SubmissionDate = time.Now()
 
 	// Save to our database.
@@ -111,7 +111,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 
 	// The following will save the S3 key of our file upload into our record.
 	m.FileUploadS3ObjectKey = path
-	m.ModifiedTime = time.Now()
+	m.ModifiedAt = time.Now()
 
 	if err := c.SubmissionStorer.UpdateByID(ctx, m); err != nil {
 		c.Logger.Error("database update error", slog.Any("error", err))

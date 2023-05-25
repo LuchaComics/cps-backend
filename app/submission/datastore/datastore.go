@@ -35,8 +35,8 @@ const (
 
 type Submission struct {
 	ID                                 primitive.ObjectID `bson:"_id" json:"id"`
-	CreatedTime                        time.Time          `bson:"created_time,omitempty" json:"created_time,omitempty"`
-	ModifiedTime                       time.Time          `bson:"modified_time,omitempty" json:"modified_time,omitempty"`
+	CreatedAt                          time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
+	ModifiedAt                         time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
 	ServiceType                        int8               `bson:"service_type" json:"service_type"`
 	State                              int8               `bson:"state" json:"state"`
 	SubmissionDate                     time.Time          `bson:"submission_date" json:"submission_date"`

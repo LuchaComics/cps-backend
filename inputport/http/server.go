@@ -10,6 +10,7 @@ import (
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/inputport/http/gateway"
 	"github.com/LuchaComics/cps-backend/inputport/http/middleware"
+	"github.com/LuchaComics/cps-backend/inputport/http/organization"
 	"github.com/LuchaComics/cps-backend/inputport/http/submission"
 	"github.com/LuchaComics/cps-backend/inputport/http/user"
 )
@@ -20,13 +21,14 @@ type InputPortServer interface {
 }
 
 type httpInputPort struct {
-	Config     *config.Conf
-	Logger     *slog.Logger
-	Server     *http.Server
-	Middleware middleware.Middleware
-	Gateway    *gateway.Handler
-	User       *user.Handler
-	Submission *submission.Handler
+	Config       *config.Conf
+	Logger       *slog.Logger
+	Server       *http.Server
+	Middleware   middleware.Middleware
+	Gateway      *gateway.Handler
+	User         *user.Handler
+	Organization *organization.Handler
+	Submission   *submission.Handler
 }
 
 func NewInputPort(
@@ -35,6 +37,7 @@ func NewInputPort(
 	mid middleware.Middleware,
 	gh *gateway.Handler,
 	cu *user.Handler,
+	org *organization.Handler,
 	t *submission.Handler,
 ) InputPortServer {
 	// Initialize the ServeMux.
@@ -54,13 +57,14 @@ func NewInputPort(
 
 	// Create our HTTP server controller.
 	p := &httpInputPort{
-		Config:     configp,
-		Logger:     loggerp,
-		Middleware: mid,
-		Gateway:    gh,
-		User:       cu,
-		Submission: t,
-		Server:     srv,
+		Config:       configp,
+		Logger:       loggerp,
+		Middleware:   mid,
+		Gateway:      gh,
+		User:         cu,
+		Organization: org,
+		Submission:   t,
+		Server:       srv,
 	}
 
 	// Attach the HTTP server controller to the ServerMux.
@@ -119,7 +123,7 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		// case n == 3 && p[1] == "v1" && p[2] == "profile" && r.Method == http.MethodGet:
 		// ...
 
-		// --- SUBMISSIONS --- //
+	// --- SUBMISSIONS --- //
 	case n == 3 && p[1] == "v1" && p[2] == "submissions" && r.Method == http.MethodGet:
 		port.Submission.List(w, r)
 	case n == 3 && p[1] == "v1" && p[2] == "submissions" && r.Method == http.MethodPost:
@@ -130,6 +134,18 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		port.Submission.UpdateByID(w, r, p[3])
 	case n == 4 && p[1] == "v1" && p[2] == "submission" && r.Method == http.MethodDelete:
 		port.Submission.DeleteByID(w, r, p[3])
+
+	// --- ORGANIZATION --- //
+	case n == 3 && p[1] == "v1" && p[2] == "organizations" && r.Method == http.MethodGet:
+		port.Organization.List(w, r)
+	case n == 3 && p[1] == "v1" && p[2] == "organizations" && r.Method == http.MethodPost:
+		port.Organization.Create(w, r)
+	case n == 4 && p[1] == "v1" && p[2] == "organization" && r.Method == http.MethodGet:
+		port.Organization.GetByID(w, r, p[3])
+	case n == 4 && p[1] == "v1" && p[2] == "organization" && r.Method == http.MethodPut:
+		port.Organization.UpdateByID(w, r, p[3])
+	case n == 4 && p[1] == "v1" && p[2] == "organization" && r.Method == http.MethodDelete:
+		port.Organization.DeleteByID(w, r, p[3])
 
 	// --- CATCH ALL: D.N.E. ---
 	default:

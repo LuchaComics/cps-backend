@@ -24,7 +24,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	}
 
 	// Modify our original submission.
-	os.ModifiedTime = time.Now()
+	os.ModifiedAt = time.Now()
 	os.ServiceType = ns.ServiceType
 	os.State = ns.State
 	os.SubmissionDate = ns.SubmissionDate
@@ -137,7 +137,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 
 	// The following will save the S3 key of our file upload into our record.
 	os.FileUploadS3ObjectKey = path
-	os.ModifiedTime = time.Now()
+	os.ModifiedAt = time.Now()
 
 	if err := c.SubmissionStorer.UpdateByID(ctx, os); err != nil {
 		c.Logger.Error("database update error", slog.Any("error", err))

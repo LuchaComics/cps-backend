@@ -13,14 +13,17 @@ import (
 	"github.com/LuchaComics/cps-backend/adapter/storage/mongodb"
 	"github.com/LuchaComics/cps-backend/adapter/storage/s3"
 	"github.com/LuchaComics/cps-backend/app/gateway/controller"
-	controller3 "github.com/LuchaComics/cps-backend/app/submission/controller"
-	datastore2 "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	controller3 "github.com/LuchaComics/cps-backend/app/organization/controller"
+	datastore2 "github.com/LuchaComics/cps-backend/app/organization/datastore"
+	controller4 "github.com/LuchaComics/cps-backend/app/submission/controller"
+	datastore3 "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	controller2 "github.com/LuchaComics/cps-backend/app/user/controller"
 	"github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/inputport/http"
 	"github.com/LuchaComics/cps-backend/inputport/http/gateway"
 	"github.com/LuchaComics/cps-backend/inputport/http/middleware"
+	"github.com/LuchaComics/cps-backend/inputport/http/organization"
 	"github.com/LuchaComics/cps-backend/inputport/http/submission"
 	"github.com/LuchaComics/cps-backend/inputport/http/user"
 	"github.com/LuchaComics/cps-backend/provider/jwt"
@@ -43,17 +46,20 @@ func InitializeEvent() Application {
 	emailer := mailgun.NewEmailer(conf, slogLogger, provider)
 	client := mongodb.NewStorage(conf, slogLogger)
 	userStorer := datastore.NewDatastore(conf, slogLogger, client)
-	gatewayController := controller.NewController(conf, slogLogger, provider, jwtProvider, passwordProvider, cacher, emailer, userStorer)
+	organizationStorer := datastore2.NewDatastore(conf, slogLogger, client)
+	gatewayController := controller.NewController(conf, slogLogger, provider, jwtProvider, passwordProvider, cacher, emailer, userStorer, organizationStorer)
 	middlewareMiddleware := middleware.NewMiddleware(conf, slogLogger, provider, timeProvider, jwtProvider, gatewayController)
 	handler := gateway.NewHandler(gatewayController)
 	userController := controller2.NewController(conf, slogLogger, provider, passwordProvider, userStorer)
 	userHandler := user.NewHandler(userController)
 	s3Storager := s3.NewStorage(conf, slogLogger, provider)
+	organizationController := controller3.NewController(conf, slogLogger, provider, s3Storager, emailer, organizationStorer)
+	organizationHandler := organization.NewHandler(organizationController)
 	cbffBuilder := pdfbuilder.NewCBFFBuilder(conf, slogLogger, provider)
-	submissionStorer := datastore2.NewDatastore(conf, slogLogger, client)
-	submissionController := controller3.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, emailer, submissionStorer)
+	submissionStorer := datastore3.NewDatastore(conf, slogLogger, client)
+	submissionController := controller4.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, emailer, submissionStorer)
 	submissionHandler := submission.NewHandler(submissionController)
-	inputPortServer := http.NewInputPort(conf, slogLogger, middlewareMiddleware, handler, userHandler, submissionHandler)
+	inputPortServer := http.NewInputPort(conf, slogLogger, middlewareMiddleware, handler, userHandler, organizationHandler, submissionHandler)
 	application := NewApplication(slogLogger, inputPortServer)
 	return application
 }

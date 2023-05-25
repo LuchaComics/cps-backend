@@ -10,6 +10,7 @@ import (
 	"golang.org/x/exp/slog"
 
 	gateway_s "github.com/LuchaComics/cps-backend/app/gateway/datastore"
+	organization_s "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	user_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
@@ -30,15 +31,42 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 		return httperror.NewForBadRequestWithSingleField("email", "email is not unique")
 	}
 
-	passwordHash, err := impl.Password.GenerateHashFromPassword(req.Password)
+	// Create our user.
+	u, err = impl.createUserForRequest(ctx, req)
 	if err != nil {
-		impl.Logger.Error("hashing error", slog.Any("error", err))
 		return err
 	}
 
-	//TODO: Handle s3.
+	// Create our organization.
+	orgID, err := impl.createOrganizationForUser(ctx, req.CompanyName, u)
+	if err != nil {
+		impl.Logger.Error("database create error", slog.Any("error", err))
+		return err
+	}
+	u.OrganizationID = orgID // Attach to our user profile.
+	u.ModifiedAt = time.Now()
+	if err := impl.UserStorer.UpdateByID(ctx, u); err != nil {
+		impl.Logger.Error("database update error", slog.Any("error", err))
+		return err
+	}
 
-	u = &user_s.User{
+	// Send our verification email.
+	if err := impl.SendVerificationEmail(u.Email, u.EmailVerificationCode, u.FirstName); err != nil {
+		impl.Logger.Error("failed sending verification email with error", slog.Any("err", err))
+		return err
+	}
+
+	return nil
+}
+
+func (impl *GatewayControllerImpl) createUserForRequest(ctx context.Context, req *gateway_s.RegisterRequestIDO) (*user_s.User, error) {
+	passwordHash, err := impl.Password.GenerateHashFromPassword(req.Password)
+	if err != nil {
+		impl.Logger.Error("hashing error", slog.Any("error", err))
+		return nil, err
+	}
+
+	u := &user_s.User{
 		ID:                        primitive.NewObjectID(),
 		FirstName:                 req.FirstName,
 		LastName:                  req.LastName,
@@ -59,8 +87,8 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 		HowDidYouHearAboutUsOther: req.HowDidYouHearAboutUsOther,
 		AgreeTOS:                  req.AgreeTOS,
 		AgreePromotionsEmail:      req.AgreePromotionsEmail,
-		CreatedTime:               time.Now(),
-		ModifiedTime:              time.Now(),
+		CreatedAt:                 time.Now(),
+		ModifiedAt:                time.Now(),
 		WasEmailVerified:          false,
 		EmailVerificationCode:     impl.UUID.NewUUID(),
 		EmailVerificationExpiry:   time.Now().Add(72 * time.Hour),
@@ -68,7 +96,7 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 	err = impl.UserStorer.Create(ctx, u)
 	if err != nil {
 		impl.Logger.Error("database create error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 	impl.Logger.Info("User created.",
 		slog.Any("_id", u.ID),
@@ -77,16 +105,25 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 		slog.String("password_hash_algorithm", u.PasswordHashAlgorithm),
 		slog.String("password_hash", u.PasswordHash))
 
-	// uBin, err := json.Marshal(u)
-	// if err != nil {
-	// 	impl.Logger.Error("marshalling error", slog.Any("err", err))
-	// 	return nil, err
-	// }
+	return u, nil
+}
 
-	if err := impl.SendVerificationEmail(u.Email, u.EmailVerificationCode, u.FirstName); err != nil {
-		impl.Logger.Error("failed sending verification email with error", slog.Any("err", err))
-		return err
+func (impl *GatewayControllerImpl) createOrganizationForUser(ctx context.Context, name string, u *user_s.User) (primitive.ObjectID, error) {
+	o := &organization_s.Organization{
+		ID:         primitive.NewObjectID(),
+		Name:       name,
+		Type:       organization_s.RetailerType,
+		CreatedAt:  time.Now(),
+		ModifiedAt: time.Now(),
 	}
+	err := impl.OrganizationStorer.Create(ctx, o)
+	if err != nil {
+		impl.Logger.Error("database create error", slog.Any("error", err))
+		return primitive.NewObjectID(), err
+	}
+	impl.Logger.Info("Organization created.",
+		slog.Any("_id", u.ID),
+		slog.String("name", u.Name))
 
-	return nil
+	return o.ID, nil
 }

@@ -35,8 +35,8 @@ func (c *UserControllerImpl) CreateInitialRootAdmin(ctx context.Context) error {
 			PasswordHashAlgorithm: c.Password.AlgorithmName(),
 			Role:                  domain.StaffRole,
 			WasEmailVerified:      true,
-			CreatedTime:           time.Now(),
-			ModifiedTime:          time.Now(),
+			CreatedAt:           time.Now(),
+			ModifiedAt:          time.Now(),
 		}
 		err = c.UserStorer.Create(ctx, m)
 		if err != nil {

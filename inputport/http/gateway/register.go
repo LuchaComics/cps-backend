@@ -90,6 +90,13 @@ func ValidateRegisterRequest(dirtyData *gateway_s.RegisterRequestIDO) error {
 	if dirtyData.AgreeTOS == false {
 		e["agree_tos"] = "you must agree to the terms before proceeding"
 	}
+	if dirtyData.HowDidYouHearAboutUs > 7 || dirtyData.HowDidYouHearAboutUs < 1 {
+		e["how_did_you_hear_about_us"] = "missing value"
+	} else {
+		if dirtyData.HowDidYouHearAboutUs == 1 && dirtyData.HowDidYouHearAboutUsOther == "" {
+			e["how_did_you_hear_about_us_other"] = "missing value"
+		}
+	}
 
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)

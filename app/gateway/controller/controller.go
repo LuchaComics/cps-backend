@@ -11,6 +11,7 @@ import (
 	"github.com/LuchaComics/cps-backend/adapter/cache/redis"
 	mg "github.com/LuchaComics/cps-backend/adapter/emailer/mailgun"
 	gateway_s "github.com/LuchaComics/cps-backend/app/gateway/datastore"
+	organization_s "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	user_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/provider/jwt"
@@ -31,14 +32,15 @@ type GatewayController interface {
 }
 
 type GatewayControllerImpl struct {
-	Config     *config.Conf
-	Logger     *slog.Logger
-	UUID       uuid.Provider
-	JWT        jwt.Provider
-	Password   password.Provider
-	Cache      redis.Cacher
-	Emailer    mg.Emailer
-	UserStorer user_s.UserStorer
+	Config             *config.Conf
+	Logger             *slog.Logger
+	UUID               uuid.Provider
+	JWT                jwt.Provider
+	Password           password.Provider
+	Cache              redis.Cacher
+	Emailer            mg.Emailer
+	UserStorer         user_s.UserStorer
+	OrganizationStorer organization_s.OrganizationStorer
 }
 
 func NewController(
@@ -50,16 +52,18 @@ func NewController(
 	cache redis.Cacher,
 	emailer mg.Emailer,
 	usr_storer user_s.UserStorer,
+	org_storer organization_s.OrganizationStorer,
 ) GatewayController {
 	s := &GatewayControllerImpl{
-		Config:     appCfg,
-		Logger:     loggerp,
-		UUID:       uuidp,
-		JWT:        jwtp,
-		Password:   passwordp,
-		Cache:      cache,
-		Emailer:    emailer,
-		UserStorer: usr_storer,
+		Config:             appCfg,
+		Logger:             loggerp,
+		UUID:               uuidp,
+		JWT:                jwtp,
+		Password:           passwordp,
+		Cache:              cache,
+		Emailer:            emailer,
+		UserStorer:         usr_storer,
+		OrganizationStorer: org_storer,
 	}
 
 	return s
