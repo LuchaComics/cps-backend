@@ -25,7 +25,7 @@ type Organization struct {
 	ModifiedAt      time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
 	Type            int8               `bson:"type" json:"type"`
 	State           int8               `bson:"state" json:"state"`
-	Name            string             `bson:"item" json:"item"` // Created by system.
+	Name            string             `bson:"name" json:"name"` // Created by system.
 	CreatedByUserID primitive.ObjectID `bson:"created_by_user_id" json:"created_by_user_id"`
 }
 

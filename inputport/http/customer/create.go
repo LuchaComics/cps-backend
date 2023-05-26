@@ -45,9 +45,6 @@ func ValidateCreateRequest(dirtyData *usr_s.User) error {
 	if len(dirtyData.Email) > 255 {
 		e["email"] = "too long"
 	}
-	if dirtyData.CompanyName == "" {
-		e["company_name"] = "missing value"
-	}
 	if dirtyData.Phone == "" {
 		e["phone"] = "missing value"
 	}

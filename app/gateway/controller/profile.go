@@ -49,7 +49,6 @@ func (impl *GatewayControllerImpl) ProfileUpdate(ctx context.Context, nu *user_s
 	ou.Name = fmt.Sprintf("%s %s", nu.FirstName, nu.LastName)
 	ou.LexicalName = fmt.Sprintf("%s, %s", nu.LastName, nu.FirstName)
 	ou.Email = nu.Email
-	ou.CompanyName = nu.CompanyName
 	ou.Phone = nu.Phone
 	ou.Country = nu.Country
 	ou.Region = nu.Region

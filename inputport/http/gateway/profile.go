@@ -71,7 +71,6 @@ func UnmarshalProfileUpdateRequest(ctx context.Context, r *http.Request) (*user_
 		FirstName:                 requestData.Email,
 		LastName:                  requestData.Email,
 		Email:                     requestData.Email,
-		CompanyName:               requestData.CompanyName,
 		Phone:                     requestData.Phone,
 		Country:                   requestData.Country,
 		Region:                    requestData.Region,

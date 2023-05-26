@@ -33,7 +33,6 @@ type User struct {
 	WasEmailVerified          bool               `bson:"was_email_verified" json:"was_email_verified"`
 	EmailVerificationCode     string             `bson:"email_verification_code,omitempty" json:"email_verification_code,omitempty"`
 	EmailVerificationExpiry   time.Time          `bson:"email_verification_expiry,omitempty" json:"email_verification_expiry,omitempty"`
-	CompanyName               string             `bson:"company_name" json:"company_name,omitempty"`
 	Phone                     string             `bson:"phone" json:"phone,omitempty"`
 	Country                   string             `bson:"country" json:"country,omitempty"`
 	Region                    string             `bson:"region" json:"region,omitempty"`
