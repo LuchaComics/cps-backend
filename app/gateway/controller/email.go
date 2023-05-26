@@ -36,7 +36,7 @@ func (impl *GatewayControllerImpl) SendVerificationEmail(email, verificationCode
 	}
 	body := processed.String() // DEVELOPERS NOTE: Convert our long sequence of data into a string.
 
-	if err := impl.Emailer.Send(context.Background(), impl.Emailer.GetSenderEmail(), "Email Verification", email, body); err != nil {
+	if err := impl.Emailer.Send(context.Background(), impl.Emailer.GetSenderEmail(), "Activate your CPS Retail Partner Account", email, body); err != nil {
 		impl.Logger.Error("sending error", slog.Any("error", err))
 		return err
 	}
