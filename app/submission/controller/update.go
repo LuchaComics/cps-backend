@@ -12,15 +12,15 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Submission) error {
+func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Submission) (*domain.Submission, error) {
 	// Fetch the original submission.
 	os, err := c.SubmissionStorer.GetByID(ctx, ns.ID)
 	if err != nil {
 		c.Logger.Error("database get by id error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 	if os == nil {
-		return nil
+		return nil, nil
 	}
 
 	// Modify our original submission.
@@ -66,7 +66,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	// Save to the database the modified submission.
 	if err := c.SubmissionStorer.UpdateByID(ctx, os); err != nil {
 		c.Logger.Error("database update by id error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 
 	// Delete previous record from remote storage.
@@ -118,11 +118,11 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	response, err := c.CBFFBuilder.GeneratePDF(r)
 	if err != nil {
 		c.Logger.Error("generate pdf error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 	if response == nil {
 		c.Logger.Error("generate pdf error does not return a response")
-		return errors.New("no response from pdf generator")
+		return nil, errors.New("no response from pdf generator")
 	}
 
 	// The next few lines will upload our PDF to our remote storage. Once the
@@ -132,7 +132,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	err = c.S3.UploadContent(ctx, path, response.Content)
 	if err != nil {
 		c.Logger.Error("s3 upload error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 
 	// The following will save the S3 key of our file upload into our record.
@@ -141,14 +141,14 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 
 	if err := c.SubmissionStorer.UpdateByID(ctx, os); err != nil {
 		c.Logger.Error("database update error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 
 	// The following will generate a pre-signed URL so user can download the file.
 	downloadableURL, err := c.S3.GetDownloadablePresignedURL(ctx, os.FileUploadS3ObjectKey, time.Minute*15)
 	if err != nil {
 		c.Logger.Error("s3 presign error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 	os.FileUploadDownloadableFileURL = downloadableURL
 
@@ -158,5 +158,5 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		// Just continue even if we get an error...
 	}
 
-	return nil
+	return os, nil
 }

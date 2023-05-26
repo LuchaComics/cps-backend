@@ -21,7 +21,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	userRole, ok := ctx.Value(constants.SessionUserRole).(int8)
 	if ok {
 		switch userRole {
-		case u_d.RetailerRole:
+		case u_d.RetailerStaffRole:
 			// Override state.
 			m.State = s_d.SubmissionPendingState
 

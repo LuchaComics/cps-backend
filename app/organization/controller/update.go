@@ -8,15 +8,15 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (c *OrganizationControllerImpl) UpdateByID(ctx context.Context, ns *domain.Organization) error {
+func (c *OrganizationControllerImpl) UpdateByID(ctx context.Context, ns *domain.Organization) (*domain.Organization, error) {
 	// Fetch the original organization.
 	os, err := c.OrganizationStorer.GetByID(ctx, ns.ID)
 	if err != nil {
 		c.Logger.Error("database get by id error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 	if os == nil {
-		return nil
+		return nil, nil
 	}
 
 	// Modify our original organization.
@@ -28,8 +28,8 @@ func (c *OrganizationControllerImpl) UpdateByID(ctx context.Context, ns *domain.
 	// Save to the database the modified organization.
 	if err := c.OrganizationStorer.UpdateByID(ctx, os); err != nil {
 		c.Logger.Error("database update by id error", slog.Any("error", err))
-		return err
+		return nil, err
 	}
 
-	return nil
+	return os, nil
 }

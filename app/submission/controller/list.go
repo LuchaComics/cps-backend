@@ -16,7 +16,7 @@ func (c *SubmissionControllerImpl) ListByFilter(ctx context.Context, f *domain.S
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply filtering based on ownership and role.
-	if userRole == user_d.RetailerRole {
+	if userRole == user_d.RetailerStaffRole {
 		f.UserID = userID
 		f.UserRole = userRole
 	}

@@ -16,4 +16,5 @@ const (
 	SessionUserName
 	SessionUserFirstName
 	SessionUserLastName
+	SessionUserOrganizationID
 )

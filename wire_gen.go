@@ -12,6 +12,7 @@ import (
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	"github.com/LuchaComics/cps-backend/adapter/storage/mongodb"
 	"github.com/LuchaComics/cps-backend/adapter/storage/s3"
+	controller5 "github.com/LuchaComics/cps-backend/app/customer/controller"
 	"github.com/LuchaComics/cps-backend/app/gateway/controller"
 	controller3 "github.com/LuchaComics/cps-backend/app/organization/controller"
 	datastore2 "github.com/LuchaComics/cps-backend/app/organization/datastore"
@@ -21,6 +22,7 @@ import (
 	"github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/inputport/http"
+	"github.com/LuchaComics/cps-backend/inputport/http/customer"
 	"github.com/LuchaComics/cps-backend/inputport/http/gateway"
 	"github.com/LuchaComics/cps-backend/inputport/http/middleware"
 	"github.com/LuchaComics/cps-backend/inputport/http/organization"
@@ -59,7 +61,9 @@ func InitializeEvent() Application {
 	submissionStorer := datastore3.NewDatastore(conf, slogLogger, client)
 	submissionController := controller4.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, emailer, submissionStorer)
 	submissionHandler := submission.NewHandler(submissionController)
-	inputPortServer := http.NewInputPort(conf, slogLogger, middlewareMiddleware, handler, userHandler, organizationHandler, submissionHandler)
+	customerController := controller5.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, emailer, userStorer)
+	customerHandler := customer.NewHandler(customerController)
+	inputPortServer := http.NewInputPort(conf, slogLogger, middlewareMiddleware, handler, userHandler, organizationHandler, submissionHandler, customerHandler)
 	application := NewApplication(slogLogger, inputPortServer)
 	return application
 }

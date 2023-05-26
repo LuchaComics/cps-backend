@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *OrganizationListFilter) (*OrganizationListResult, error) {
+func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) (*UserListResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel()
 
@@ -31,8 +31,11 @@ func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *Organiza
 		SetSort(bson.D{{sortField, sortOrder}})
 
 	// Add filter conditions to the query
-	if f.UserID.Hex() != "" {
-		query["user_id"] = f.UserID
+	if f.OrganizationID.Hex() != "" {
+		query["organization_id"] = f.OrganizationID
+	}
+	if f.Role > 0 {
+		query["role"] = f.Role
 	}
 
 	if startAfter != "" {
@@ -54,12 +57,12 @@ func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *Organiza
 	}
 	defer cursor.Close(ctx)
 
-	var results = []*Organization{}
+	var results = []*User{}
 	if err = cursor.All(ctx, &results); err != nil {
 		panic(err)
 	}
 
-	return &OrganizationListResult{
+	return &UserListResult{
 		Results: results,
 	}, nil
 }

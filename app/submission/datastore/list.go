@@ -54,7 +54,7 @@ func (impl SubmissionStorerImpl) ListByFilter(ctx context.Context, f *Submission
 	}
 	defer cursor.Close(ctx)
 
-	var results []*Submission
+	var results = []*Submission{}
 	if err = cursor.All(ctx, &results); err != nil {
 		panic(err)
 	}

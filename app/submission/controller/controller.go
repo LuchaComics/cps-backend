@@ -20,7 +20,7 @@ import (
 type SubmissionController interface {
 	Create(ctx context.Context, m *domain.Submission) (*domain.Submission, error)
 	GetByID(ctx context.Context, id primitive.ObjectID) (*domain.Submission, error)
-	UpdateByID(ctx context.Context, m *domain.Submission) error
+	UpdateByID(ctx context.Context, m *domain.Submission) (*domain.Submission, error)
 	ListByFilter(ctx context.Context, f *domain.SubmissionListFilter) (*domain.SubmissionListResult, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 }

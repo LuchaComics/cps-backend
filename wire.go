@@ -11,6 +11,7 @@ import (
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	"github.com/LuchaComics/cps-backend/adapter/storage/mongodb"
 	s3_storage "github.com/LuchaComics/cps-backend/adapter/storage/s3"
+	customer_c "github.com/LuchaComics/cps-backend/app/customer/controller"
 	gateway_c "github.com/LuchaComics/cps-backend/app/gateway/controller"
 	organization_c "github.com/LuchaComics/cps-backend/app/organization/controller"
 	organization_s "github.com/LuchaComics/cps-backend/app/organization/datastore"
@@ -20,6 +21,7 @@ import (
 	user_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/inputport/http"
+	customer_http "github.com/LuchaComics/cps-backend/inputport/http/customer"
 	gateway_http "github.com/LuchaComics/cps-backend/inputport/http/gateway"
 	"github.com/LuchaComics/cps-backend/inputport/http/middleware"
 	organization_http "github.com/LuchaComics/cps-backend/inputport/http/organization"
@@ -50,6 +52,7 @@ func InitializeEvent() Application {
 		pdfbuilder.NewCBFFBuilder,
 		user_s.NewDatastore,
 		user_c.NewController,
+		customer_c.NewController,
 		organization_s.NewDatastore,
 		organization_c.NewController,
 		submission_s.NewDatastore,
@@ -57,6 +60,7 @@ func InitializeEvent() Application {
 		gateway_c.NewController,
 		gateway_http.NewHandler,
 		user_http.NewHandler,
+		customer_http.NewHandler,
 		organization_http.NewHandler,
 		submission_http.NewHandler,
 		middleware.NewMiddleware,

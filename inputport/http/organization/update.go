@@ -54,13 +54,13 @@ func (h *Handler) UpdateByID(w http.ResponseWriter, r *http.Request, id string) 
 		return
 	}
 
-	err = h.Controller.UpdateByID(ctx, data)
+	org, err := h.Controller.UpdateByID(ctx, data)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return
 	}
 
-	MarshalUpdateResponse(data, w)
+	MarshalUpdateResponse(org, w)
 }
 
 func MarshalUpdateResponse(res *sub_s.Organization, w http.ResponseWriter) {

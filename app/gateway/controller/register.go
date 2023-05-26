@@ -75,7 +75,7 @@ func (impl *GatewayControllerImpl) createUserForRequest(ctx context.Context, req
 		Email:                     req.Email,
 		PasswordHash:              passwordHash,
 		PasswordHashAlgorithm:     impl.Password.AlgorithmName(),
-		Role:                      user_s.RetailerRole,
+		Role:                      user_s.RetailerStaffRole,
 		CompanyName:               req.CompanyName,
 		Phone:                     req.Phone,
 		Country:                   req.Country,

@@ -8,6 +8,7 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/LuchaComics/cps-backend/config"
+	"github.com/LuchaComics/cps-backend/inputport/http/customer"
 	"github.com/LuchaComics/cps-backend/inputport/http/gateway"
 	"github.com/LuchaComics/cps-backend/inputport/http/middleware"
 	"github.com/LuchaComics/cps-backend/inputport/http/organization"
@@ -29,6 +30,7 @@ type httpInputPort struct {
 	User         *user.Handler
 	Organization *organization.Handler
 	Submission   *submission.Handler
+	Customer     *customer.Handler
 }
 
 func NewInputPort(
@@ -39,6 +41,7 @@ func NewInputPort(
 	cu *user.Handler,
 	org *organization.Handler,
 	t *submission.Handler,
+	cust *customer.Handler,
 ) InputPortServer {
 	// Initialize the ServeMux.
 	mux := http.NewServeMux()
@@ -64,6 +67,7 @@ func NewInputPort(
 		User:         cu,
 		Organization: org,
 		Submission:   t,
+		Customer:     cust,
 		Server:       srv,
 	}
 
@@ -146,6 +150,18 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		port.Organization.UpdateByID(w, r, p[3])
 	case n == 4 && p[1] == "v1" && p[2] == "organization" && r.Method == http.MethodDelete:
 		port.Organization.DeleteByID(w, r, p[3])
+
+	// --- CUSTOMERS --- //
+	case n == 3 && p[1] == "v1" && p[2] == "customers" && r.Method == http.MethodGet:
+		port.Customer.List(w, r)
+	case n == 3 && p[1] == "v1" && p[2] == "customers" && r.Method == http.MethodPost:
+		port.Customer.Create(w, r)
+	case n == 4 && p[1] == "v1" && p[2] == "customer" && r.Method == http.MethodGet:
+		port.Customer.GetByID(w, r, p[3])
+	case n == 4 && p[1] == "v1" && p[2] == "customer" && r.Method == http.MethodPut:
+		port.Customer.UpdateByID(w, r, p[3])
+	case n == 4 && p[1] == "v1" && p[2] == "customer" && r.Method == http.MethodDelete:
+		port.Customer.DeleteByID(w, r, p[3])
 
 	// --- CATCH ALL: D.N.E. ---
 	default:

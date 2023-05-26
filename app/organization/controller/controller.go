@@ -18,7 +18,7 @@ import (
 type OrganizationController interface {
 	Create(ctx context.Context, m *domain.Organization) (*domain.Organization, error)
 	GetByID(ctx context.Context, id primitive.ObjectID) (*domain.Organization, error)
-	UpdateByID(ctx context.Context, m *domain.Organization) error
+	UpdateByID(ctx context.Context, m *domain.Organization) (*domain.Organization, error)
 	ListByFilter(ctx context.Context, f *domain.OrganizationListFilter) (*domain.OrganizationListResult, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 }
