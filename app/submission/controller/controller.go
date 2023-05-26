@@ -9,7 +9,7 @@ import (
 	mg "github.com/LuchaComics/cps-backend/adapter/emailer/mailgun"
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	s3_storage "github.com/LuchaComics/cps-backend/adapter/storage/s3"
-	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	organization_s "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/provider/password"
@@ -18,22 +18,23 @@ import (
 
 // SubmissionController Interface for submission business logic controller.
 type SubmissionController interface {
-	Create(ctx context.Context, m *domain.Submission) (*domain.Submission, error)
-	GetByID(ctx context.Context, id primitive.ObjectID) (*domain.Submission, error)
-	UpdateByID(ctx context.Context, m *domain.Submission) (*domain.Submission, error)
-	ListByFilter(ctx context.Context, f *domain.SubmissionListFilter) (*domain.SubmissionListResult, error)
+	Create(ctx context.Context, m *submission_s.Submission) (*submission_s.Submission, error)
+	GetByID(ctx context.Context, id primitive.ObjectID) (*submission_s.Submission, error)
+	UpdateByID(ctx context.Context, m *submission_s.Submission) (*submission_s.Submission, error)
+	ListByFilter(ctx context.Context, f *submission_s.SubmissionListFilter) (*submission_s.SubmissionListResult, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 }
 
 type SubmissionControllerImpl struct {
-	Config           *config.Conf
-	Logger           *slog.Logger
-	UUID             uuid.Provider
-	S3               s3_storage.S3Storager
-	Password         password.Provider
-	CBFFBuilder      pdfbuilder.CBFFBuilder
-	Emailer          mg.Emailer
-	SubmissionStorer submission_s.SubmissionStorer
+	Config             *config.Conf
+	Logger             *slog.Logger
+	UUID               uuid.Provider
+	S3                 s3_storage.S3Storager
+	Password           password.Provider
+	CBFFBuilder        pdfbuilder.CBFFBuilder
+	Emailer            mg.Emailer
+	SubmissionStorer   submission_s.SubmissionStorer
+	OrganizationStorer organization_s.OrganizationStorer
 }
 
 func NewController(
@@ -45,6 +46,7 @@ func NewController(
 	cbffb pdfbuilder.CBFFBuilder,
 	emailer mg.Emailer,
 	sub_storer submission_s.SubmissionStorer,
+	org_storer organization_s.OrganizationStorer,
 ) SubmissionController {
 
 	// // FOR TESTING PURPOSES ONLY.
@@ -84,14 +86,15 @@ func NewController(
 	// log.Println("===--->", res, err, "<---===")
 
 	s := &SubmissionControllerImpl{
-		Config:           appCfg,
-		Logger:           loggerp,
-		UUID:             uuidp,
-		S3:               s3,
-		Password:         passwordp,
-		CBFFBuilder:      cbffb,
-		Emailer:          emailer,
-		SubmissionStorer: sub_storer,
+		Config:             appCfg,
+		Logger:             loggerp,
+		UUID:               uuidp,
+		S3:                 s3,
+		Password:           passwordp,
+		CBFFBuilder:        cbffb,
+		Emailer:            emailer,
+		SubmissionStorer:   sub_storer,
+		OrganizationStorer: org_storer,
 	}
 	s.Logger.Debug("submission controller initialization started...")
 	s.Logger.Debug("submission controller initialized")

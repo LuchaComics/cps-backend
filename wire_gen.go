@@ -59,7 +59,7 @@ func InitializeEvent() Application {
 	organizationHandler := organization.NewHandler(organizationController)
 	cbffBuilder := pdfbuilder.NewCBFFBuilder(conf, slogLogger, provider)
 	submissionStorer := datastore3.NewDatastore(conf, slogLogger, client)
-	submissionController := controller4.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, emailer, submissionStorer)
+	submissionController := controller4.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, emailer, submissionStorer, organizationStorer)
 	submissionHandler := submission.NewHandler(submissionController)
 	customerController := controller5.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, emailer, userStorer)
 	customerHandler := customer.NewHandler(customerController)

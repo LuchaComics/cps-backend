@@ -29,13 +29,28 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 			m.UserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
 			m.UserFirstName = ctx.Value(constants.SessionUserFirstName).(string)
 			m.UserLastName = ctx.Value(constants.SessionUserLastName).(string)
-			m.UserCompanyName = ctx.Value(constants.SessionUserCompanyName).(string)
 			m.ServiceType = s_d.PreScreeningServiceType
 		case u_d.StaffRole:
 			m.State = s_d.SubmissionActiveState
 		default:
 			m.State = s_d.SubmissionErrorState
 		}
+	}
+
+	// Update the `company name` field.
+	userOrgID, ok := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
+	if ok {
+		org, err := c.OrganizationStorer.GetByID(ctx, userOrgID)
+		if err != nil {
+			c.Logger.Error("database get by id error", slog.Any("error", err))
+			return nil, err
+		}
+		if org == nil {
+			c.Logger.Error("database get by id does not exist", slog.Any("organization id", userOrgID))
+			return nil, fmt.Errorf("does not exist for organization id: %v", userOrgID)
+		}
+		m.OrganizationID = org.ID
+		m.UserCompanyName = org.Name
 	}
 
 	// Add defaults.
