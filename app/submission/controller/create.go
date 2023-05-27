@@ -88,6 +88,12 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		return nil, err
 	}
 
+	// Look up the publisher names and get the correct display name or get the other.
+	var publisherNameDisplay string = constants.SubmissionPublisherNames[m.PublisherName]
+	if m.PublisherName == constants.SubmissionPublisherNameOther {
+		publisherNameDisplay = m.PublisherNameOther
+	}
+
 	// The next following lines of code will create the PDF file gnerator
 	// request to be submitted into our PDF file generator to generate the data.
 	r := &pdfbuilder.CBFFBuilderRequestDTO{
@@ -98,7 +104,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		IssueVol:                           m.IssueVol,
 		IssueNo:                            m.IssueNo,
 		IssueCoverDate:                     m.IssueCoverDate,
-		PublisherName:                      m.PublisherName,
+		PublisherName:                      publisherNameDisplay,
 		SpecialNotesLine1:                  m.SpecialNotesLine1,
 		SpecialNotesLine2:                  m.SpecialNotesLine2,
 		SpecialNotesLine3:                  m.SpecialNotesLine3,

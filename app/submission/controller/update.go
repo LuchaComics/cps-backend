@@ -9,6 +9,7 @@ import (
 
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	"github.com/LuchaComics/cps-backend/config/constants"
 	"golang.org/x/exp/slog"
 )
 
@@ -77,6 +78,11 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		// or some other reason.
 	}
 
+	// Look up the publisher names and get the correct display name or get the other.
+	var publisherNameDisplay string = constants.SubmissionPublisherNames[ns.PublisherName]
+	if ns.PublisherName == constants.SubmissionPublisherNameOther {
+		publisherNameDisplay = ns.PublisherNameOther
+	}
 	// The next following lines of code will create the PDF file gnerator
 	// request to be submitted into our PDF file generator to generate the data.
 	r := &pdfbuilder.CBFFBuilderRequestDTO{
@@ -87,7 +93,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		IssueVol:                           ns.IssueVol,
 		IssueNo:                            ns.IssueNo,
 		IssueCoverDate:                     ns.IssueCoverDate,
-		PublisherName:                      ns.PublisherName,
+		PublisherName:                      publisherNameDisplay,
 		SpecialNotesLine1:                  ns.SpecialNotesLine1,
 		SpecialNotesLine2:                  ns.SpecialNotesLine2,
 		SpecialNotesLine3:                  ns.SpecialNotesLine3,
