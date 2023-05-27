@@ -91,6 +91,7 @@ func (impl *GatewayControllerImpl) createUserForRequest(ctx context.Context, req
 		WasEmailVerified:          false,
 		EmailVerificationCode:     impl.UUID.NewUUID(),
 		EmailVerificationExpiry:   time.Now().Add(72 * time.Hour),
+		State:                     user_s.UserActiveState,
 	}
 	err = impl.UserStorer.Create(ctx, u)
 	if err != nil {

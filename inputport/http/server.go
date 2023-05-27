@@ -137,6 +137,8 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 	case n == 4 && p[1] == "v1" && p[2] == "submission" && r.Method == http.MethodPut:
 		port.Submission.UpdateByID(w, r, p[3])
 	case n == 4 && p[1] == "v1" && p[2] == "submission" && r.Method == http.MethodDelete:
+		port.Submission.ArchiveByID(w, r, p[3])
+	case n == 5 && p[1] == "v1" && p[2] == "submission" && p[4] == "perma-delete" && r.Method == http.MethodDelete:
 		port.Submission.DeleteByID(w, r, p[3])
 
 	// --- ORGANIZATION --- //

@@ -14,7 +14,8 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	f := &sub_s.UserListFilter{
 		// PageSize:  10,
 		// LastID:    "",
-		SortField: "_id",
+		SortField:       "_id",
+		ExcludeArchived: true,
 	}
 
 	m, err := h.Controller.ListByFilter(ctx, f)

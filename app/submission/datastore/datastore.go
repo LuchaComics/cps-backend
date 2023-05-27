@@ -15,7 +15,7 @@ const (
 	SubmissionPendingState                        = 1
 	SubmissionActiveState                         = 2
 	SubmissionErrorState                          = 3
-	SubmissionInactiveState                       = 4
+	SubmissionArchivedState                       = 100
 	PreScreeningServiceType                       = 1
 	PedigreeServiceType                           = 2
 	CPSCapsuleYougradeServiceType                 = 3
@@ -98,11 +98,12 @@ type Submission struct {
 }
 
 type SubmissionListFilter struct {
-	PageSize  int64
-	LastID    string
-	SortField string
-	UserID    primitive.ObjectID
-	UserRole  int8
+	PageSize        int64
+	LastID          string
+	SortField       string
+	UserID          primitive.ObjectID
+	UserRole        int8
+	ExcludeArchived bool
 
 	// SortOrder string   `json:"sort_order"`
 	// SortField string   `json:"sort_field"`

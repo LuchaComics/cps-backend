@@ -48,6 +48,10 @@ func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) 
 		query["_id"] = bson.M{"$gt": cursor.Lookup("_id").ObjectID()}
 	}
 
+	if f.ExcludeArchived {
+		query["state"] = bson.M{"$ne": UserArchivedState} // Do not list archived items! This code
+	}
+
 	options.SetSort(bson.D{{sortField, 1}}) // Sort in ascending order based on the specified field
 
 	// Retrieve the list of items from the collection

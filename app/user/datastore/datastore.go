@@ -13,7 +13,7 @@ import (
 
 const (
 	UserActiveState      = 1
-	UserInactiveState    = 2
+	UserArchivedState    = 100
 	StaffRole            = 1
 	RetailerStaffRole    = 2
 	RetailerCustomerRole = 3
@@ -50,17 +50,19 @@ type User struct {
 	AgreePromotionsEmail      bool               `bson:"agree_promotions_email" json:"agree_promotions_email,omitempty"`
 	CreatedAt                 time.Time          `bson:"created_at" json:"created_at,omitempty"`
 	ModifiedAt                time.Time          `bson:"modified_at" json:"modified_at,omitempty"`
+	State                     int8               `bson:"state" json:"state"`
 }
 
 type UserListFilter struct {
-	OrganizationID primitive.ObjectID `bson:"organization_id" json:"organization_id,omitempty"`
-	Role           int8               `bson:"role" json:"role"`
-	SortOrder      string             `json:"sort_order"`
-	SortField      string             `json:"sort_field"`
-	Offset         uint64             `json:"offset"`
-	Limit          uint64             `json:"limit"`
-	States         []int8             `json:"states"`
-	UUIDs          []string           `json:"uuids"`
+	OrganizationID  primitive.ObjectID `bson:"organization_id" json:"organization_id,omitempty"`
+	Role            int8               `bson:"role" json:"role"`
+	SortOrder       string             `json:"sort_order"`
+	SortField       string             `json:"sort_field"`
+	Offset          uint64             `json:"offset"`
+	Limit           uint64             `json:"limit"`
+	States          []int8             `json:"states"`
+	UUIDs           []string           `json:"uuids"`
+	ExcludeArchived bool               `json:"exclude_archived"`
 }
 
 type UserListResult struct {
