@@ -11,7 +11,6 @@ import (
 
 	"github.com/jung-kurt/gofpdf"
 	"github.com/jung-kurt/gofpdf/contrib/gofpdi"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 
 	s_d "github.com/LuchaComics/cps-backend/app/submission/datastore"
@@ -20,41 +19,41 @@ import (
 )
 
 type CBFFBuilderRequestDTO struct {
-	ID                                 primitive.ObjectID `bson:"_id" json:"id"`
-	Filename                           string             `bson:"filename" json:"filename"`
-	SubmissionDate                     time.Time          `bson:"submission_date" json:"submission_date"`
-	Item                               string             `bson:"item" json:"item"`
-	SeriesTitle                        string             `bson:"series_title" json:"series_title"`
-	IssueVol                           string             `bson:"issue_vol" json:"issue_vol"`
-	IssueNo                            string             `bson:"issue_no" json:"issue_no"`
-	IssueCoverDate                     string             `bson:"issue_cover_date" json:"issue_cover_date"`
-	PublisherName                      string             `bson:"publisher_name" json:"publisher_name"`
-	SpecialNotesLine1                  string             `bson:"special_notes_line_1" json:"special_notes_line_1"`
-	SpecialNotesLine2                  string             `bson:"special_notes_line_2" json:"special_notes_line_2"`
-	SpecialNotesLine3                  string             `bson:"special_notes_line_3" json:"special_notes_line_3"`
-	SpecialNotesLine4                  string             `bson:"special_notes_line_4" json:"special_notes_line_4"`
-	SpecialNotesLine5                  string             `bson:"special_notes_line_5" json:"special_notes_line_5"`
-	GradingNotesLine1                  string             `bson:"grading_notes_line_1" json:"grading_notes_line_1"`
-	GradingNotesLine2                  string             `bson:"grading_notes_line_2" json:"grading_notes_line_2"`
-	GradingNotesLine3                  string             `bson:"grading_notes_line_3" json:"grading_notes_line_3"`
-	GradingNotesLine4                  string             `bson:"grading_notes_line_4" json:"grading_notes_line_4"`
-	GradingNotesLine5                  string             `bson:"grading_notes_line_5" json:"grading_notes_line_5"`
-	CreasesFinding                     string             `bson:"creases_finding" json:"creases_finding"`
-	TearsFinding                       string             `bson:"tears_finding" json:"tears_finding"`
-	MissingPartsFinding                string             `bson:"missing_parts_finding" json:"missing_parts_finding"`
-	StainsFinding                      string             `bson:"stains_finding" json:"stains_finding"`
-	DistortionFinding                  string             `bson:"distortion_finding" json:"distortion_finding"`
-	PaperQualityFinding                string             `bson:"paper_quality_finding" json:"paper_quality_finding"`
-	SpineFinding                       string             `bson:"spine_finding" json:"spine_finding"`
-	CoverFinding                       string             `bson:"cover_finding" json:"cover_finding"`
-	ShowsSignsOfTamperingOrRestoration bool               `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
-	GradingScale                       int8               `bson:"grading_scale" json:"grading_scale"`
-	OverallLetterGrade                 string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
-	OverallNumberGrade                 float64            `bson:"overall_number_grade" json:"overall_number_grade"`
-	CpsPercentageGrade                 float64            `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
-	UserFirstName                      string             `bson:"user_first_name" json:"user_first_name"`
-	UserLastName                       string             `bson:"user_last_name" json:"user_last_name"`
-	UserCompanyName                    string             `bson:"user_company_name" json:"user_company_name"`
+	CPSRN                              string    `bson:"cpsrn" json:"cpSrn"`
+	Filename                           string    `bson:"filename" json:"filename"`
+	SubmissionDate                     time.Time `bson:"submission_date" json:"submission_date"`
+	Item                               string    `bson:"item" json:"item"`
+	SeriesTitle                        string    `bson:"series_title" json:"series_title"`
+	IssueVol                           string    `bson:"issue_vol" json:"issue_vol"`
+	IssueNo                            string    `bson:"issue_no" json:"issue_no"`
+	IssueCoverDate                     string    `bson:"issue_cover_date" json:"issue_cover_date"`
+	PublisherName                      string    `bson:"publisher_name" json:"publisher_name"`
+	SpecialNotesLine1                  string    `bson:"special_notes_line_1" json:"special_notes_line_1"`
+	SpecialNotesLine2                  string    `bson:"special_notes_line_2" json:"special_notes_line_2"`
+	SpecialNotesLine3                  string    `bson:"special_notes_line_3" json:"special_notes_line_3"`
+	SpecialNotesLine4                  string    `bson:"special_notes_line_4" json:"special_notes_line_4"`
+	SpecialNotesLine5                  string    `bson:"special_notes_line_5" json:"special_notes_line_5"`
+	GradingNotesLine1                  string    `bson:"grading_notes_line_1" json:"grading_notes_line_1"`
+	GradingNotesLine2                  string    `bson:"grading_notes_line_2" json:"grading_notes_line_2"`
+	GradingNotesLine3                  string    `bson:"grading_notes_line_3" json:"grading_notes_line_3"`
+	GradingNotesLine4                  string    `bson:"grading_notes_line_4" json:"grading_notes_line_4"`
+	GradingNotesLine5                  string    `bson:"grading_notes_line_5" json:"grading_notes_line_5"`
+	CreasesFinding                     string    `bson:"creases_finding" json:"creases_finding"`
+	TearsFinding                       string    `bson:"tears_finding" json:"tears_finding"`
+	MissingPartsFinding                string    `bson:"missing_parts_finding" json:"missing_parts_finding"`
+	StainsFinding                      string    `bson:"stains_finding" json:"stains_finding"`
+	DistortionFinding                  string    `bson:"distortion_finding" json:"distortion_finding"`
+	PaperQualityFinding                string    `bson:"paper_quality_finding" json:"paper_quality_finding"`
+	SpineFinding                       string    `bson:"spine_finding" json:"spine_finding"`
+	CoverFinding                       string    `bson:"cover_finding" json:"cover_finding"`
+	ShowsSignsOfTamperingOrRestoration bool      `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
+	GradingScale                       int8      `bson:"grading_scale" json:"grading_scale"`
+	OverallLetterGrade                 string    `bson:"overall_letter_grade" json:"overall_letter_grade"`
+	OverallNumberGrade                 float64   `bson:"overall_number_grade" json:"overall_number_grade"`
+	CpsPercentageGrade                 float64   `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
+	UserFirstName                      string    `bson:"user_first_name" json:"user_first_name"`
+	UserLastName                       string    `bson:"user_last_name" json:"user_last_name"`
+	UserCompanyName                    string    `bson:"user_company_name" json:"user_company_name"`
 }
 type CBFFBuilderResponseDTO struct {
 	FileName string `json:"file_name"`
@@ -102,12 +101,12 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	gofpdi.UseImportedTemplate(pdf, tpl1, 0, 0, 297, 210)
 
 	//
-	// UNIQUE IDENTIFIER
+	// CPS REGISTRY NUMBER
 	//
 
 	pdf.SetFont("Courier", "", 12)
 	pdf.SetXY(17, 21)
-	pdf.Cell(0, 0, r.ID.Hex())
+	pdf.Cell(0, 0, r.CPSRN)
 
 	//
 	// LEFT SIDE

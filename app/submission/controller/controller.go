@@ -12,6 +12,8 @@ import (
 	organization_s "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	"github.com/LuchaComics/cps-backend/config"
+	"github.com/LuchaComics/cps-backend/provider/cpsrn"
+	"github.com/LuchaComics/cps-backend/provider/kmutex"
 	"github.com/LuchaComics/cps-backend/provider/password"
 	"github.com/LuchaComics/cps-backend/provider/uuid"
 )
@@ -31,8 +33,10 @@ type SubmissionControllerImpl struct {
 	UUID               uuid.Provider
 	S3                 s3_storage.S3Storager
 	Password           password.Provider
+	CPSRN              cpsrn.Provider
 	CBFFBuilder        pdfbuilder.CBFFBuilder
 	Emailer            mg.Emailer
+	Kmutex             kmutex.Provider
 	SubmissionStorer   submission_s.SubmissionStorer
 	OrganizationStorer organization_s.OrganizationStorer
 }
@@ -43,11 +47,14 @@ func NewController(
 	uuidp uuid.Provider,
 	s3 s3_storage.S3Storager,
 	passwordp password.Provider,
+	kmux kmutex.Provider,
+	cpsrnP cpsrn.Provider,
 	cbffb pdfbuilder.CBFFBuilder,
 	emailer mg.Emailer,
 	sub_storer submission_s.SubmissionStorer,
 	org_storer organization_s.OrganizationStorer,
 ) SubmissionController {
+	loggerp.Debug("submission controller initialization started...")
 
 	// // FOR TESTING PURPOSES ONLY.
 	// r := &pdfbuilder.CBFFBuilderRequestDTO{
@@ -91,12 +98,13 @@ func NewController(
 		UUID:               uuidp,
 		S3:                 s3,
 		Password:           passwordp,
+		Kmutex:             kmux,
+		CPSRN:              cpsrnP,
 		CBFFBuilder:        cbffb,
 		Emailer:            emailer,
 		SubmissionStorer:   sub_storer,
 		OrganizationStorer: org_storer,
 	}
-	s.Logger.Debug("submission controller initialization started...")
 	s.Logger.Debug("submission controller initialized")
 	return s
 }

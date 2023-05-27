@@ -28,7 +28,9 @@ import (
 	"github.com/LuchaComics/cps-backend/inputport/http/organization"
 	"github.com/LuchaComics/cps-backend/inputport/http/submission"
 	"github.com/LuchaComics/cps-backend/inputport/http/user"
+	"github.com/LuchaComics/cps-backend/provider/cpsrn"
 	"github.com/LuchaComics/cps-backend/provider/jwt"
+	"github.com/LuchaComics/cps-backend/provider/kmutex"
 	"github.com/LuchaComics/cps-backend/provider/logger"
 	"github.com/LuchaComics/cps-backend/provider/password"
 	"github.com/LuchaComics/cps-backend/provider/time"
@@ -57,9 +59,11 @@ func InitializeEvent() Application {
 	s3Storager := s3.NewStorage(conf, slogLogger, provider)
 	organizationController := controller3.NewController(conf, slogLogger, provider, s3Storager, emailer, organizationStorer)
 	organizationHandler := organization.NewHandler(organizationController)
+	kmutexProvider := kmutex.NewProvider()
+	cpsrnProvider := cpsrn.NewProvider()
 	cbffBuilder := pdfbuilder.NewCBFFBuilder(conf, slogLogger, provider)
 	submissionStorer := datastore3.NewDatastore(conf, slogLogger, client)
-	submissionController := controller4.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, emailer, submissionStorer, organizationStorer)
+	submissionController := controller4.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, kmutexProvider, cpsrnProvider, cbffBuilder, emailer, submissionStorer, organizationStorer)
 	submissionHandler := submission.NewHandler(submissionController)
 	customerController := controller5.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, emailer, userStorer)
 	customerHandler := customer.NewHandler(customerController)

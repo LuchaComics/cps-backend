@@ -36,6 +36,7 @@ const (
 type Submission struct {
 	ID                                 primitive.ObjectID `bson:"_id" json:"id"`
 	OrganizationID                     primitive.ObjectID `bson:"organization_id" json:"organization_id"`
+	CPSRN                              string             `bson:"cpsrn" json:"cpsrn"`
 	CreatedAt                          time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
 	ModifiedAt                         time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
 	ServiceType                        int8               `bson:"service_type" json:"service_type"`
@@ -122,6 +123,7 @@ type SubmissionStorer interface {
 	UpdateByID(ctx context.Context, m *Submission) error
 	ListByFilter(ctx context.Context, m *SubmissionListFilter) (*SubmissionListResult, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
+	CountAll(ctx context.Context) (int64, error)
 	// //TODO: Add more...
 }
 

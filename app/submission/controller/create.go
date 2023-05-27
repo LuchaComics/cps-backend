@@ -17,7 +17,30 @@ import (
 )
 
 func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission) (*s_d.Submission, error) {
-	// Modify the submission based on role.
+	// DEVELOPERS NOTE:
+	// Every submission needs to have a unique `CPS Registry Number` (CPRN)
+	// generated. The following needs to happen to generate the unique CPRN:
+	// 1. Make the `Create` function be `atomic` and thus lock this function.
+	// 2. Count total submissions in system.
+	// 3. Generate CPRN.
+	// 4. Apply the CPRN to the submission.
+	// 5. Unlock this `Create` function to be usable again by other calls.
+	c.Logger.Debug("applying mutex")
+	c.Kmutex.Lock("CPS-BACKEND-SUBMISSION-INSERTION") // Step 1
+	defer func() {
+		c.Kmutex.Unlock("CPS-BACKEND-SUBMISSION-INSERTION") // Step 5
+		c.Logger.Debug("removing mutex")
+	}()
+	total, err := c.SubmissionStorer.CountAll(ctx) // Step 2
+	if err != nil {
+		c.Logger.Error("count all submissions error", slog.Any("error", err))
+		return nil, err
+	}
+	m.CPSRN = c.CPSRN.GenerateNumber(total) // Step 3 & 4
+
+	// DEVELOPERS NOTE:
+	// Every submission creation is dependent on the `role` of the logged in
+	// user in our system.
 	userRole, ok := ctx.Value(constants.SessionUserRole).(int8)
 	if ok {
 		switch userRole {
@@ -60,8 +83,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	m.SubmissionDate = time.Now()
 
 	// Save to our database.
-	err := c.SubmissionStorer.Create(ctx, m)
-	if err != nil {
+	if err := c.SubmissionStorer.Create(ctx, m); err != nil {
 		c.Logger.Error("database create error", slog.Any("error", err))
 		return nil, err
 	}
@@ -69,7 +91,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	// The next following lines of code will create the PDF file gnerator
 	// request to be submitted into our PDF file generator to generate the data.
 	r := &pdfbuilder.CBFFBuilderRequestDTO{
-		ID:                                 m.ID,
+		CPSRN:                              m.CPSRN,
 		Filename:                           fmt.Sprintf("%v.pdf", m.ID.Hex()),
 		SubmissionDate:                     time.Now(),
 		SeriesTitle:                        m.SeriesTitle,

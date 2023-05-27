@@ -80,8 +80,8 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	// The next following lines of code will create the PDF file gnerator
 	// request to be submitted into our PDF file generator to generate the data.
 	r := &pdfbuilder.CBFFBuilderRequestDTO{
-		ID:                                 ns.ID,
-		Filename:                           fmt.Sprintf("%v.pdf", ns.ID.Hex()),
+		CPSRN:                              ns.CPSRN,
+		Filename:                           fmt.Sprintf("%v.pdf", ns.CPSRN),
 		SubmissionDate:                     time.Now(),
 		SeriesTitle:                        ns.SeriesTitle,
 		IssueVol:                           ns.IssueVol,

@@ -27,7 +27,9 @@ import (
 	organization_http "github.com/LuchaComics/cps-backend/inputport/http/organization"
 	submission_http "github.com/LuchaComics/cps-backend/inputport/http/submission"
 	user_http "github.com/LuchaComics/cps-backend/inputport/http/user"
+	"github.com/LuchaComics/cps-backend/provider/cpsrn"
 	"github.com/LuchaComics/cps-backend/provider/jwt"
+	"github.com/LuchaComics/cps-backend/provider/kmutex"
 	"github.com/LuchaComics/cps-backend/provider/logger"
 	"github.com/LuchaComics/cps-backend/provider/password"
 	"github.com/LuchaComics/cps-backend/provider/time"
@@ -44,8 +46,10 @@ func InitializeEvent() Application {
 		time.NewProvider,
 		logger.NewProvider,
 		jwt.NewProvider,
+		kmutex.NewProvider,
 		mailgun.NewEmailer,
 		password.NewProvider,
+		cpsrn.NewProvider,
 		mongodb.NewStorage,
 		s3_storage.NewStorage,
 		redis.NewCache,
