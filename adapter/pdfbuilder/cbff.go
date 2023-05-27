@@ -149,7 +149,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	pdf.Cell(0, 0, r.IssueCoverDate)
 
 	// ROW 3
-	pdf.SetXY(172, 56)
+	pdf.SetXY(220, 56)
 	pdf.Cell(0, 0, r.PublisherName)
 
 	//
