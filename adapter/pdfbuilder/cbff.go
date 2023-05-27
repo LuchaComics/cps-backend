@@ -448,7 +448,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	//// Generate the file and save it to the file.
 	////
 
-	fileName := fmt.Sprintf("%s.pdf", bdr.UUID.NewUUID())
+	fileName := fmt.Sprintf("%s.pdf", r.CPSRN)
 	filePath := fmt.Sprintf("%s/%s", bdr.DataDirectoryPath, fileName)
 
 	err = pdf.OutputFileAndClose(filePath)
