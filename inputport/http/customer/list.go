@@ -2,6 +2,7 @@ package customer
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	sub_s "github.com/LuchaComics/cps-backend/app/user/datastore"
@@ -10,6 +11,7 @@ import (
 
 func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	fmt.Println("GET params were:", r.URL.Query())
 
 	f := &sub_s.UserListFilter{
 		// PageSize:  10,
@@ -18,6 +20,13 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 		ExcludeArchived: true,
 	}
 
+	// Apply search text if it exists in url parameter.
+	searchKeyword := r.URL.Query().Get("search")
+	if searchKeyword != "" {
+		f.SearchText = searchKeyword
+	}
+
+	// Perform our database operation.
 	m, err := h.Controller.ListByFilter(ctx, f)
 	if err != nil {
 		httperror.ResponseError(w, err)

@@ -49,7 +49,6 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 			m.State = s_d.SubmissionPendingState
 
 			// Auto-assign the user-if
-			m.UserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
 			m.UserFirstName = ctx.Value(constants.SessionUserFirstName).(string)
 			m.UserLastName = ctx.Value(constants.SessionUserLastName).(string)
 			m.ServiceType = s_d.PreScreeningServiceType
@@ -59,7 +58,6 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 			m.State = s_d.SubmissionErrorState
 		}
 	}
-
 	// Update the `company name` field.
 	userOrgID, ok := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
 	if ok {
@@ -78,9 +76,21 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 
 	// Add defaults.
 	m.ID = primitive.NewObjectID()
+	m.CreatedByUserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
 	m.CreatedAt = time.Now()
+	m.ModifiedByUserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
 	m.ModifiedAt = time.Now()
 	m.SubmissionDate = time.Now()
+
+	// Attach a copy of the customer to our record.
+	customerUser, err := c.UserStorer.GetByID(ctx, m.UserID)
+	if err != nil {
+		c.Logger.Error("database get customer by id error", slog.Any("error", err))
+		return nil, err
+	}
+	if customerUser != nil {
+		m.User = userToSubmissionUserCopy(customerUser)
+	}
 
 	// Save to our database.
 	if err := c.SubmissionStorer.Create(ctx, m); err != nil {

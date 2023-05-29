@@ -12,14 +12,19 @@ import (
 
 func (c *SubmissionControllerImpl) ListByFilter(ctx context.Context, f *domain.SubmissionListFilter) (*domain.SubmissionListResult, error) {
 	// Extract from our session the following data.
+	organizationID := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
 	userID := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply filtering based on ownership and role.
 	if userRole == user_d.RetailerStaffRole {
-		f.UserID = userID
-		f.UserRole = userRole
+		f.OrganizationID = organizationID
 	}
+
+	c.Logger.Debug("list by filter",
+		slog.Any("organization_id", organizationID),
+		slog.Any("user_id", userID),
+		slog.Any("user_role", userRole))
 
 	m, err := c.SubmissionStorer.ListByFilter(ctx, f)
 	if err != nil {

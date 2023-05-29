@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -31,8 +32,11 @@ func (impl SubmissionStorerImpl) ListByFilter(ctx context.Context, f *Submission
 		SetSort(bson.D{{sortField, sortOrder}})
 
 	// Add filter conditions to the query
-	if f.UserID.Hex() != "" {
+	if f.UserID != primitive.NilObjectID {
 		query["user_id"] = f.UserID
+	}
+	if f.OrganizationID != primitive.NilObjectID {
+		query["organization_id"] = f.OrganizationID
 	}
 
 	if startAfter != "" {

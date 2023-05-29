@@ -11,6 +11,7 @@ import (
 	s3_storage "github.com/LuchaComics/cps-backend/adapter/storage/s3"
 	organization_s "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	user_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/provider/cpsrn"
 	"github.com/LuchaComics/cps-backend/provider/kmutex"
@@ -38,6 +39,7 @@ type SubmissionControllerImpl struct {
 	CBFFBuilder        pdfbuilder.CBFFBuilder
 	Emailer            mg.Emailer
 	Kmutex             kmutex.Provider
+	UserStorer         user_s.UserStorer
 	SubmissionStorer   submission_s.SubmissionStorer
 	OrganizationStorer organization_s.OrganizationStorer
 }
@@ -52,6 +54,7 @@ func NewController(
 	cpsrnP cpsrn.Provider,
 	cbffb pdfbuilder.CBFFBuilder,
 	emailer mg.Emailer,
+	usr_storer user_s.UserStorer,
 	sub_storer submission_s.SubmissionStorer,
 	org_storer organization_s.OrganizationStorer,
 ) SubmissionController {
@@ -103,9 +106,40 @@ func NewController(
 		CPSRN:              cpsrnP,
 		CBFFBuilder:        cbffb,
 		Emailer:            emailer,
+		UserStorer:         usr_storer,
 		SubmissionStorer:   sub_storer,
 		OrganizationStorer: org_storer,
 	}
 	s.Logger.Debug("submission controller initialized")
 	return s
+}
+
+// userToSubmissionUserCopy converts the full `User` record into a limited `SubmissionUser`.
+func userToSubmissionUserCopy(u *user_s.User) *submission_s.SubmissionUser {
+	if u == nil { // Defensive code.
+		return nil
+	}
+	return &submission_s.SubmissionUser{
+		ID:                        u.ID,
+		OrganizationID:            u.OrganizationID,
+		FirstName:                 u.FirstName,
+		LastName:                  u.LastName,
+		Name:                      u.Name,
+		LexicalName:               u.LexicalName,
+		Email:                     u.Email,
+		Phone:                     u.Phone,
+		Country:                   u.Country,
+		Region:                    u.Region,
+		City:                      u.City,
+		PostalCode:                u.PostalCode,
+		AddressLine1:              u.AddressLine1,
+		AddressLine2:              u.AddressLine2,
+		HowDidYouHearAboutUs:      u.HowDidYouHearAboutUs,
+		HowDidYouHearAboutUsOther: u.HowDidYouHearAboutUsOther,
+		AgreePromotionsEmail:      u.AgreePromotionsEmail,
+		CreatedAt:                 u.CreatedAt,
+		ModifiedAt:                u.ModifiedAt,
+		State:                     u.State,
+		Role:                      u.Role,
+	}
 }

@@ -38,7 +38,9 @@ type Submission struct {
 	OrganizationID                     primitive.ObjectID `bson:"organization_id" json:"organization_id"`
 	CPSRN                              string             `bson:"cpsrn" json:"cpsrn"`
 	CreatedAt                          time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
+	CreatedByUserID                    primitive.ObjectID `bson:"created_by_user_id" json:"created_by_user_id"`
 	ModifiedAt                         time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
+	ModifiedByUserID                   primitive.ObjectID `bson:"modified_by_user_id" json:"modified_by_user_id"`
 	ServiceType                        int8               `bson:"service_type" json:"service_type"`
 	State                              int8               `bson:"state" json:"state"`
 	SubmissionDate                     time.Time          `bson:"submission_date" json:"submission_date"`
@@ -72,7 +74,8 @@ type Submission struct {
 	OverallLetterGrade                 string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
 	OverallNumberGrade                 float64            `bson:"overall_number_grade" json:"overall_number_grade"`
 	CpsPercentageGrade                 float64            `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
-	UserID                             primitive.ObjectID `bson:"user_id" json:"user_id"`
+	UserID                             primitive.ObjectID `bson:"user_id" json:"user_id"` // This is the customer this submission belongs to.
+	User                               *SubmissionUser    `bson:"user" json:"user"`       // This is the customer this submission belongs to.
 	UserFirstName                      string             `bson:"user_first_name" json:"user_first_name"`
 	UserLastName                       string             `bson:"user_last_name" json:"user_last_name"`
 	UserCompanyName                    string             `bson:"user_company_name" json:"user_company_name"`
@@ -101,8 +104,8 @@ type SubmissionListFilter struct {
 	PageSize        int64
 	LastID          string
 	SortField       string
+	OrganizationID  primitive.ObjectID
 	UserID          primitive.ObjectID
-	UserRole        int8
 	ExcludeArchived bool
 
 	// SortOrder string   `json:"sort_order"`
@@ -111,6 +114,30 @@ type SubmissionListFilter struct {
 	// Limit     uint64   `json:"limit"`
 	// States    []int8   `json:"states"`
 	// UUIDs     []string `json:"uuids"`
+}
+
+type SubmissionUser struct {
+	ID                        primitive.ObjectID `bson:"_id" json:"_id"`
+	OrganizationID            primitive.ObjectID `bson:"organization_id" json:"organization_id,omitempty"`
+	FirstName                 string             `bson:"first_name" json:"first_name"`
+	LastName                  string             `bson:"last_name" json:"last_name"`
+	Name                      string             `bson:"name" json:"name"`
+	LexicalName               string             `bson:"lexical_name" json:"lexical_name"`
+	Email                     string             `bson:"email" json:"email"`
+	Phone                     string             `bson:"phone" json:"phone,omitempty"`
+	Country                   string             `bson:"country" json:"country,omitempty"`
+	Region                    string             `bson:"region" json:"region,omitempty"`
+	City                      string             `bson:"city" json:"city,omitempty"`
+	PostalCode                string             `bson:"postal_code" json:"postal_code,omitempty"`
+	AddressLine1              string             `bson:"address_line_1" json:"address_line_1,omitempty"`
+	AddressLine2              string             `bson:"address_line_2" json:"address_line_2,omitempty"`
+	HowDidYouHearAboutUs      int8               `bson:"how_did_you_hear_about_us" json:"how_did_you_hear_about_us,omitempty"`
+	HowDidYouHearAboutUsOther string             `bson:"how_did_you_hear_about_us_other" json:"how_did_you_hear_about_us_other,omitempty"`
+	AgreePromotionsEmail      bool               `bson:"agree_promotions_email" json:"agree_promotions_email,omitempty"`
+	CreatedAt                 time.Time          `bson:"created_at" json:"created_at,omitempty"`
+	ModifiedAt                time.Time          `bson:"modified_at" json:"modified_at,omitempty"`
+	Role                      int8               `bson:"role" json:"role"`
+	State                     int8               `bson:"state" json:"state"`
 }
 
 type SubmissionListResult struct {

@@ -2,8 +2,10 @@ package datastore
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/exp/slog"
@@ -63,6 +65,7 @@ type UserListFilter struct {
 	States          []int8             `json:"states"`
 	UUIDs           []string           `json:"uuids"`
 	ExcludeArchived bool               `json:"exclude_archived"`
+	SearchText      string             `json:"search_text"`
 }
 
 type UserListResult struct {
@@ -91,6 +94,21 @@ type UserStorerImpl struct {
 func NewDatastore(appCfg *c.Conf, loggerp *slog.Logger, client *mongo.Client) UserStorer {
 	// ctx := context.Background()
 	uc := client.Database(appCfg.DB.Name).Collection("users")
+
+	// The following few lines of code will create the index for our app for this
+	// colleciton.
+	indexModel := mongo.IndexModel{
+		Keys: bson.D{
+			{"name", "text"},
+			{"email", "text"},
+			{"lexical_name", "text"},
+		},
+	}
+	name, err := uc.Indexes().CreateOne(context.TODO(), indexModel)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Name of Index Created: " + name)
 
 	s := &UserStorerImpl{
 		Logger:     loggerp,

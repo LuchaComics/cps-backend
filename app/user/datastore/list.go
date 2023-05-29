@@ -52,6 +52,13 @@ func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) 
 		query["state"] = bson.M{"$ne": UserArchivedState} // Do not list archived items! This code
 	}
 
+	// Full-text search
+	if f.SearchText != "" {
+		query["$text"] = bson.M{"$search": f.SearchText}
+		options.SetProjection(bson.M{"score": bson.M{"$meta": "textScore"}})
+		options.SetSort(bson.D{{"score", bson.M{"$meta": "textScore"}}})
+	}
+
 	options.SetSort(bson.D{{sortField, 1}}) // Sort in ascending order based on the specified field
 
 	// Retrieve the list of items from the collection
