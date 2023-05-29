@@ -26,6 +26,24 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 		f.SearchText = searchKeyword
 	}
 
+	// Apply filters it exists in url parameter.
+	firstName := r.URL.Query().Get("first_name")
+	if firstName != "" {
+		f.FirstName = firstName
+	}
+	lastName := r.URL.Query().Get("first_name")
+	if lastName != "" {
+		f.LastName = lastName
+	}
+	email := r.URL.Query().Get("email")
+	if email != "" {
+		f.Email = email
+	}
+	phone := r.URL.Query().Get("phone")
+	if phone != "" {
+		f.Phone = phone
+	}
+
 	// Perform our database operation.
 	m, err := h.Controller.ListByFilter(ctx, f)
 	if err != nil {

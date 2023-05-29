@@ -37,6 +37,18 @@ func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) 
 	if f.Role > 0 {
 		query["role"] = f.Role
 	}
+	if f.FirstName != "" {
+		query["first_name"] = f.FirstName
+	}
+	if f.LastName != "" {
+		query["last_name"] = f.LastName
+	}
+	if f.Email != "" {
+		query["email"] = f.Email
+	}
+	if f.Phone != "" {
+		query["phone"] = f.Phone
+	}
 
 	if startAfter != "" {
 		// Find the document with the given startAfter ID

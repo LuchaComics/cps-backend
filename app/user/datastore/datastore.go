@@ -66,6 +66,10 @@ type UserListFilter struct {
 	UUIDs           []string           `json:"uuids"`
 	ExcludeArchived bool               `json:"exclude_archived"`
 	SearchText      string             `json:"search_text"`
+	FirstName       string             `json:"first_name"`
+	LastName        string             `json:"last_name"`
+	Email           string             `json:"email"`
+	Phone           string             `json:"phone"`
 }
 
 type UserListResult struct {
