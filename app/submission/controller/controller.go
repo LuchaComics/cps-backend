@@ -27,6 +27,7 @@ type SubmissionController interface {
 	ListByFilter(ctx context.Context, f *submission_s.SubmissionListFilter) (*submission_s.SubmissionListResult, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 	ArchiveByID(ctx context.Context, id primitive.ObjectID) (*submission_s.Submission, error)
+	SetUser(ctx context.Context, submissionID primitive.ObjectID, userID primitive.ObjectID) (*submission_s.Submission, error)
 }
 
 type SubmissionControllerImpl struct {

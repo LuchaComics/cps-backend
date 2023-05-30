@@ -140,6 +140,8 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		port.Submission.ArchiveByID(w, r, p[3])
 	case n == 5 && p[1] == "v1" && p[2] == "submission" && p[4] == "perma-delete" && r.Method == http.MethodDelete:
 		port.Submission.DeleteByID(w, r, p[3])
+	case n == 5 && p[1] == "v1" && p[2] == "submissions" && p[3] == "operation" && p[4] == "set-user" && r.Method == http.MethodPost:
+		port.Submission.OperationSetUser(w, r)
 
 	// --- ORGANIZATION --- //
 	case n == 3 && p[1] == "v1" && p[2] == "organizations" && r.Method == http.MethodGet:

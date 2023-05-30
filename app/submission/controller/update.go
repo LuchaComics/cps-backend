@@ -9,9 +9,46 @@ import (
 
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	"github.com/LuchaComics/cps-backend/config/constants"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 )
+
+func (c *SubmissionControllerImpl) SetUser(ctx context.Context, submissionID primitive.ObjectID, userID primitive.ObjectID) (*submission_s.Submission, error) {
+	// Fetch the original submission.
+	os, err := c.SubmissionStorer.GetByID(ctx, submissionID)
+	if err != nil {
+		c.Logger.Error("database get by id error", slog.Any("error", err))
+		return nil, err
+	}
+	if os == nil {
+		return nil, nil
+	}
+
+	// Fetch the original submission.
+	cust, err := c.UserStorer.GetByID(ctx, userID)
+	if err != nil {
+		c.Logger.Error("database get by id error", slog.Any("error", err))
+		return nil, err
+	}
+	if os == nil {
+		return nil, nil
+	}
+
+	// Modify our original submission.
+	os.ModifiedAt = time.Now()
+	os.UserID = userID
+	os.User = userToSubmissionUserCopy(cust)
+
+	// Save to the database the modified submission.
+	if err := c.SubmissionStorer.UpdateByID(ctx, os); err != nil {
+		c.Logger.Error("database update by id error", slog.Any("error", err))
+		return nil, err
+	}
+
+	return os, nil
+}
 
 func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Submission) (*domain.Submission, error) {
 	// Fetch the original submission.
