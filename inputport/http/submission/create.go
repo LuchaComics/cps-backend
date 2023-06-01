@@ -46,7 +46,7 @@ func ValidateCreateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.IssueNo == "" {
 		e["issue_no"] = "missing value"
 	}
-	if dirtyData.IssueCoverDate == "" {
+	if dirtyData.IssueCoverDate.IsZero() {
 		e["issue_cover_date"] = "missing value"
 	}
 	if dirtyData.PublisherName < 1 || dirtyData.PublisherName > 9 {
