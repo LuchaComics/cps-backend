@@ -48,21 +48,21 @@ func ValidateCreateRequest(dirtyData *usr_s.User) error {
 	if dirtyData.Phone == "" {
 		e["phone"] = "missing value"
 	}
-	if dirtyData.Country == "" {
-		e["country"] = "missing value"
-	}
-	if dirtyData.Region == "" {
-		e["region"] = "missing value"
-	}
-	if dirtyData.City == "" {
-		e["city"] = "missing value"
-	}
-	if dirtyData.PostalCode == "" {
-		e["postal_code"] = "missing value"
-	}
-	if dirtyData.AddressLine1 == "" {
-		e["address_line_1"] = "missing value"
-	}
+	// if dirtyData.Country == "" {
+	// 	e["country"] = "missing value"
+	// }
+	// if dirtyData.Region == "" {
+	// 	e["region"] = "missing value"
+	// }
+	// if dirtyData.City == "" {
+	// 	e["city"] = "missing value"
+	// }
+	// if dirtyData.PostalCode == "" {
+	// 	e["postal_code"] = "missing value"
+	// }
+	// if dirtyData.AddressLine1 == "" {
+	// 	e["address_line_1"] = "missing value"
+	// }
 	if dirtyData.HowDidYouHearAboutUs > 7 || dirtyData.HowDidYouHearAboutUs < 1 {
 		e["how_did_you_hear_about_us"] = "missing value"
 	} else {
