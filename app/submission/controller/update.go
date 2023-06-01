@@ -63,8 +63,8 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 
 	// Modify our original submission.
 	os.ModifiedAt = time.Now()
+	// os.State = ns.State //BUGFIX - TODO WITH ROLES
 	os.ServiceType = ns.ServiceType
-	os.State = ns.State
 	os.SubmissionDate = ns.SubmissionDate
 	os.Item = ns.Item
 	os.SeriesTitle = ns.SeriesTitle
