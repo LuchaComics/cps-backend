@@ -18,6 +18,15 @@ import (
 
 func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission) (*s_d.Submission, error) {
 	// DEVELOPERS NOTE:
+	// Every submission creation is dependent on the `role` of the logged in
+	// user in our system so we need to extract it right away.
+	userRole, ok := ctx.Value(constants.SessionUserRole).(int8)
+	if !ok {
+		c.Logger.Error("user role not extracted from session")
+		return nil, fmt.Errorf("user role not extracted from session for submission id: %v", m.ID)
+	}
+
+	// DEVELOPERS NOTE:
 	// Every submission needs to have a unique `CPS Registry Number` (CPRN)
 	// generated. The following needs to happen to generate the unique CPRN:
 	// 1. Make the `Create` function be `atomic` and thus lock this function.
@@ -36,28 +45,27 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		c.Logger.Error("count all submissions error", slog.Any("error", err))
 		return nil, err
 	}
-	m.CPSRN = c.CPSRN.GenerateNumber(total) // Step 3 & 4
+	m.CPSRN = c.CPSRN.GenerateNumber(userRole, total) // Step 3 & 4
 
 	// DEVELOPERS NOTE:
 	// Every submission creation is dependent on the `role` of the logged in
 	// user in our system.
-	userRole, ok := ctx.Value(constants.SessionUserRole).(int8)
-	if ok {
-		switch userRole {
-		case u_d.RetailerStaffRole:
-			// Override state.
-			m.State = s_d.SubmissionPendingState
+	switch userRole {
+	case u_d.RetailerStaffRole:
+		// Override state.
+		m.State = s_d.SubmissionPendingState
 
-			// Auto-assign the user-if
-			m.UserFirstName = ctx.Value(constants.SessionUserFirstName).(string)
-			m.UserLastName = ctx.Value(constants.SessionUserLastName).(string)
-			m.ServiceType = s_d.PreScreeningServiceType
-		case u_d.StaffRole:
-			m.State = s_d.SubmissionActiveState
-		default:
-			m.State = s_d.SubmissionErrorState
-		}
+		// Auto-assign the user-if
+		m.UserFirstName = ctx.Value(constants.SessionUserFirstName).(string)
+		m.UserLastName = ctx.Value(constants.SessionUserLastName).(string)
+		m.ServiceType = s_d.PreScreeningServiceType
+	case u_d.StaffRole:
+		panic("SubmissionControllerImpl | Create | TODO: IMPLEMENT.")
+		m.State = s_d.SubmissionActiveState
+	default:
+		m.State = s_d.SubmissionErrorState
 	}
+
 	// Update the `company name` field.
 	userOrgID, ok := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
 	if ok {

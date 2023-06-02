@@ -4,7 +4,7 @@ import "fmt"
 
 // Provider provides an interface for abstracting `CPS Registry Number`.
 type Provider interface {
-	GenerateNumber(currentTotalSubmissionsCount int64) string
+	GenerateNumber(roleID int8, currentTotalSubmissionsCount int64) string
 }
 
 type cpsrnProvider struct {
@@ -23,7 +23,7 @@ func NewProvider() Provider {
 }
 
 // Generates the unique `CPS Registry Number` required for tracking submissions.
-func (p cpsrnProvider) GenerateNumber(currentTotalSubmissionsCount int64) string {
+func (p cpsrnProvider) GenerateNumber(roleID int8, currentTotalSubmissionsCount int64) string {
 	newSectionC := p.sectionC + currentTotalSubmissionsCount
-	return fmt.Sprintf("%d-%d-%d", p.sectionA, p.sectionB, newSectionC)
+	return fmt.Sprintf("%d-%d-%d-%d", p.sectionA, p.sectionB, roleID, newSectionC)
 }
