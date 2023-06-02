@@ -53,6 +53,17 @@ type User struct {
 	CreatedAt                 time.Time          `bson:"created_at" json:"created_at,omitempty"`
 	ModifiedAt                time.Time          `bson:"modified_at" json:"modified_at,omitempty"`
 	State                     int8               `bson:"state" json:"state"`
+	Comments                  []*UserComment     `bson:"comments" json:"comments"`
+}
+
+type UserComment struct {
+	ID               primitive.ObjectID `bson:"_id" json:"id"`
+	OrganizationID   primitive.ObjectID `bson:"organization_id" json:"organization_id"`
+	CreatedAt        time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
+	CreatedByUserID  primitive.ObjectID `bson:"created_by_user_id" json:"created_by_user_id"`
+	ModifiedAt       time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
+	ModifiedByUserID primitive.ObjectID `bson:"modified_by_user_id" json:"modified_by_user_id"`
+	Content          string             `bson:"content" json:"content"`
 }
 
 type UserListFilter struct {

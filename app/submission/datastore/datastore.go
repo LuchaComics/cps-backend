@@ -98,6 +98,17 @@ type Submission struct {
 	Filename                           string             `bson:"filename" json:"filename"`
 	FileUploadS3ObjectKey              string             `bson:"file_upload_s3_key" json:"file_upload_s3_object_key"`
 	FileUploadDownloadableFileURL      string
+	Comments                           []*SubmissionComment `bson:"comments" json:"comments,omitempty"`
+}
+
+type SubmissionComment struct {
+	ID               primitive.ObjectID `bson:"_id" json:"id"`
+	OrganizationID   primitive.ObjectID `bson:"organization_id" json:"organization_id"`
+	CreatedAt        time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
+	CreatedByUserID  primitive.ObjectID `bson:"created_by_user_id" json:"created_by_user_id"`
+	ModifiedAt       time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
+	ModifiedByUserID primitive.ObjectID `bson:"modified_by_user_id" json:"modified_by_user_id"`
+	Content          string             `bson:"content" json:"content"`
 }
 
 type SubmissionListFilter struct {

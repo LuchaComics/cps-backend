@@ -15,6 +15,46 @@ import (
 	"golang.org/x/exp/slog"
 )
 
+func (c *SubmissionControllerImpl) CreateComment(ctx context.Context, submissionID primitive.ObjectID, content string) (*submission_s.Submission, error) {
+	// Fetch the original submission.
+	s, err := c.SubmissionStorer.GetByID(ctx, submissionID)
+	if err != nil {
+		c.Logger.Error("database get by id error", slog.Any("error", err))
+		return nil, err
+	}
+	if s == nil {
+		return nil, nil
+	}
+
+	// Create our comment.
+	comment := &submission_s.SubmissionComment{
+		ID:               primitive.NewObjectID(),
+		OrganizationID:   ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID),
+		CreatedByUserID:  ctx.Value(constants.SessionUserID).(primitive.ObjectID),
+		CreatedAt:        time.Now(),
+		ModifiedByUserID: ctx.Value(constants.SessionUserID).(primitive.ObjectID),
+		ModifiedAt:       time.Now(),
+	}
+
+	// Add our comment to the comments.
+	s.CreatedByUserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	s.CreatedAt = time.Now()
+	s.ModifiedByUserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	s.ModifiedAt = time.Now()
+	s.Comments = append(s.Comments, comment)
+
+	c.Logger.Debug("comment submission", slog.Any("comment", comment))
+	c.Logger.Debug("comment submission", slog.Any("s", s))
+
+	// Save to the database the modified submission.
+	if err := c.SubmissionStorer.UpdateByID(ctx, s); err != nil {
+		c.Logger.Error("database update by id error", slog.Any("error", err))
+		return nil, err
+	}
+
+	return s, nil
+}
+
 func (c *SubmissionControllerImpl) SetUser(ctx context.Context, submissionID primitive.ObjectID, userID primitive.ObjectID) (*submission_s.Submission, error) {
 	// Fetch the original submission.
 	os, err := c.SubmissionStorer.GetByID(ctx, submissionID)
