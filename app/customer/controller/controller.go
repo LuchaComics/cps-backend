@@ -23,6 +23,7 @@ type CustomerController interface {
 	ListByFilter(ctx context.Context, f *user_s.UserListFilter) (*user_s.UserListResult, error)
 	ArchiveByID(ctx context.Context, id primitive.ObjectID) (*user_s.User, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
+	CreateComment(ctx context.Context, customerID primitive.ObjectID, content string) (*user_s.User, error)
 }
 
 type CustomerControllerImpl struct {

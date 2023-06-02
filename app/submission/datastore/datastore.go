@@ -106,8 +106,10 @@ type SubmissionComment struct {
 	OrganizationID   primitive.ObjectID `bson:"organization_id" json:"organization_id"`
 	CreatedAt        time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
 	CreatedByUserID  primitive.ObjectID `bson:"created_by_user_id" json:"created_by_user_id"`
+	CreatedByName    string             `bson:"created_by_name" json:"created_by_name"`
 	ModifiedAt       time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
 	ModifiedByUserID primitive.ObjectID `bson:"modified_by_user_id" json:"modified_by_user_id"`
+	ModifiedByName   string             `bson:"modified_by_name" json:"modified_by_name"`
 	Content          string             `bson:"content" json:"content"`
 }
 

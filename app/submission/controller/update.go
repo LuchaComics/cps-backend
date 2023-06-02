@@ -29,22 +29,20 @@ func (c *SubmissionControllerImpl) CreateComment(ctx context.Context, submission
 	// Create our comment.
 	comment := &submission_s.SubmissionComment{
 		ID:               primitive.NewObjectID(),
+		Content:          content,
 		OrganizationID:   ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID),
 		CreatedByUserID:  ctx.Value(constants.SessionUserID).(primitive.ObjectID),
+		CreatedByName:    ctx.Value(constants.SessionUserName).(string),
 		CreatedAt:        time.Now(),
 		ModifiedByUserID: ctx.Value(constants.SessionUserID).(primitive.ObjectID),
+		ModifiedByName:   ctx.Value(constants.SessionUserName).(string),
 		ModifiedAt:       time.Now(),
 	}
 
 	// Add our comment to the comments.
-	s.CreatedByUserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
-	s.CreatedAt = time.Now()
 	s.ModifiedByUserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
 	s.ModifiedAt = time.Now()
 	s.Comments = append(s.Comments, comment)
-
-	c.Logger.Debug("comment submission", slog.Any("comment", comment))
-	c.Logger.Debug("comment submission", slog.Any("s", s))
 
 	// Save to the database the modified submission.
 	if err := c.SubmissionStorer.UpdateByID(ctx, s); err != nil {

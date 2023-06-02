@@ -66,8 +66,9 @@ func (impl *GatewayControllerImpl) createUserForRequest(ctx context.Context, req
 		return nil, err
 	}
 
+	userID := primitive.NewObjectID()
 	u := &user_s.User{
-		ID:                        primitive.NewObjectID(),
+		ID:                        userID,
 		FirstName:                 req.FirstName,
 		LastName:                  req.LastName,
 		Name:                      fmt.Sprintf("%s %s", req.FirstName, req.LastName),
@@ -86,8 +87,12 @@ func (impl *GatewayControllerImpl) createUserForRequest(ctx context.Context, req
 		HowDidYouHearAboutUsOther: req.HowDidYouHearAboutUsOther,
 		AgreeTOS:                  req.AgreeTOS,
 		AgreePromotionsEmail:      req.AgreePromotionsEmail,
+		CreatedByUserID:           userID,
 		CreatedAt:                 time.Now(),
+		CreatedByName:             fmt.Sprintf("%s %s", req.FirstName, req.LastName),
+		ModifiedByUserID:          userID,
 		ModifiedAt:                time.Now(),
+		ModifiedByName:            fmt.Sprintf("%s %s", req.FirstName, req.LastName),
 		WasEmailVerified:          false,
 		EmailVerificationCode:     impl.UUID.NewUUID(),
 		EmailVerificationExpiry:   time.Now().Add(72 * time.Hour),
