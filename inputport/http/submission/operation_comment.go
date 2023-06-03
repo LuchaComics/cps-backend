@@ -60,6 +60,7 @@ func (h *Handler) OperationCreateComment(w http.ResponseWriter, r *http.Request)
 	reqData, err := UnmarshalOperationCreateCommentRequest(ctx, r)
 	if err != nil {
 		log.Println("OperationCreateComment | UnmarshalOperationCreateCommentRequest | err:", err)
+		httperror.ResponseError(w, err)
 		return
 	}
 	data, err := h.Controller.CreateComment(ctx, reqData.SubmissionID, reqData.Content)
