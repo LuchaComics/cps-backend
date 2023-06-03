@@ -11,6 +11,7 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
+	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	s_d "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	u_d "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config/constants"
@@ -40,7 +41,8 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		c.Kmutex.Unlock("CPS-BACKEND-SUBMISSION-INSERTION") // Step 5
 		c.Logger.Debug("removing mutex")
 	}()
-	total, err := c.SubmissionStorer.CountAll(ctx) // Step 2
+	f := &domain.SubmissionListFilter{UserRole: userRole}  // Part of ID requires count of staff or retailer.
+	total, err := c.SubmissionStorer.CountByFilter(ctx, f) // Step 2
 	if err != nil {
 		c.Logger.Error("count all submissions error", slog.Any("error", err))
 		return nil, err
@@ -85,8 +87,10 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	// Add defaults.
 	m.ID = primitive.NewObjectID()
 	m.CreatedByUserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	m.CreatedByUserRole = userRole
 	m.CreatedAt = time.Now()
 	m.ModifiedByUserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	m.ModifiedByUserRole = userRole
 	m.ModifiedAt = time.Now()
 	m.SubmissionDate = time.Now()
 

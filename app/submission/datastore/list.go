@@ -25,18 +25,21 @@ func (impl SubmissionStorerImpl) ListByFilter(ctx context.Context, f *Submission
 	sortField := "_id"
 	sortOrder := 1 // 1=ascending | -1=descending
 
-	// Pagination query
-	query := bson.M{}
+	// Pagination filter
+	filter := bson.M{}
 	options := options.Find().
 		SetLimit(int64(pageSize)).
 		SetSort(bson.D{{sortField, sortOrder}})
 
-	// Add filter conditions to the query
+	// Add filter conditions to the filter
 	if f.UserID != primitive.NilObjectID {
-		query["user_id"] = f.UserID
+		filter["user_id"] = f.UserID
+	}
+	if f.UserRole != 0 {
+		filter["user_role"] = f.UserRole
 	}
 	if f.OrganizationID != primitive.NilObjectID {
-		query["organization_id"] = f.OrganizationID
+		filter["organization_id"] = f.OrganizationID
 	}
 
 	if startAfter != "" {
@@ -46,17 +49,17 @@ func (impl SubmissionStorerImpl) ListByFilter(ctx context.Context, f *Submission
 			log.Fatal(err)
 		}
 		options.SetSkip(1)
-		query["_id"] = bson.M{"$gt": cursor.Lookup("_id").ObjectID()}
+		filter["_id"] = bson.M{"$gt": cursor.Lookup("_id").ObjectID()}
 	}
 
 	if f.ExcludeArchived {
-		query["state"] = bson.M{"$ne": SubmissionArchivedState} // Do not list archived items! This code
+		filter["state"] = bson.M{"$ne": SubmissionArchivedState} // Do not list archived items! This code
 	}
 
 	options.SetSort(bson.D{{sortField, 1}}) // Sort in ascending order based on the specified field
 
 	// Retrieve the list of items from the collection
-	cursor, err := collection.Find(ctx, query, options)
+	cursor, err := collection.Find(ctx, filter, options)
 	if err != nil {
 		log.Fatal(err)
 	}

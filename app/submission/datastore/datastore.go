@@ -39,8 +39,10 @@ type Submission struct {
 	CPSRN                              string             `bson:"cpsrn" json:"cpsrn"`
 	CreatedAt                          time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
 	CreatedByUserID                    primitive.ObjectID `bson:"created_by_user_id" json:"created_by_user_id"`
+	CreatedByUserRole                  int8               `bson:"created_by_user_role" json:"created_by_user_role"`
 	ModifiedAt                         time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
 	ModifiedByUserID                   primitive.ObjectID `bson:"modified_by_user_id" json:"modified_by_user_id"`
+	ModifiedByUserRole                 int8               `bson:"modified_by_user_role" json:"modified_by_user_role"`
 	ServiceType                        int8               `bson:"service_type" json:"service_type"`
 	State                              int8               `bson:"state" json:"state"`
 	SubmissionDate                     time.Time          `bson:"submission_date" json:"submission_date"`
@@ -119,14 +121,8 @@ type SubmissionListFilter struct {
 	SortField       string
 	OrganizationID  primitive.ObjectID
 	UserID          primitive.ObjectID
+	UserRole        int8
 	ExcludeArchived bool
-
-	// SortOrder string   `json:"sort_order"`
-	// SortField string   `json:"sort_field"`
-	// Offset    uint64   `json:"offset"`
-	// Limit     uint64   `json:"limit"`
-	// States    []int8   `json:"states"`
-	// UUIDs     []string `json:"uuids"`
 }
 
 type SubmissionUser struct {
@@ -162,9 +158,10 @@ type SubmissionStorer interface {
 	Create(ctx context.Context, m *Submission) error
 	GetByID(ctx context.Context, id primitive.ObjectID) (*Submission, error)
 	UpdateByID(ctx context.Context, m *Submission) error
-	ListByFilter(ctx context.Context, m *SubmissionListFilter) (*SubmissionListResult, error)
+	ListByFilter(ctx context.Context, f *SubmissionListFilter) (*SubmissionListResult, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 	CountAll(ctx context.Context) (int64, error)
+	CountByFilter(ctx context.Context, f *SubmissionListFilter) (int64, error)
 	// //TODO: Add more...
 }
 
