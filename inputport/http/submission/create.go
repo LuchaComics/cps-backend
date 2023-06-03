@@ -95,6 +95,38 @@ func ValidateCreateRequest(dirtyData *sub_s.Submission) error {
 		e["shows_signs_of_tampering_or_restoration"] = "missing value"
 	}
 
+	// Process optional validation
+	if dirtyData.SpecialNotesLine1 != "" && len(dirtyData.SpecialNotesLine1) > 35 {
+		e["special_notes_line_1"] = "over 35 characters"
+	}
+	if dirtyData.SpecialNotesLine2 != "" && len(dirtyData.SpecialNotesLine2) > 35 {
+		e["special_notes_line_2"] = "over 35 characters"
+	}
+	if dirtyData.SpecialNotesLine3 != "" && len(dirtyData.SpecialNotesLine3) > 35 {
+		e["special_notes_line_3"] = "over 35 characters"
+	}
+	if dirtyData.SpecialNotesLine4 != "" && len(dirtyData.SpecialNotesLine4) > 35 {
+		e["special_notes_line_4"] = "over 35 characters"
+	}
+	if dirtyData.SpecialNotesLine5 != "" && len(dirtyData.SpecialNotesLine5) > 35 {
+		e["special_notes_line_5"] = "over 35 characters"
+	}
+	if dirtyData.GradingNotesLine1 != "" && len(dirtyData.GradingNotesLine1) > 35 {
+		e["grading_notes_line_1"] = "over 35 characters"
+	}
+	if dirtyData.GradingNotesLine2 != "" && len(dirtyData.GradingNotesLine2) > 35 {
+		e["grading_notes_line_2"] = "over 35 characters"
+	}
+	if dirtyData.GradingNotesLine3 != "" && len(dirtyData.GradingNotesLine3) > 35 {
+		e["grading_notes_line_3"] = "over 35 characters"
+	}
+	if dirtyData.GradingNotesLine4 != "" && len(dirtyData.GradingNotesLine4) > 35 {
+		e["grading_notes_line_4"] = "over 35 characters"
+	}
+	if dirtyData.GradingNotesLine5 != "" && len(dirtyData.GradingNotesLine5) > 35 {
+		e["grading_notes_line_5"] = "over 35 characters"
+	}
+
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)
 	}

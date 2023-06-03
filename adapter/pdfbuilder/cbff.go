@@ -406,46 +406,46 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	// LEFT
 	//
 
-	pdf.SetFont("Helvetica", "B", 12)
+	pdf.SetFont("Helvetica", "", 7)
 
 	// ROW 1 - Special Notes
-	pdf.SetXY(217, 75)
+	pdf.SetXY(216, 75)
 	pdf.Cell(0, 0, r.SpecialNotesLine1) // 17 characters.
 
 	// ROW 2 - Special Notes
-	pdf.SetXY(217, 83)
+	pdf.SetXY(216, 83)
 	pdf.Cell(0, 0, r.SpecialNotesLine2) // 17 characters.
 
 	// ROW 3 - Special Notes
-	pdf.SetXY(217, 91)
+	pdf.SetXY(216, 91)
 	pdf.Cell(0, 0, r.SpecialNotesLine3) // 17 characters.
 
 	// ROW 4 - Special Notes
-	pdf.SetXY(217, 99)
+	pdf.SetXY(216, 99)
 	pdf.Cell(0, 0, r.SpecialNotesLine4) // 17 characters.
 
 	// ROW 5 - Special Notes
-	pdf.SetXY(217, 107)
+	pdf.SetXY(216, 107)
 	pdf.Cell(0, 0, r.SpecialNotesLine5) // 17 characters.
 
 	// ROW 1 - Grading Notes
-	pdf.SetXY(217, 124)
+	pdf.SetXY(216, 124)
 	pdf.Cell(0, 0, r.GradingNotesLine1) // 17 characters.
 
 	// ROW 2 - Grading Notes
-	pdf.SetXY(217, 132)
+	pdf.SetXY(216, 132)
 	pdf.Cell(0, 0, r.GradingNotesLine2) // 17 characters.
 
 	// ROW 3 - Grading Notes
-	pdf.SetXY(217, 140)
+	pdf.SetXY(216, 140)
 	pdf.Cell(0, 0, r.GradingNotesLine3) // 17 characters.
 
 	// ROW 4 - Grading Notes
-	pdf.SetXY(217, 148)
+	pdf.SetXY(216, 148)
 	pdf.Cell(0, 0, r.GradingNotesLine4) // 17 characters.
 
 	// ROW 5 - Grading Notes
-	pdf.SetXY(217, 156)
+	pdf.SetXY(216, 156)
 	pdf.Cell(0, 0, r.GradingNotesLine5) // 17 characters.
 
 	////
