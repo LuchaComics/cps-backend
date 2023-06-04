@@ -138,6 +138,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	os.UserLastName = ns.UserLastName
 	os.UserCompanyName = ns.UserCompanyName
 	os.Filename = ns.Filename
+	os.Item = fmt.Sprintf("%v, %v, %v", ns.SeriesTitle, ns.IssueVol, ns.IssueNo)
 
 	// Save to the database the modified submission.
 	if err := c.SubmissionStorer.UpdateByID(ctx, os); err != nil {

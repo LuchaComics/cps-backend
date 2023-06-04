@@ -93,6 +93,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	m.ModifiedByUserRole = userRole
 	m.ModifiedAt = time.Now()
 	m.SubmissionDate = time.Now()
+	m.Item = fmt.Sprintf("%v, %v, %v", m.SeriesTitle, m.IssueVol, m.IssueNo)
 
 	// Attach a copy of the customer to our record.
 	customerUser, err := c.UserStorer.GetByID(ctx, m.UserID)
