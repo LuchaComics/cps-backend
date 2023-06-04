@@ -31,7 +31,6 @@ type ProfileUpdateRequestIDO struct {
 	FirstName                 string `bson:"first_name" json:"first_name"`
 	LastName                  string `bson:"last_name" json:"last_name"`
 	Email                     string `json:"email"`
-	CompanyName               string `bson:"company_name,omitempty" json:"company_name,omitempty"`
 	Phone                     string `bson:"phone,omitempty" json:"phone,omitempty"`
 	Country                   string `bson:"country,omitempty" json:"country,omitempty"`
 	Region                    string `bson:"region,omitempty" json:"region,omitempty"`
@@ -98,9 +97,6 @@ func ValidateProfileUpdateRequest(dirtyData *ProfileUpdateRequestIDO) error {
 	}
 	if len(dirtyData.Email) > 255 {
 		e["email"] = "too long"
-	}
-	if dirtyData.CompanyName == "" {
-		e["company_name"] = "missing value"
 	}
 	if dirtyData.Phone == "" {
 		e["phone"] = "missing value"
