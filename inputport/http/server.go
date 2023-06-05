@@ -124,6 +124,10 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		port.Gateway.Profile(w, r)
 	case n == 3 && p[1] == "v1" && p[2] == "profile" && r.Method == http.MethodPut:
 		port.Gateway.ProfileUpdate(w, r)
+	case n == 3 && p[1] == "v1" && p[2] == "forgot-password" && r.Method == http.MethodPost:
+		port.Gateway.ForgotPassword(w, r)
+	case n == 3 && p[1] == "v1" && p[2] == "password-reset" && r.Method == http.MethodPost:
+		port.Gateway.PasswordReset(w, r)
 		// case n == 3 && p[1] == "v1" && p[2] == "profile" && r.Method == http.MethodGet:
 		// ...
 

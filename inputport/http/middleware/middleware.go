@@ -141,12 +141,14 @@ func (mid *middleware) PreJWTProcessorMiddleware(fn http.HandlerFunc) http.Handl
 
 		urlSplit := ctx.Value("url_split").([]string)
 		skipPath := map[string]bool{
-			"version":       true,
-			"greeting":      true,
-			"login":         true,
-			"refresh-token": true,
-			"register":      true,
-			"verify":        true,
+			"version":         true,
+			"greeting":        true,
+			"login":           true,
+			"refresh-token":   true,
+			"register":        true,
+			"verify":          true,
+			"forgot-password": true,
+			"password-reset":  true,
 		}
 
 		// DEVELOPERS NOTE:
@@ -229,12 +231,14 @@ func (mid *middleware) JWTProcessorMiddleware(fn http.HandlerFunc) http.HandlerF
 
 			urlSplit := ctx.Value("url_split").([]string)
 			skipPath := map[string]bool{
-				"version":       true,
-				"greeting":      true,
-				"login":         true,
-				"refresh-token": true,
-				"register":      true,
-				"verify":        true,
+				"version":         true,
+				"greeting":        true,
+				"login":           true,
+				"refresh-token":   true,
+				"register":        true,
+				"verify":          true,
+				"forgot-password": true,
+				"password-reset":  true,
 			}
 
 			// DEVELOPERS NOTE:
@@ -366,11 +370,13 @@ func (mid *middleware) ProtectedURLsMiddleware(fn http.HandlerFunc) http.Handler
 
 		urlSplit := ctx.Value("url_split").([]string)
 		skipPath := map[string]bool{
-			"version":       true,
-			"greeting":      true,
-			"login":         true,
-			"refresh-token": true,
-			"verify":        true,
+			"version":         true,
+			"greeting":        true,
+			"login":           true,
+			"refresh-token":   true,
+			"verify":          true,
+			"forgot-password": true,
+			"password-reset":  true,
 		}
 
 		// DEVELOPERS NOTE:

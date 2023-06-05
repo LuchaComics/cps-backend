@@ -26,6 +26,8 @@ type GatewayController interface {
 	RefreshToken(ctx context.Context, value string) (*user_s.User, string, time.Time, string, time.Time, error)
 	Verify(ctx context.Context, code string) error
 	Logout(ctx context.Context) error
+	ForgotPassword(ctx context.Context, email string) error
+	PasswordReset(ctx context.Context, code string, password string) error
 	Profile(ctx context.Context) (*user_s.User, error)
 	ProfileUpdate(ctx context.Context, nu *user_s.User) error
 	//TODO: Add more...
