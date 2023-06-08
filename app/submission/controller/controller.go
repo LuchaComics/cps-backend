@@ -2,6 +2,8 @@ package controller
 
 import (
 	"context"
+	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
@@ -63,42 +65,43 @@ func NewController(
 ) SubmissionController {
 	loggerp.Debug("submission controller initialization started...")
 
-	// // FOR TESTING PURPOSES ONLY.
-	// r := &pdfbuilder.CBFFBuilderRequestDTO{
-	// 	CPSRN:                              "788346-26649-1-1000",
-	// 	SubmissionDate:                     time.Now(),
-	// 	SeriesTitle:                        "Winter World",
-	// 	IssueVol:                           "Vol 1",
-	// 	IssueNo:                            "#1",
-	// 	IssueCoverDate:                     time.Now(),
-	// 	PublisherName:                      "Some publisher",
-	// 	SpecialNotesLine1:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
-	// 	SpecialNotesLine2:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
-	// 	SpecialNotesLine3:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
-	// 	SpecialNotesLine4:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
-	// 	SpecialNotesLine5:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
-	// 	GradingNotesLine1:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
-	// 	GradingNotesLine2:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
-	// 	GradingNotesLine3:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
-	// 	GradingNotesLine4:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
-	// 	GradingNotesLine5:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
-	// 	CreasesFinding:                     "VF",
-	// 	TearsFinding:                       "FN",
-	// 	MissingPartsFinding:                "PR",
-	// 	StainsFinding:                      "NM",
-	// 	DistortionFinding:                  "NM",
-	// 	PaperQualityFinding:                "VF",
-	// 	SpineFinding:                       "FN",
-	// 	CoverFinding:                       "VG",
-	// 	GradingScale:                       1,
-	// 	ShowsSignsOfTamperingOrRestoration: true,
-	// 	OverallLetterGrade:                 "VG",
-	// 	UserFirstName:                      "Bartlomiej",
-	// 	UserLastName:                       "Miks",
-	// 	UserCompanyName:                    "Mika Software Corporation",
-	// }
-	// res, err := cbffb.GeneratePDF(r)
-	// log.Println("===--->", res, err, "<---===")
+	// FOR TESTING PURPOSES ONLY.
+	r := &pdfbuilder.CBFFBuilderRequestDTO{
+		CPSRN:                              "788346-26649-1-1000",
+		SubmissionDate:                     time.Now(),
+		SeriesTitle:                        "Winter World",
+		IssueVol:                           "Vol 1",
+		IssueNo:                            "#1",
+		IssueCoverYear:                     "2023",
+		IssueCoverMonth:                    1,
+		PublisherName:                      "Some publisher",
+		SpecialNotesLine1:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
+		SpecialNotesLine2:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
+		SpecialNotesLine3:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
+		SpecialNotesLine4:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
+		SpecialNotesLine5:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
+		GradingNotesLine1:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
+		GradingNotesLine2:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
+		GradingNotesLine3:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
+		GradingNotesLine4:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
+		GradingNotesLine5:                  "XXXXXXXXXXXXXXXXXYYYYYYYYYYYYYYYYYY",
+		CreasesFinding:                     "VF",
+		TearsFinding:                       "FN",
+		MissingPartsFinding:                "PR",
+		StainsFinding:                      "NM",
+		DistortionFinding:                  "NM",
+		PaperQualityFinding:                "VF",
+		SpineFinding:                       "FN",
+		CoverFinding:                       "VG",
+		GradingScale:                       1,
+		ShowsSignsOfTamperingOrRestoration: true,
+		OverallLetterGrade:                 "VG",
+		UserFirstName:                      "Bartlomiej",
+		UserLastName:                       "Miks",
+		UserCompanyName:                    "Mika Software Corporation",
+	}
+	res, err := cbffb.GeneratePDF(r)
+	log.Println("===--->", res, err, "<---===")
 
 	s := &SubmissionControllerImpl{
 		Config:             appCfg,

@@ -108,7 +108,8 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	os.SeriesTitle = ns.SeriesTitle
 	os.IssueVol = ns.IssueVol
 	os.IssueNo = ns.IssueNo
-	os.IssueCoverDate = ns.IssueCoverDate
+	os.IssueCoverYear = ns.IssueCoverYear
+	os.IssueCoverMonth = ns.IssueCoverMonth
 	os.PublisherName = ns.PublisherName
 	os.PublisherNameOther = ns.PublisherNameOther
 	os.SpecialNotesLine1 = ns.SpecialNotesLine1
@@ -168,7 +169,8 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		SeriesTitle:                        ns.SeriesTitle,
 		IssueVol:                           ns.IssueVol,
 		IssueNo:                            ns.IssueNo,
-		IssueCoverDate:                     ns.IssueCoverDate,
+		IssueCoverYear:                     ns.IssueCoverYear,
+		IssueCoverMonth:                    ns.IssueCoverMonth,
 		PublisherName:                      publisherNameDisplay,
 		SpecialNotesLine1:                  ns.SpecialNotesLine1,
 		SpecialNotesLine2:                  ns.SpecialNotesLine2,

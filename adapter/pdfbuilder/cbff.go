@@ -26,7 +26,8 @@ type CBFFBuilderRequestDTO struct {
 	SeriesTitle                        string    `bson:"series_title" json:"series_title"`
 	IssueVol                           string    `bson:"issue_vol" json:"issue_vol"`
 	IssueNo                            string    `bson:"issue_no" json:"issue_no"`
-	IssueCoverDate                     time.Time `bson:"issue_cover_date" json:"issue_cover_date"`
+	IssueCoverYear                     string    `bson:"issue_cover_year" json:"issue_cover_year"`
+	IssueCoverMonth                    int8      `bson:"issue_cover_month" json:"issue_cover_month"`
 	PublisherName                      string    `bson:"publisher_name" json:"publisher_name"`
 	SpecialNotesLine1                  string    `bson:"special_notes_line_1" json:"special_notes_line_1"`
 	SpecialNotesLine2                  string    `bson:"special_notes_line_2" json:"special_notes_line_2"`
@@ -145,12 +146,10 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	pdf.Cell(0, 0, r.IssueVol)
 	pdf.SetXY(193, 47.5)
 	pdf.Cell(0, 0, r.IssueNo)
-	pdf.SetXY(235, 47.5)
-	pdf.Cell(0, 0, fmt.Sprintf("%v", r.IssueCoverDate.Day())) // Day
-	pdf.SetXY(248, 47.5)
-	pdf.Cell(0, 0, fmt.Sprintf("%v", int(r.IssueCoverDate.Month()))) // Month (number)
+	pdf.SetXY(238, 47.5)
+	pdf.Cell(0, 0, fmt.Sprintf("%v", time.Month(int(r.IssueCoverMonth)))) // Month (number)
 	pdf.SetXY(257, 47.5)
-	pdf.Cell(0, 0, fmt.Sprintf("%v", r.IssueCoverDate.Year())) // Day
+	pdf.Cell(0, 0, r.IssueCoverYear)
 
 	// ROW 3
 	pdf.SetXY(220, 56)
