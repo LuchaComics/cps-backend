@@ -45,10 +45,10 @@ func ValidateUpdateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.IssueNo == "" {
 		e["issue_no"] = "missing value"
 	}
-	if dirtyData.IssueCoverYear == "" {
+	if dirtyData.IssueCoverYear <= 0 {
 		e["issue_cover_year"] = "missing value"
 	}
-	if dirtyData.IssueCoverMonth == 0 {
+	if dirtyData.IssueCoverMonth <= 0 {
 		e["issue_cover_month"] = "missing value"
 	}
 	if dirtyData.PublisherName < 1 || dirtyData.PublisherName > 9 {

@@ -29,7 +29,7 @@ type RegistryReponse struct {
 	SeriesTitle                        string    `bson:"series_title" json:"series_title"`
 	IssueVol                           string    `bson:"issue_vol" json:"issue_vol"`
 	IssueNo                            string    `bson:"issue_no" json:"issue_no"`
-	IssueCoverYear                     string    `bson:"issue_cover_year" json:"issue_cover_year"`
+	IssueCoverYear                     int64     `bson:"issue_cover_year" json:"issue_cover_year"`
 	IssueCoverMonth                    int8      `bson:"issue_cover_month" json:"issue_cover_month"`
 	PublisherName                      int8      `bson:"publisher_name" json:"publisher_name"`
 	PublisherNameOther                 string    `bson:"publisher_name_other" json:"publisher_name_other"`
