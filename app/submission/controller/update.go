@@ -117,11 +117,27 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	os.SpecialNotesLine3 = ns.SpecialNotesLine3
 	os.SpecialNotesLine4 = ns.SpecialNotesLine4
 	os.SpecialNotesLine5 = ns.SpecialNotesLine5
+	os.SpecialNotesLine6 = ns.SpecialNotesLine6
+	os.SpecialNotesLine7 = ns.SpecialNotesLine7
+	os.SpecialNotesLine8 = ns.SpecialNotesLine8
+	os.SpecialNotesLine9 = ns.SpecialNotesLine9
+	os.SpecialNotesLine10 = ns.SpecialNotesLine10
+	os.SpecialNotesLine11 = ns.SpecialNotesLine11
+	os.SpecialNotesLine12 = ns.SpecialNotesLine12
+	os.SpecialNotesLine13 = ns.SpecialNotesLine13
 	os.GradingNotesLine1 = ns.GradingNotesLine1
 	os.GradingNotesLine2 = ns.GradingNotesLine2
 	os.GradingNotesLine3 = ns.GradingNotesLine3
 	os.GradingNotesLine4 = ns.GradingNotesLine4
 	os.GradingNotesLine5 = ns.GradingNotesLine5
+	os.GradingNotesLine6 = ns.GradingNotesLine6
+	os.GradingNotesLine7 = ns.GradingNotesLine7
+	os.GradingNotesLine8 = ns.GradingNotesLine8
+	os.GradingNotesLine9 = ns.GradingNotesLine9
+	os.GradingNotesLine10 = ns.GradingNotesLine10
+	os.GradingNotesLine11 = ns.GradingNotesLine11
+	os.GradingNotesLine12 = ns.GradingNotesLine12
+	os.GradingNotesLine13 = ns.GradingNotesLine13
 	os.CreasesFinding = ns.CreasesFinding
 	os.TearsFinding = ns.TearsFinding
 	os.MissingPartsFinding = ns.MissingPartsFinding
@@ -177,11 +193,27 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		SpecialNotesLine3:                  ns.SpecialNotesLine3,
 		SpecialNotesLine4:                  ns.SpecialNotesLine4,
 		SpecialNotesLine5:                  ns.SpecialNotesLine5,
+		SpecialNotesLine6:                  ns.SpecialNotesLine6,
+		SpecialNotesLine7:                  ns.SpecialNotesLine7,
+		SpecialNotesLine8:                  ns.SpecialNotesLine8,
+		SpecialNotesLine9:                  ns.SpecialNotesLine9,
+		SpecialNotesLine10:                 ns.SpecialNotesLine10,
+		SpecialNotesLine11:                 ns.SpecialNotesLine11,
+		SpecialNotesLine12:                 ns.SpecialNotesLine12,
+		SpecialNotesLine13:                 ns.SpecialNotesLine13,
 		GradingNotesLine1:                  ns.GradingNotesLine1,
 		GradingNotesLine2:                  ns.GradingNotesLine2,
 		GradingNotesLine3:                  ns.GradingNotesLine3,
 		GradingNotesLine4:                  ns.GradingNotesLine4,
 		GradingNotesLine5:                  ns.GradingNotesLine5,
+		GradingNotesLine6:                  ns.GradingNotesLine6,
+		GradingNotesLine7:                  ns.GradingNotesLine7,
+		GradingNotesLine8:                  ns.GradingNotesLine8,
+		GradingNotesLine9:                  ns.GradingNotesLine9,
+		GradingNotesLine10:                 ns.GradingNotesLine10,
+		GradingNotesLine11:                 ns.GradingNotesLine11,
+		GradingNotesLine12:                 ns.GradingNotesLine12,
+		GradingNotesLine13:                 ns.GradingNotesLine13,
 		CreasesFinding:                     ns.CreasesFinding,
 		TearsFinding:                       ns.TearsFinding,
 		MissingPartsFinding:                ns.MissingPartsFinding,
