@@ -24,3 +24,19 @@ func (impl SubmissionStorerImpl) GetByID(ctx context.Context, id primitive.Objec
 	}
 	return &result, nil
 }
+
+func (impl SubmissionStorerImpl) GetByCPSRN(ctx context.Context, cpsrn string) (*Submission, error) {
+	filter := bson.M{"cpsrn": cpsrn}
+
+	var result Submission
+	err := impl.Collection.FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			// This error means your query did not match any documents.
+			return nil, nil
+		}
+		impl.Logger.Error("database get by id error", slog.Any("error", err))
+		return nil, err
+	}
+	return &result, nil
+}

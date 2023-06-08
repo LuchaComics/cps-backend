@@ -157,6 +157,7 @@ type SubmissionListResult struct {
 type SubmissionStorer interface {
 	Create(ctx context.Context, m *Submission) error
 	GetByID(ctx context.Context, id primitive.ObjectID) (*Submission, error)
+	GetByCPSRN(ctx context.Context, cpsrn string) (*Submission, error)
 	UpdateByID(ctx context.Context, m *Submission) error
 	ListByFilter(ctx context.Context, f *SubmissionListFilter) (*SubmissionListResult, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error

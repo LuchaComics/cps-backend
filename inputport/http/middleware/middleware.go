@@ -149,6 +149,7 @@ func (mid *middleware) PreJWTProcessorMiddleware(fn http.HandlerFunc) http.Handl
 			"verify":          true,
 			"forgot-password": true,
 			"password-reset":  true,
+			"cpsrn":           true,
 		}
 
 		// DEVELOPERS NOTE:
@@ -239,6 +240,7 @@ func (mid *middleware) JWTProcessorMiddleware(fn http.HandlerFunc) http.HandlerF
 				"verify":          true,
 				"forgot-password": true,
 				"password-reset":  true,
+				"cpsrn":           true,
 			}
 
 			// DEVELOPERS NOTE:
@@ -377,6 +379,7 @@ func (mid *middleware) ProtectedURLsMiddleware(fn http.HandlerFunc) http.Handler
 			"verify":          true,
 			"forgot-password": true,
 			"password-reset":  true,
+			"cpsrn":           true,
 		}
 
 		// DEVELOPERS NOTE:

@@ -23,6 +23,7 @@ import (
 type SubmissionController interface {
 	Create(ctx context.Context, m *submission_s.Submission) (*submission_s.Submission, error)
 	GetByID(ctx context.Context, id primitive.ObjectID) (*submission_s.Submission, error)
+	GetByCPSRN(ctx context.Context, cpsrn string) (*submission_s.Submission, error)
 	UpdateByID(ctx context.Context, m *submission_s.Submission) (*submission_s.Submission, error)
 	ListByFilter(ctx context.Context, f *submission_s.SubmissionListFilter) (*submission_s.SubmissionListResult, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error

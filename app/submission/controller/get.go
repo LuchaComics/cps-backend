@@ -4,9 +4,11 @@ import (
 	"context"
 	"time"
 
-	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
+
+	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
 func (c *SubmissionControllerImpl) GetByID(ctx context.Context, id primitive.ObjectID) (*domain.Submission, error) {
@@ -26,6 +28,21 @@ func (c *SubmissionControllerImpl) GetByID(ctx context.Context, id primitive.Obj
 		// or some other reason.
 	}
 	m.FileUploadDownloadableFileURL = downloadableURL
+
+	return m, err
+}
+
+func (c *SubmissionControllerImpl) GetByCPSRN(ctx context.Context, cpsrn string) (*domain.Submission, error) {
+	// Retrieve from our database the record for the specific cspn.
+	m, err := c.SubmissionStorer.GetByCPSRN(ctx, cpsrn)
+	if err != nil {
+		c.Logger.Error("database get by id error", slog.Any("error", err))
+		return nil, err
+	}
+	if m == nil {
+		c.Logger.Warn("submission registry does not exist for cpsrn lookup validation error", slog.String("cpsrn", cpsrn))
+		return nil, httperror.NewForBadRequestWithSingleField("message", "registry entry does not exist")
+	}
 
 	return m, err
 }
