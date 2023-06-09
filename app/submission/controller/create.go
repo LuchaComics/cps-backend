@@ -41,13 +41,17 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		c.Kmutex.Unlock("CPS-BACKEND-SUBMISSION-INSERTION") // Step 5
 		c.Logger.Debug("removing mutex")
 	}()
-	f := &domain.SubmissionListFilter{UserRole: userRole}  // Part of ID requires count of staff or retailer.
-	total, err := c.SubmissionStorer.CountByFilter(ctx, f) // Step 2
+	f := &domain.SubmissionListFilter{CreatedByUserRole: userRole} // Part of ID requires count of staff or retailer.
+	total, err := c.SubmissionStorer.CountByFilter(ctx, f)         // Step 2
 	if err != nil {
 		c.Logger.Error("count all submissions error", slog.Any("error", err))
 		return nil, err
 	}
 	m.CPSRN = c.CPSRN.GenerateNumber(userRole, total) // Step 3 & 4
+	c.Logger.Error("Generated CPSRN",
+		slog.String("CPSRN", m.CPSRN),
+		slog.Int64("Role", int64(userRole)),
+		slog.Int64("total", total))
 
 	// DEVELOPERS NOTE:
 	// Every submission creation is dependent on the `role` of the logged in

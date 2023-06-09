@@ -3,7 +3,6 @@ package gateway
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/LuchaComics/cps-backend/utils/httperror"
@@ -56,8 +55,6 @@ func ValidatePasswordResetRequest(dirtyData *PasswordResetRequestIDO) error {
 	if dirtyData.Password != dirtyData.PasswordRepeated {
 		e["password"] = "value does not match"
 		e["password_repeated"] = "value does not match"
-		log.Println("Password:", dirtyData.Password)
-		log.Println("PasswordRepeated:", dirtyData.PasswordRepeated)
 	}
 
 	if len(e) != 0 {

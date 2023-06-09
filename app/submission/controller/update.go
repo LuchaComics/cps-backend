@@ -104,7 +104,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	// os.State = ns.State //BUGFIX - TODO WITH ROLES
 	os.ServiceType = ns.ServiceType
 	os.SubmissionDate = ns.SubmissionDate
-	os.Item = ns.Item
+	os.Item = fmt.Sprintf("%v, %v, %v", ns.SeriesTitle, ns.IssueVol, ns.IssueNo)
 	os.SeriesTitle = ns.SeriesTitle
 	os.IssueVol = ns.IssueVol
 	os.IssueNo = ns.IssueNo
@@ -127,9 +127,9 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	os.OverallLetterGrade = ns.OverallLetterGrade
 	os.OverallNumberGrade = ns.OverallNumberGrade
 	os.CpsPercentageGrade = ns.CpsPercentageGrade
-	os.UserFirstName = ns.UserFirstName
-	os.UserLastName = ns.UserLastName
-	os.UserCompanyName = ns.UserCompanyName
+	// os.UserFirstName = ns.UserFirstName     // NO NEED TO CHANGE AFTER FACT.
+	// os.UserLastName = ns.UserLastName       // NO NEED TO CHANGE AFTER FACT.
+	// os.UserCompanyName = ns.UserCompanyName // NO NEED TO CHANGE AFTER FACT.
 	os.Filename = ns.Filename
 	os.Item = fmt.Sprintf("%v, %v, %v", ns.SeriesTitle, ns.IssueVol, ns.IssueNo)
 
@@ -155,34 +155,35 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	// The next following lines of code will create the PDF file gnerator
 	// request to be submitted into our PDF file generator to generate the data.
 	r := &pdfbuilder.CBFFBuilderRequestDTO{
-		CPSRN:                              ns.CPSRN,
-		Filename:                           fmt.Sprintf("%v.pdf", ns.CPSRN),
+		CPSRN:                              os.CPSRN,
+		Filename:                           fmt.Sprintf("%v.pdf", os.CPSRN),
 		SubmissionDate:                     time.Now(),
-		SeriesTitle:                        ns.SeriesTitle,
-		IssueVol:                           ns.IssueVol,
-		IssueNo:                            ns.IssueNo,
-		IssueCoverYear:                     ns.IssueCoverYear,
-		IssueCoverMonth:                    ns.IssueCoverMonth,
+		SeriesTitle:                        os.SeriesTitle,
+		IssueVol:                           os.IssueVol,
+		IssueNo:                            os.IssueNo,
+		IssueCoverYear:                     os.IssueCoverYear,
+		IssueCoverMonth:                    os.IssueCoverMonth,
 		PublisherName:                      publisherNameDisplay,
-		SpecialNotes:                       ns.SpecialNotes,
-		GradingNotes:                       ns.GradingNotes,
-		CreasesFinding:                     ns.CreasesFinding,
-		TearsFinding:                       ns.TearsFinding,
-		MissingPartsFinding:                ns.MissingPartsFinding,
-		StainsFinding:                      ns.StainsFinding,
-		DistortionFinding:                  ns.DistortionFinding,
-		PaperQualityFinding:                ns.PaperQualityFinding,
-		SpineFinding:                       ns.SpineFinding,
-		CoverFinding:                       ns.CoverFinding,
-		ShowsSignsOfTamperingOrRestoration: ns.ShowsSignsOfTamperingOrRestoration == 1,
-		GradingScale:                       ns.GradingScale,
-		OverallLetterGrade:                 ns.OverallLetterGrade,
-		OverallNumberGrade:                 ns.OverallNumberGrade,
-		CpsPercentageGrade:                 ns.CpsPercentageGrade,
-		UserFirstName:                      ns.UserFirstName,
-		UserLastName:                       ns.UserLastName,
-		UserCompanyName:                    ns.UserCompanyName,
+		SpecialNotes:                       os.SpecialNotes,
+		GradingNotes:                       os.GradingNotes,
+		CreasesFinding:                     os.CreasesFinding,
+		TearsFinding:                       os.TearsFinding,
+		MissingPartsFinding:                os.MissingPartsFinding,
+		StainsFinding:                      os.StainsFinding,
+		DistortionFinding:                  os.DistortionFinding,
+		PaperQualityFinding:                os.PaperQualityFinding,
+		SpineFinding:                       os.SpineFinding,
+		CoverFinding:                       os.CoverFinding,
+		ShowsSignsOfTamperingOrRestoration: os.ShowsSignsOfTamperingOrRestoration == 1,
+		GradingScale:                       os.GradingScale,
+		OverallLetterGrade:                 os.OverallLetterGrade,
+		OverallNumberGrade:                 os.OverallNumberGrade,
+		CpsPercentageGrade:                 os.CpsPercentageGrade,
+		UserFirstName:                      os.UserFirstName,
+		UserLastName:                       os.UserLastName,
+		UserCompanyName:                    os.UserCompanyName,
 	}
+	c.Logger.Debug("000000>>>>", slog.String("os.UserFirstName", os.UserFirstName), slog.String("os.UserLastName", os.UserLastName), slog.String("os.UserCompanyName", os.UserCompanyName))
 	response, err := c.CBFFBuilder.GeneratePDF(r)
 	if err != nil {
 		c.Logger.Error("generate pdf error", slog.Any("error", err))

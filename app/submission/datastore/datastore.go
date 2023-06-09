@@ -109,13 +109,14 @@ type SubmissionComment struct {
 }
 
 type SubmissionListFilter struct {
-	PageSize        int64
-	LastID          string
-	SortField       string
-	OrganizationID  primitive.ObjectID
-	UserID          primitive.ObjectID
-	UserRole        int8
-	ExcludeArchived bool
+	PageSize          int64
+	LastID            string
+	SortField         string
+	OrganizationID    primitive.ObjectID
+	UserID            primitive.ObjectID
+	UserEmail         string
+	CreatedByUserRole int8
+	ExcludeArchived   bool
 }
 
 type SubmissionUser struct {

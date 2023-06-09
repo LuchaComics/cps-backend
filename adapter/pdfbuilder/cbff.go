@@ -473,7 +473,6 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	}
 
 	gradingNotesLines := splitText(r.GradingNotes, 50)
-	log.Println(gradingNotesLines)
 
 	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 0); ok { // ROW 1
 		pdf.SetXY(216, 122+0*0)

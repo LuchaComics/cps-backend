@@ -2,7 +2,6 @@ package customer
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	sub_s "github.com/LuchaComics/cps-backend/app/user/datastore"
@@ -11,7 +10,6 @@ import (
 
 func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	fmt.Println("GET params were:", r.URL.Query())
 
 	f := &sub_s.UserListFilter{
 		// PageSize:  10,

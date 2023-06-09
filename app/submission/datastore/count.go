@@ -31,8 +31,8 @@ func (impl SubmissionStorerImpl) CountByFilter(ctx context.Context, f *Submissio
 		filter["user_id"] = f.UserID
 	}
 
-	if f.UserRole != 0 {
-		filter["user_role"] = f.UserRole
+	if f.UserEmail != "" {
+		filter["user.email"] = f.UserEmail
 	}
 
 	if f.ExcludeArchived {

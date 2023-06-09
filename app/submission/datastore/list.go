@@ -35,8 +35,11 @@ func (impl SubmissionStorerImpl) ListByFilter(ctx context.Context, f *Submission
 	if f.UserID != primitive.NilObjectID {
 		filter["user_id"] = f.UserID
 	}
-	if f.UserRole != 0 {
-		filter["user_role"] = f.UserRole
+	if f.UserEmail != "" {
+		filter["user.email"] = f.UserEmail
+	}
+	if f.CreatedByUserRole != 0 {
+		filter["created_by_user_role"] = f.CreatedByUserRole
 	}
 	if f.OrganizationID != primitive.NilObjectID {
 		filter["organization_id"] = f.OrganizationID
