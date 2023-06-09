@@ -99,12 +99,12 @@ func ValidateUpdateRequest(dirtyData *sub_s.Submission) error {
 
 	// Process optional validation for `Special Notes`.
 	if dirtyData.SpecialNotes != "" && len(dirtyData.SpecialNotes) > 638 {
-		e["special_notes"] = "over 455 characters"
+		e["special_notes"] = "over 638 characters"
 	}
 
 	// Process optional validation for `Grading Notes`.
 	if dirtyData.GradingNotes != "" && len(dirtyData.GradingNotes) > 638 {
-		e["grading_notes"] = "over 455 characters"
+		e["grading_notes"] = "over 638 characters"
 	}
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)

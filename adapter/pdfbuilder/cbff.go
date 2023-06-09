@@ -479,55 +479,54 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 		pdf.SetXY(216, 122+0*0)
 		pdf.Cell(0, 0, gradingNote)
 	}
-
 	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 1); ok {
 		pdf.SetXY(216, 122+3*1)
 		pdf.Cell(0, 0, gradingNote)
 	}
-
-	// // ROW 3 - Grading Notes
-	// pdf.SetXY(216, 122+3*2)
-	// pdf.Cell(0, 0, r.GradingNotesLine3) // 17 characters.
-	//
-	// // ROW 4 - Grading Notes
-	// pdf.SetXY(216, 122+3*3)
-	// pdf.Cell(0, 0, r.GradingNotesLine4) // 17 characters.
-	//
-	// // ROW 5 - Grading Notes
-	// pdf.SetXY(216, 122+3*4)
-	// pdf.Cell(0, 0, r.GradingNotesLine5) // 17 characters.
-	//
-	// // ROW 6 - Grading Notes
-	// pdf.SetXY(216, 122+3*5)
-	// pdf.Cell(0, 0, r.GradingNotesLine6) // 17 characters.
-	//
-	// // ROW 7 - Grading Notes
-	// pdf.SetXY(216, 122+3*6)
-	// pdf.Cell(0, 0, r.GradingNotesLine7) // 17 characters.
-	//
-	// // ROW 8 - Grading Notes
-	// pdf.SetXY(216, 122+3*7)
-	// pdf.Cell(0, 0, r.GradingNotesLine8) // 17 characters.
-	//
-	// // ROW 9 - Grading Notes
-	// pdf.SetXY(216, 122+3*8)
-	// pdf.Cell(0, 0, r.GradingNotesLine9) // 17 characters.
-	//
-	// // ROW 10 - Grading Notes
-	// pdf.SetXY(216, 122+3*9)
-	// pdf.Cell(0, 0, r.GradingNotesLine10) // 17 characters.
-	//
-	// // ROW 11 - Grading Notes
-	// pdf.SetXY(216, 122+3*10)
-	// pdf.Cell(0, 0, r.GradingNotesLine11) // 17 characters.
-	//
-	// // ROW 12 - Grading Notes
-	// pdf.SetXY(216, 122+3*11)
-	// pdf.Cell(0, 0, r.GradingNotesLine12) // 17 characters.
-	//
-	// // ROW 13 - Grading Notes
-	// pdf.SetXY(216, 122+3*12)
-	// pdf.Cell(0, 0, r.GradingNotesLine13) // 17 characters.
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 2); ok {
+		pdf.SetXY(216, 122+3*2)
+		pdf.Cell(0, 0, gradingNote)
+	}
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 3); ok {
+		pdf.SetXY(216, 122+3*3)
+		pdf.Cell(0, 0, gradingNote)
+	}
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 4); ok {
+		pdf.SetXY(216, 122+3*4)
+		pdf.Cell(0, 0, gradingNote)
+	}
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 5); ok {
+		pdf.SetXY(216, 122+3*5)
+		pdf.Cell(0, 0, gradingNote)
+	}
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 6); ok {
+		pdf.SetXY(216, 122+3*6)
+		pdf.Cell(0, 0, gradingNote)
+	}
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 7); ok {
+		pdf.SetXY(216, 122+3*7)
+		pdf.Cell(0, 0, gradingNote)
+	}
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 8); ok {
+		pdf.SetXY(216, 122+3*8)
+		pdf.Cell(0, 0, gradingNote)
+	}
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 9); ok {
+		pdf.SetXY(216, 122+3*9)
+		pdf.Cell(0, 0, gradingNote)
+	}
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 10); ok {
+		pdf.SetXY(216, 122+3*10)
+		pdf.Cell(0, 0, gradingNote)
+	}
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 11); ok {
+		pdf.SetXY(216, 122+3*11)
+		pdf.Cell(0, 0, gradingNote)
+	}
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 12); ok {
+		pdf.SetXY(216, 122+3*12)
+		pdf.Cell(0, 0, gradingNote)
+	}
 
 	////
 	//// Generate the file and save it to the file.
