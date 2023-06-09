@@ -98,87 +98,14 @@ func ValidateUpdateRequest(dirtyData *sub_s.Submission) error {
 	}
 
 	// Process optional validation for `Special Notes`.
-	if dirtyData.SpecialNotesLine1 != "" && len(dirtyData.SpecialNotesLine1) > 35 {
-		e["special_notes_line_1"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine2 != "" && len(dirtyData.SpecialNotesLine2) > 35 {
-		e["special_notes_line_2"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine3 != "" && len(dirtyData.SpecialNotesLine3) > 35 {
-		e["special_notes_line_3"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine4 != "" && len(dirtyData.SpecialNotesLine4) > 35 {
-		e["special_notes_line_4"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine5 != "" && len(dirtyData.SpecialNotesLine5) > 35 {
-		e["special_notes_line_5"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine6 != "" && len(dirtyData.SpecialNotesLine6) > 35 {
-		e["special_notes_line_6"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine7 != "" && len(dirtyData.SpecialNotesLine7) > 35 {
-		e["special_notes_line_7"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine8 != "" && len(dirtyData.SpecialNotesLine8) > 35 {
-		e["special_notes_line_8"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine9 != "" && len(dirtyData.SpecialNotesLine9) > 35 {
-		e["special_notes_line_9"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine10 != "" && len(dirtyData.SpecialNotesLine10) > 35 {
-		e["special_notes_line_10"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine11 != "" && len(dirtyData.SpecialNotesLine11) > 35 {
-		e["special_notes_line_11"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine12 != "" && len(dirtyData.SpecialNotesLine12) > 35 {
-		e["special_notes_line_12"] = "over 35 characters"
-	}
-	if dirtyData.SpecialNotesLine13 != "" && len(dirtyData.SpecialNotesLine13) > 35 {
-		e["special_notes_line_13"] = "over 35 characters"
+	if dirtyData.SpecialNotes != "" && len(dirtyData.SpecialNotes) > 638 {
+		e["special_notes"] = "over 455 characters"
 	}
 
 	// Process optional validation for `Grading Notes`.
-	if dirtyData.GradingNotesLine1 != "" && len(dirtyData.GradingNotesLine1) > 35 {
-		e["grading_notes_line_1"] = "over 35 characters"
+	if dirtyData.GradingNotes != "" && len(dirtyData.GradingNotes) > 638 {
+		e["grading_notes"] = "over 455 characters"
 	}
-	if dirtyData.GradingNotesLine2 != "" && len(dirtyData.GradingNotesLine2) > 35 {
-		e["grading_notes_line_2"] = "over 35 characters"
-	}
-	if dirtyData.GradingNotesLine3 != "" && len(dirtyData.GradingNotesLine3) > 35 {
-		e["grading_notes_line_3"] = "over 35 characters"
-	}
-	if dirtyData.GradingNotesLine4 != "" && len(dirtyData.GradingNotesLine4) > 35 {
-		e["grading_notes_line_4"] = "over 35 characters"
-	}
-	if dirtyData.GradingNotesLine5 != "" && len(dirtyData.GradingNotesLine5) > 35 {
-		e["grading_notes_line_5"] = "over 35 characters"
-	}
-	if dirtyData.GradingNotesLine6 != "" && len(dirtyData.GradingNotesLine6) > 35 {
-		e["grading_notes_line_6"] = "over 35 characters"
-	}
-	if dirtyData.GradingNotesLine7 != "" && len(dirtyData.GradingNotesLine7) > 35 {
-		e["grading_notes_line_7"] = "over 35 characters"
-	}
-	if dirtyData.GradingNotesLine8 != "" && len(dirtyData.GradingNotesLine8) > 35 {
-		e["grading_notes_line_8"] = "over 35 characters"
-	}
-	if dirtyData.GradingNotesLine9 != "" && len(dirtyData.GradingNotesLine9) > 35 {
-		e["grading_notes_line_9"] = "over 35 characters"
-	}
-	if dirtyData.GradingNotesLine10 != "" && len(dirtyData.GradingNotesLine10) > 35 {
-		e["grading_notes_line_10"] = "over 35 characters"
-	}
-	if dirtyData.GradingNotesLine11 != "" && len(dirtyData.GradingNotesLine11) > 35 {
-		e["grading_notes_line_11"] = "over 35 characters"
-	}
-	if dirtyData.GradingNotesLine12 != "" && len(dirtyData.GradingNotesLine12) > 35 {
-		e["grading_notes_line_12"] = "over 35 characters"
-	}
-	if dirtyData.GradingNotesLine13 != "" && len(dirtyData.GradingNotesLine13) > 35 {
-		e["grading_notes_line_13"] = "over 35 characters"
-	}
-
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)
 	}

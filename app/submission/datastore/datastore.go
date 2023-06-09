@@ -54,32 +54,8 @@ type Submission struct {
 	IssueCoverMonth                    int8               `bson:"issue_cover_month" json:"issue_cover_month"`
 	PublisherName                      int8               `bson:"publisher_name" json:"publisher_name"`
 	PublisherNameOther                 string             `bson:"publisher_name_other" json:"publisher_name_other"`
-	SpecialNotesLine1                  string             `bson:"special_notes_line_1" json:"special_notes_line_1"`
-	SpecialNotesLine2                  string             `bson:"special_notes_line_2" json:"special_notes_line_2"`
-	SpecialNotesLine3                  string             `bson:"special_notes_line_3" json:"special_notes_line_3"`
-	SpecialNotesLine4                  string             `bson:"special_notes_line_4" json:"special_notes_line_4"`
-	SpecialNotesLine5                  string             `bson:"special_notes_line_5" json:"special_notes_line_5"`
-	SpecialNotesLine6                  string             `bson:"special_notes_line_6" json:"special_notes_line_6"`
-	SpecialNotesLine7                  string             `bson:"special_notes_line_7" json:"special_notes_line_7"`
-	SpecialNotesLine8                  string             `bson:"special_notes_line_8" json:"special_notes_line_8"`
-	SpecialNotesLine9                  string             `bson:"special_notes_line_9" json:"special_notes_line_9"`
-	SpecialNotesLine10                 string             `bson:"special_notes_line_10" json:"special_notes_line_10"`
-	SpecialNotesLine11                 string             `bson:"special_notes_line_11" json:"special_notes_line_11"`
-	SpecialNotesLine12                 string             `bson:"special_notes_line_12" json:"special_notes_line_12"`
-	SpecialNotesLine13                 string             `bson:"special_notes_line_13" json:"special_notes_line_13"`
-	GradingNotesLine1                  string             `bson:"grading_notes_line_1" json:"grading_notes_line_1"`
-	GradingNotesLine2                  string             `bson:"grading_notes_line_2" json:"grading_notes_line_2"`
-	GradingNotesLine3                  string             `bson:"grading_notes_line_3" json:"grading_notes_line_3"`
-	GradingNotesLine4                  string             `bson:"grading_notes_line_4" json:"grading_notes_line_4"`
-	GradingNotesLine5                  string             `bson:"grading_notes_line_5" json:"grading_notes_line_5"`
-	GradingNotesLine6                  string             `bson:"grading_notes_line_6" json:"grading_notes_line_6"`
-	GradingNotesLine7                  string             `bson:"grading_notes_line_7" json:"grading_notes_line_7"`
-	GradingNotesLine8                  string             `bson:"grading_notes_line_8" json:"grading_notes_line_8"`
-	GradingNotesLine9                  string             `bson:"grading_notes_line_9" json:"grading_notes_line_9"`
-	GradingNotesLine10                 string             `bson:"grading_notes_line_10" json:"grading_notes_line_10"`
-	GradingNotesLine11                 string             `bson:"grading_notes_line_11" json:"grading_notes_line_11"`
-	GradingNotesLine12                 string             `bson:"grading_notes_line_12" json:"grading_notes_line_12"`
-	GradingNotesLine13                 string             `bson:"grading_notes_line_13" json:"grading_notes_line_13"`
+	SpecialNotes                       string             `bson:"special_notes" json:"special_notes"`
+	GradingNotes                       string             `bson:"grading_notes" json:"grading_notes"`
 	CreasesFinding                     string             `bson:"creases_finding" json:"creases_finding"`
 	TearsFinding                       string             `bson:"tears_finding" json:"tears_finding"`
 	MissingPartsFinding                string             `bson:"missing_parts_finding" json:"missing_parts_finding"`

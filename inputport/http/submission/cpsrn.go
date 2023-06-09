@@ -33,16 +33,8 @@ type RegistryReponse struct {
 	IssueCoverMonth                    int8      `bson:"issue_cover_month" json:"issue_cover_month"`
 	PublisherName                      int8      `bson:"publisher_name" json:"publisher_name"`
 	PublisherNameOther                 string    `bson:"publisher_name_other" json:"publisher_name_other"`
-	SpecialNotesLine1                  string    `bson:"special_notes_line_1" json:"special_notes_line_1"`
-	SpecialNotesLine2                  string    `bson:"special_notes_line_2" json:"special_notes_line_2"`
-	SpecialNotesLine3                  string    `bson:"special_notes_line_3" json:"special_notes_line_3"`
-	SpecialNotesLine4                  string    `bson:"special_notes_line_4" json:"special_notes_line_4"`
-	SpecialNotesLine5                  string    `bson:"special_notes_line_5" json:"special_notes_line_5"`
-	GradingNotesLine1                  string    `bson:"grading_notes_line_1" json:"grading_notes_line_1"`
-	GradingNotesLine2                  string    `bson:"grading_notes_line_2" json:"grading_notes_line_2"`
-	GradingNotesLine3                  string    `bson:"grading_notes_line_3" json:"grading_notes_line_3"`
-	GradingNotesLine4                  string    `bson:"grading_notes_line_4" json:"grading_notes_line_4"`
-	GradingNotesLine5                  string    `bson:"grading_notes_line_5" json:"grading_notes_line_5"`
+	SpecialNotes                       string    `bson:"special_notes" json:"special_notes"`
+	GradingNotes                       string    `bson:"grading_notes" json:"grading_notes"`
 	ShowsSignsOfTamperingOrRestoration int8      `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
 	GradingScale                       int8      `bson:"grading_scale" json:"grading_scale"`
 	OverallLetterGrade                 string    `bson:"overall_letter_grade" json:"overall_letter_grade"`
@@ -62,16 +54,8 @@ func MarshalRegistryResponse(s *sub_s.Submission, w http.ResponseWriter) {
 		IssueCoverMonth:                    s.IssueCoverMonth,
 		PublisherName:                      s.PublisherName,
 		PublisherNameOther:                 s.PublisherNameOther,
-		SpecialNotesLine1:                  s.SpecialNotesLine1,
-		SpecialNotesLine2:                  s.SpecialNotesLine2,
-		SpecialNotesLine3:                  s.SpecialNotesLine3,
-		SpecialNotesLine4:                  s.SpecialNotesLine4,
-		SpecialNotesLine5:                  s.SpecialNotesLine5,
-		GradingNotesLine1:                  s.GradingNotesLine1,
-		GradingNotesLine2:                  s.GradingNotesLine2,
-		GradingNotesLine3:                  s.GradingNotesLine3,
-		GradingNotesLine4:                  s.GradingNotesLine4,
-		GradingNotesLine5:                  s.GradingNotesLine5,
+		SpecialNotes:                       s.SpecialNotes,
+		GradingNotes:                       s.GradingNotes,
 		ShowsSignsOfTamperingOrRestoration: s.ShowsSignsOfTamperingOrRestoration,
 		GradingScale:                       s.GradingScale,
 		OverallLetterGrade:                 s.OverallLetterGrade,

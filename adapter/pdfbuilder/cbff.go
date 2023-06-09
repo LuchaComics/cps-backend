@@ -29,32 +29,8 @@ type CBFFBuilderRequestDTO struct {
 	IssueCoverYear                     int64     `bson:"issue_cover_year" json:"issue_cover_year"`
 	IssueCoverMonth                    int8      `bson:"issue_cover_month" json:"issue_cover_month"`
 	PublisherName                      string    `bson:"publisher_name" json:"publisher_name"`
-	SpecialNotesLine1                  string    `bson:"special_notes_line_1" json:"special_notes_line_1"`
-	SpecialNotesLine2                  string    `bson:"special_notes_line_2" json:"special_notes_line_2"`
-	SpecialNotesLine3                  string    `bson:"special_notes_line_3" json:"special_notes_line_3"`
-	SpecialNotesLine4                  string    `bson:"special_notes_line_4" json:"special_notes_line_4"`
-	SpecialNotesLine5                  string    `bson:"special_notes_line_5" json:"special_notes_line_5"`
-	SpecialNotesLine6                  string    `bson:"special_notes_line_6" json:"special_notes_line_6"`
-	SpecialNotesLine7                  string    `bson:"special_notes_line_7" json:"special_notes_line_7"`
-	SpecialNotesLine8                  string    `bson:"special_notes_line_8" json:"special_notes_line_8"`
-	SpecialNotesLine9                  string    `bson:"special_notes_line_9" json:"special_notes_line_9"`
-	SpecialNotesLine10                 string    `bson:"special_notes_line_10" json:"special_notes_line_10"`
-	SpecialNotesLine11                 string    `bson:"special_notes_line_11" json:"special_notes_line_11"`
-	SpecialNotesLine12                 string    `bson:"special_notes_line_12" json:"special_notes_line_12"`
-	SpecialNotesLine13                 string    `bson:"special_notes_line_13" json:"special_notes_line_13"`
-	GradingNotesLine1                  string    `bson:"grading_notes_line_1" json:"grading_notes_line_1"`
-	GradingNotesLine2                  string    `bson:"grading_notes_line_2" json:"grading_notes_line_2"`
-	GradingNotesLine3                  string    `bson:"grading_notes_line_3" json:"grading_notes_line_3"`
-	GradingNotesLine4                  string    `bson:"grading_notes_line_4" json:"grading_notes_line_4"`
-	GradingNotesLine5                  string    `bson:"grading_notes_line_5" json:"grading_notes_line_5"`
-	GradingNotesLine6                  string    `bson:"grading_notes_line_6" json:"grading_notes_line_6"`
-	GradingNotesLine7                  string    `bson:"grading_notes_line_7" json:"grading_notes_line_7"`
-	GradingNotesLine8                  string    `bson:"grading_notes_line_8" json:"grading_notes_line_8"`
-	GradingNotesLine9                  string    `bson:"grading_notes_line_9" json:"grading_notes_line_9"`
-	GradingNotesLine10                 string    `bson:"grading_notes_line_10" json:"grading_notes_line_10"`
-	GradingNotesLine11                 string    `bson:"grading_notes_line_11" json:"grading_notes_line_11"`
-	GradingNotesLine12                 string    `bson:"grading_notes_line_12" json:"grading_notes_line_12"`
-	GradingNotesLine13                 string    `bson:"grading_notes_line_13" json:"grading_notes_line_13"`
+	SpecialNotes                       string    `bson:"special_notes" json:"special_notes"`
+	GradingNotes                       string    `bson:"grading_notes" json:"grading_notes"`
 	CreasesFinding                     string    `bson:"creases_finding" json:"creases_finding"`
 	TearsFinding                       string    `bson:"tears_finding" json:"tears_finding"`
 	MissingPartsFinding                string    `bson:"missing_parts_finding" json:"missing_parts_finding"`
@@ -431,111 +407,127 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	pdf.SetFont("Helvetica", "", 7)
 
-	// ROW 1 - Special Notes
-	pdf.SetXY(216, 72+3*0)
-	pdf.Cell(0, 0, r.SpecialNotesLine1) // 17 characters.
+	if len(r.SpecialNotes) > 638 {
+		return nil, errors.New("special notes length over 455")
+	}
 
-	// ROW 2 - Special Notes
-	pdf.SetXY(216, 72+3*1)
-	pdf.Cell(0, 0, r.SpecialNotesLine2) // 17 characters.
+	specialNotesLines := splitText(r.SpecialNotes, 50)
 
-	// ROW 3 - Special Notes
-	pdf.SetXY(216, 72+3*2)
-	pdf.Cell(0, 0, r.SpecialNotesLine3) // 17 characters.
-
-	// ROW 4 - Special Notes
-	pdf.SetXY(216, 72+3*3)
-	pdf.Cell(0, 0, r.SpecialNotesLine4) // 17 characters.
-
-	// ROW 5 - Special Notes
-	pdf.SetXY(216, 72+3*4)
-	pdf.Cell(0, 0, r.SpecialNotesLine5) // 17 characters.
-
-	// ROW 6 - Special Notes
-	pdf.SetXY(216, 72+3*5)
-	pdf.Cell(0, 0, r.SpecialNotesLine6) // 17 characters.
-
-	// ROW 7 - Special Notes
-	pdf.SetXY(216, 72+3*6)
-	pdf.Cell(0, 0, r.SpecialNotesLine7) // 17 characters.
-
-	// ROW 8 - Special Notes
-	pdf.SetXY(216, 72+3*7)
-	pdf.Cell(0, 0, r.SpecialNotesLine8) // 17 characters.
-
-	// ROW 9 - Special Notes
-	pdf.SetXY(216, 72+3*8)
-	pdf.Cell(0, 0, r.SpecialNotesLine9) // 17 characters.
-
-	// ROW 11 - Special Notes
-	pdf.SetXY(216, 72+3*9)
-	pdf.Cell(0, 0, r.SpecialNotesLine10) // 17 characters.
-
-	// ROW 12 - Special Notes
-	pdf.SetXY(216, 72+3*10)
-	pdf.Cell(0, 0, r.SpecialNotesLine11) // 17 characters.
-
-	// ROW 13 - Special Notes
-	pdf.SetXY(216, 72+3*11)
-	pdf.Cell(0, 0, r.SpecialNotesLine12) // 17 characters.
-
-	// ROW 14 - Special Notes
-	pdf.SetXY(216, 72+3*12)
-	pdf.Cell(0, 0, r.SpecialNotesLine13) // 17 characters.
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 0); ok { // ROW 1
+		pdf.SetXY(216, 72+3*0)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 1); ok {
+		pdf.SetXY(216, 72+3*1)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 2); ok {
+		pdf.SetXY(216, 72+3*2)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 3); ok {
+		pdf.SetXY(216, 72+3*3)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 4); ok {
+		pdf.SetXY(216, 72+3*4)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 5); ok {
+		pdf.SetXY(216, 72+3*5)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 6); ok {
+		pdf.SetXY(216, 72+3*6)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 7); ok {
+		pdf.SetXY(216, 72+3*7)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 8); ok {
+		pdf.SetXY(216, 72+3*8)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 9); ok {
+		pdf.SetXY(216, 72+3*9)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 10); ok {
+		pdf.SetXY(216, 72+3*10)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 11); ok {
+		pdf.SetXY(216, 72+3*11)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 12); ok { // ROW 13 - MAXIMUM
+		pdf.SetXY(216, 72+3*12)
+		pdf.Cell(0, 0, specialNote)
+	}
 
 	////////////////////////////////////////////////////////////////////////////
 
-	// ROW 1 - Grading Notes
-	pdf.SetXY(216, 122+0*0)
-	pdf.Cell(0, 0, r.GradingNotesLine1) // 17 characters.
+	if len(r.GradingNotes) > 638 {
+		return nil, errors.New("grading notes length over 638")
+	}
 
-	// ROW 2 - Grading Notes
-	pdf.SetXY(216, 122+3*1)
-	pdf.Cell(0, 0, r.GradingNotesLine2) // 17 characters.
+	gradingNotesLines := splitText(r.GradingNotes, 50)
+	log.Println(gradingNotesLines)
 
-	// ROW 3 - Grading Notes
-	pdf.SetXY(216, 122+3*2)
-	pdf.Cell(0, 0, r.GradingNotesLine3) // 17 characters.
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 0); ok { // ROW 1
+		pdf.SetXY(216, 122+0*0)
+		pdf.Cell(0, 0, gradingNote)
+	}
 
-	// ROW 4 - Grading Notes
-	pdf.SetXY(216, 122+3*3)
-	pdf.Cell(0, 0, r.GradingNotesLine4) // 17 characters.
+	if gradingNote, ok := getElementAtIndex(gradingNotesLines, 1); ok {
+		pdf.SetXY(216, 122+3*1)
+		pdf.Cell(0, 0, gradingNote)
+	}
 
-	// ROW 5 - Grading Notes
-	pdf.SetXY(216, 122+3*4)
-	pdf.Cell(0, 0, r.GradingNotesLine5) // 17 characters.
-
-	// ROW 6 - Grading Notes
-	pdf.SetXY(216, 122+3*5)
-	pdf.Cell(0, 0, r.GradingNotesLine6) // 17 characters.
-
-	// ROW 7 - Grading Notes
-	pdf.SetXY(216, 122+3*6)
-	pdf.Cell(0, 0, r.GradingNotesLine7) // 17 characters.
-
-	// ROW 8 - Grading Notes
-	pdf.SetXY(216, 122+3*7)
-	pdf.Cell(0, 0, r.GradingNotesLine8) // 17 characters.
-
-	// ROW 9 - Grading Notes
-	pdf.SetXY(216, 122+3*8)
-	pdf.Cell(0, 0, r.GradingNotesLine9) // 17 characters.
-
-	// ROW 10 - Grading Notes
-	pdf.SetXY(216, 122+3*9)
-	pdf.Cell(0, 0, r.GradingNotesLine10) // 17 characters.
-
-	// ROW 11 - Grading Notes
-	pdf.SetXY(216, 122+3*10)
-	pdf.Cell(0, 0, r.GradingNotesLine11) // 17 characters.
-
-	// ROW 12 - Grading Notes
-	pdf.SetXY(216, 122+3*11)
-	pdf.Cell(0, 0, r.GradingNotesLine12) // 17 characters.
-
-	// ROW 13 - Grading Notes
-	pdf.SetXY(216, 122+3*12)
-	pdf.Cell(0, 0, r.GradingNotesLine13) // 17 characters.
+	// // ROW 3 - Grading Notes
+	// pdf.SetXY(216, 122+3*2)
+	// pdf.Cell(0, 0, r.GradingNotesLine3) // 17 characters.
+	//
+	// // ROW 4 - Grading Notes
+	// pdf.SetXY(216, 122+3*3)
+	// pdf.Cell(0, 0, r.GradingNotesLine4) // 17 characters.
+	//
+	// // ROW 5 - Grading Notes
+	// pdf.SetXY(216, 122+3*4)
+	// pdf.Cell(0, 0, r.GradingNotesLine5) // 17 characters.
+	//
+	// // ROW 6 - Grading Notes
+	// pdf.SetXY(216, 122+3*5)
+	// pdf.Cell(0, 0, r.GradingNotesLine6) // 17 characters.
+	//
+	// // ROW 7 - Grading Notes
+	// pdf.SetXY(216, 122+3*6)
+	// pdf.Cell(0, 0, r.GradingNotesLine7) // 17 characters.
+	//
+	// // ROW 8 - Grading Notes
+	// pdf.SetXY(216, 122+3*7)
+	// pdf.Cell(0, 0, r.GradingNotesLine8) // 17 characters.
+	//
+	// // ROW 9 - Grading Notes
+	// pdf.SetXY(216, 122+3*8)
+	// pdf.Cell(0, 0, r.GradingNotesLine9) // 17 characters.
+	//
+	// // ROW 10 - Grading Notes
+	// pdf.SetXY(216, 122+3*9)
+	// pdf.Cell(0, 0, r.GradingNotesLine10) // 17 characters.
+	//
+	// // ROW 11 - Grading Notes
+	// pdf.SetXY(216, 122+3*10)
+	// pdf.Cell(0, 0, r.GradingNotesLine11) // 17 characters.
+	//
+	// // ROW 12 - Grading Notes
+	// pdf.SetXY(216, 122+3*11)
+	// pdf.Cell(0, 0, r.GradingNotesLine12) // 17 characters.
+	//
+	// // ROW 13 - Grading Notes
+	// pdf.SetXY(216, 122+3*12)
+	// pdf.Cell(0, 0, r.GradingNotesLine13) // 17 characters.
 
 	////
 	//// Generate the file and save it to the file.
