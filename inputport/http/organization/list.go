@@ -12,9 +12,10 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	f := &sub_s.OrganizationListFilter{
-		PageSize:  10,
-		LastID:    "",
-		SortField: "_id",
+		PageSize:        10,
+		LastID:          "",
+		SortField:       "_id",
+		ExcludeArchived: true,
 	}
 
 	m, err := h.Controller.ListByFilter(ctx, f)

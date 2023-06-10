@@ -8,29 +8,23 @@ import (
 	"golang.org/x/exp/slog"
 
 	s_d "github.com/LuchaComics/cps-backend/app/organization/datastore"
+	user_d "github.com/LuchaComics/cps-backend/app/user/datastore"
+	"github.com/LuchaComics/cps-backend/config/constants"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
 func (c *OrganizationControllerImpl) Create(ctx context.Context, m *s_d.Organization) (*s_d.Organization, error) {
-	// // Modify the organization based on role.
-	// userRole, ok := ctx.Value(constants.SessionUserRole).(int8)
-	// if ok {
-	// 	switch userRole {
-	// 	case u_d.RetailerRole:
-	// 		// Override state.
-	// 		m.State = s_d.OrganizationPendingState
-	//
-	// 		// Auto-assign the user-if
-	// 		m.UserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
-	// 		m.UserFirstName = ctx.Value(constants.SessionUserFirstName).(string)
-	// 		m.UserLastName = ctx.Value(constants.SessionUserLastName).(string)
-	// 		m.UserCompanyName = ctx.Value(constants.SessionUserCompanyName).(string)
-	// 		m.ServiceType = s_d.PreScreeningServiceType
-	// 	case u_d.StaffRole:
-	// 		m.State = s_d.OrganizationActiveState
-	// 	default:
-	// 		m.State = s_d.OrganizationErrorState
-	// 	}
-	// }
+	// Extract from our session the following data.
+	userID := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	userRole := ctx.Value(constants.SessionUserRole).(int8)
+
+	// Apply protection based on ownership and role.
+	if userRole != user_d.StaffRole {
+		c.Logger.Error("authenticated user is not staff role error",
+			slog.Any("role", userRole),
+			slog.Any("userID", userID))
+		return nil, httperror.NewForForbiddenWithSingleField("message", "you role does not grant you access to this")
+	}
 
 	// Add defaults.
 	m.ID = primitive.NewObjectID()

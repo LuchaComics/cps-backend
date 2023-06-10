@@ -4,8 +4,13 @@ import (
 	"context"
 	"time"
 
-	domain "github.com/LuchaComics/cps-backend/app/organization/datastore"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
+
+	domain "github.com/LuchaComics/cps-backend/app/organization/datastore"
+	user_d "github.com/LuchaComics/cps-backend/app/user/datastore"
+	"github.com/LuchaComics/cps-backend/config/constants"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
 func (c *OrganizationControllerImpl) UpdateByID(ctx context.Context, ns *domain.Organization) (*domain.Organization, error) {
@@ -17,6 +22,18 @@ func (c *OrganizationControllerImpl) UpdateByID(ctx context.Context, ns *domain.
 	}
 	if os == nil {
 		return nil, nil
+	}
+
+	// Extract from our session the following data.
+	userOrganizationID := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
+	userRole := ctx.Value(constants.SessionUserRole).(int8)
+
+	// If user is not administrator nor belongs to the organization then error.
+	if userRole != user_d.StaffRole && os.ID != userOrganizationID {
+		c.Logger.Error("authenticated user is not staff role nor belongs to the organization error",
+			slog.Any("userRole", userRole),
+			slog.Any("userOrganizationID", userOrganizationID))
+		return nil, httperror.NewForForbiddenWithSingleField("message", "you do not belong to this organization")
 	}
 
 	// Modify our original organization.

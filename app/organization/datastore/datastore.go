@@ -15,7 +15,7 @@ const (
 	OrganizationPendingState  = 1
 	OrganizationActiveState   = 2
 	OrganizationErrorState    = 3
-	OrganizationInactiveState = 4
+	OrganizationArchivedState = 4
 	RetailerType              = 1
 )
 
@@ -30,11 +30,12 @@ type Organization struct {
 }
 
 type OrganizationListFilter struct {
-	PageSize  int64
-	LastID    string
-	SortField string
-	UserID    primitive.ObjectID
-	UserRole  int8
+	PageSize        int64
+	LastID          string
+	SortField       string
+	UserID          primitive.ObjectID
+	UserRole        int8
+	ExcludeArchived bool
 
 	// SortOrder string   `json:"sort_order"`
 	// SortField string   `json:"sort_field"`

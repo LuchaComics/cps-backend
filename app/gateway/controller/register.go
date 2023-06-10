@@ -44,6 +44,7 @@ func (impl *GatewayControllerImpl) Register(ctx context.Context, req *gateway_s.
 		return err
 	}
 	u.OrganizationID = orgID // Attach to our user profile.
+	u.OrganizationName = req.CompanyName
 	u.ModifiedAt = time.Now()
 	if err := impl.UserStorer.UpdateByID(ctx, u); err != nil {
 		impl.Logger.Error("database update error", slog.Any("error", err))

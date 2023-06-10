@@ -36,6 +36,7 @@ const (
 type Submission struct {
 	ID                                 primitive.ObjectID `bson:"_id" json:"id"`
 	OrganizationID                     primitive.ObjectID `bson:"organization_id" json:"organization_id"`
+	OrganizationName                   string             `bson:"organization_name" json:"organization_name"`
 	CPSRN                              string             `bson:"cpsrn" json:"cpsrn"`
 	CreatedAt                          time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
 	CreatedByUserID                    primitive.ObjectID `bson:"created_by_user_id" json:"created_by_user_id"`

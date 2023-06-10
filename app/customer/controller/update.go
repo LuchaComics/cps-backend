@@ -15,7 +15,9 @@ import (
 
 func (impl *CustomerControllerImpl) UpdateByID(ctx context.Context, nu *user_s.User) (*user_s.User, error) {
 	// Extract from our session the following data.
-	userID := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	userID, _ := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	orgID, _ := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
+	orgName, _ := ctx.Value(constants.SessionUserOrganizationName).(string)
 
 	// Lookup the user in our database, else return a `400 Bad Request` error.
 	ou, err := impl.UserStorer.GetByID(ctx, userID)
@@ -28,6 +30,8 @@ func (impl *CustomerControllerImpl) UpdateByID(ctx context.Context, nu *user_s.U
 		return nil, httperror.NewForBadRequestWithSingleField("id", "does not exist")
 	}
 
+	ou.OrganizationID = orgID
+	ou.OrganizationName = orgName
 	ou.FirstName = nu.FirstName
 	ou.LastName = nu.LastName
 	ou.Name = fmt.Sprintf("%s %s", nu.FirstName, nu.LastName)

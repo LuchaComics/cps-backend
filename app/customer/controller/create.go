@@ -27,15 +27,13 @@ func (impl *CustomerControllerImpl) Create(ctx context.Context, m *user_s.User) 
 	}
 
 	// Modify the customer based on role.
-	orgID, ok := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
-	if !ok {
-		impl.Logger.Error("wrong format error")
-		return nil, fmt.Errorf("%v", "wrong format in user organization id")
-	}
+	orgID, _ := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
+	orgName, _ := ctx.Value(constants.SessionUserOrganizationName).(string)
 
 	// Add defaults.
 	m.Email = strings.ToLower(m.Email)
 	m.OrganizationID = orgID
+	m.OrganizationName = orgName
 	m.ID = primitive.NewObjectID()
 	m.CreatedAt = time.Now()
 	m.ModifiedAt = time.Now()

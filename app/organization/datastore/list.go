@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -31,9 +32,10 @@ func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *Organiza
 		SetSort(bson.D{{sortField, sortOrder}})
 
 	// Add filter conditions to the query
-	if f.UserID.Hex() != "" {
+	if f.UserID != primitive.NilObjectID {
 		query["user_id"] = f.UserID
 	}
+	log.Println(f)
 
 	if startAfter != "" {
 		// Find the document with the given startAfter ID
@@ -43,6 +45,10 @@ func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *Organiza
 		}
 		options.SetSkip(1)
 		query["_id"] = bson.M{"$gt": cursor.Lookup("_id").ObjectID()}
+	}
+
+	if f.ExcludeArchived {
+		query["state"] = bson.M{"$ne": OrganizationArchivedState} // Do not list archived items! This code
 	}
 
 	options.SetSort(bson.D{{sortField, 1}}) // Sort in ascending order based on the specified field

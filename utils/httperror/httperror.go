@@ -46,6 +46,14 @@ func NewForBadRequestWithSingleField(field string, message string) error {
 	}
 }
 
+// NewForForbiddenWithSingleField create a new HTTPError instance pertaining to 403 bad requests for a single field. This is a convinience constructor.
+func NewForForbiddenWithSingleField(field string, message string) error {
+	return HTTPError{
+		Code:   http.StatusForbidden,
+		Errors: &map[string]string{field: message},
+	}
+}
+
 // Error function used to implement the `error` interface for returning errors.
 func (err HTTPError) Error() string {
 	b, e := json.Marshal(err.Errors)
