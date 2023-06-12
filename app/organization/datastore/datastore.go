@@ -20,13 +20,29 @@ const (
 )
 
 type Organization struct {
-	ID              primitive.ObjectID `bson:"_id" json:"id"`
-	CreatedAt       time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
-	ModifiedAt      time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
-	Type            int8               `bson:"type" json:"type"`
-	State           int8               `bson:"state" json:"state"`
-	Name            string             `bson:"name" json:"name"` // Created by system.
-	CreatedByUserID primitive.ObjectID `bson:"created_by_user_id" json:"created_by_user_id"`
+	ID                 primitive.ObjectID     `bson:"_id" json:"id"`
+	ModifiedAt         time.Time              `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
+	ModifiedByUserName string                 `bson:"modified_by_user_name" json:"modified_by_user_name"`
+	ModifiedByUserID   primitive.ObjectID     `bson:"modified_by_user_id" json:"modified_by_user_id"`
+	Type               int8                   `bson:"type" json:"type"`
+	State              int8                   `bson:"state" json:"state"`
+	Name               string                 `bson:"name" json:"name"` // Created by system.
+	CreatedAt          time.Time              `bson:"created_at,omitempty" json:"created_at,omitempty"`
+	CreatedByUserName  string                 `bson:"created_by_user_name" json:"created_by_user_name"`
+	CreatedByUserID    primitive.ObjectID     `bson:"created_by_user_id" json:"created_by_user_id"`
+	Comments           []*OrganizationComment `bson:"comments" json:"comments"`
+}
+
+type OrganizationComment struct {
+	ID               primitive.ObjectID `bson:"_id" json:"id"`
+	OrganizationID   primitive.ObjectID `bson:"organization_id" json:"organization_id"`
+	CreatedAt        time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
+	CreatedByUserID  primitive.ObjectID `bson:"created_by_user_id" json:"created_by_user_id"`
+	CreatedByName    string             `bson:"created_by_name" json:"created_by_name"`
+	ModifiedAt       time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
+	ModifiedByUserID primitive.ObjectID `bson:"modified_by_user_id" json:"modified_by_user_id"`
+	ModifiedByName   string             `bson:"modified_by_name" json:"modified_by_name"`
+	Content          string             `bson:"content" json:"content"`
 }
 
 type OrganizationListFilter struct {

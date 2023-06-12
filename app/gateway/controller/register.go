@@ -116,12 +116,16 @@ func (impl *GatewayControllerImpl) createUserForRequest(ctx context.Context, req
 
 func (impl *GatewayControllerImpl) createOrganizationForUser(ctx context.Context, name string, u *user_s.User) (primitive.ObjectID, error) {
 	o := &organization_s.Organization{
-		ID:              primitive.NewObjectID(),
-		Name:            name,
-		Type:            organization_s.RetailerType,
-		CreatedAt:       time.Now(),
-		ModifiedAt:      time.Now(),
-		CreatedByUserID: u.ID,
+		ID:                 primitive.NewObjectID(),
+		Name:               name,
+		Type:               organization_s.RetailerType,
+		CreatedAt:          time.Now(),
+		CreatedByUserID:    u.ID,
+		CreatedByUserName:  u.Name,
+		ModifiedAt:         time.Now(),
+		ModifiedByUserID:   u.ID,
+		ModifiedByUserName: u.Name,
+		State:              organization_s.OrganizationActiveState,
 	}
 	err := impl.OrganizationStorer.Create(ctx, o)
 	if err != nil {

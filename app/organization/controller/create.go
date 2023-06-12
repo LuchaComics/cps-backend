@@ -16,6 +16,7 @@ import (
 func (c *OrganizationControllerImpl) Create(ctx context.Context, m *s_d.Organization) (*s_d.Organization, error) {
 	// Extract from our session the following data.
 	userID := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	userName := ctx.Value(constants.SessionUserName).(string)
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply protection based on ownership and role.
@@ -28,7 +29,11 @@ func (c *OrganizationControllerImpl) Create(ctx context.Context, m *s_d.Organiza
 
 	// Add defaults.
 	m.ID = primitive.NewObjectID()
+	m.CreatedByUserID = userID
+	m.CreatedByUserName = userName
 	m.CreatedAt = time.Now()
+	m.ModifiedByUserID = userID
+	m.ModifiedByUserName = userName
 	m.ModifiedAt = time.Now()
 
 	// Save to our database.

@@ -162,6 +162,8 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		port.Organization.UpdateByID(w, r, p[3])
 	case n == 4 && p[1] == "v1" && p[2] == "organization" && r.Method == http.MethodDelete:
 		port.Organization.DeleteByID(w, r, p[3])
+	case n == 5 && p[1] == "v1" && p[2] == "organizations" && p[3] == "operation" && p[4] == "create-comment" && r.Method == http.MethodPost:
+		port.Organization.OperationCreateComment(w, r)
 
 	// --- CUSTOMERS --- //
 	case n == 3 && p[1] == "v1" && p[2] == "customers" && r.Method == http.MethodGet:

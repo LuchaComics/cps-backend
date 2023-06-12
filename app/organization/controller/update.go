@@ -21,12 +21,16 @@ func (c *OrganizationControllerImpl) UpdateByID(ctx context.Context, ns *domain.
 		return nil, err
 	}
 	if os == nil {
-		return nil, nil
+		c.Logger.Error("organization does not exist error",
+			slog.Any("organization_id", ns.ID))
+		return nil, httperror.NewForBadRequestWithSingleField("message", "organization does not exist")
 	}
 
 	// Extract from our session the following data.
+	userID := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
 	userOrganizationID := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
+	userName := ctx.Value(constants.SessionUserName).(string)
 
 	// If user is not administrator nor belongs to the organization then error.
 	if userRole != user_d.StaffRole && os.ID != userOrganizationID {
@@ -38,6 +42,8 @@ func (c *OrganizationControllerImpl) UpdateByID(ctx context.Context, ns *domain.
 
 	// Modify our original organization.
 	os.ModifiedAt = time.Now()
+	os.ModifiedByUserID = userID
+	os.ModifiedByUserName = userName
 	os.Type = ns.Type
 	os.State = ns.State
 	os.Name = ns.Name

@@ -9,6 +9,7 @@ import (
 	mg "github.com/LuchaComics/cps-backend/adapter/emailer/mailgun"
 	s3_storage "github.com/LuchaComics/cps-backend/adapter/storage/s3"
 	domain "github.com/LuchaComics/cps-backend/app/organization/datastore"
+	org_d "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	organization_s "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/provider/uuid"
@@ -21,6 +22,7 @@ type OrganizationController interface {
 	UpdateByID(ctx context.Context, m *domain.Organization) (*domain.Organization, error)
 	ListByFilter(ctx context.Context, f *domain.OrganizationListFilter) (*domain.OrganizationListResult, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
+	CreateComment(ctx context.Context, customerID primitive.ObjectID, content string) (*org_d.Organization, error)
 }
 
 type OrganizationControllerImpl struct {

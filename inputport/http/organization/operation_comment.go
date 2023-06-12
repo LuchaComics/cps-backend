@@ -1,4 +1,4 @@
-package customer
+package organization
 
 import (
 	"context"
@@ -6,19 +6,20 @@ import (
 	"log"
 	"net/http"
 
-	sub_s "github.com/LuchaComics/cps-backend/app/user/datastore"
-	"github.com/LuchaComics/cps-backend/utils/httperror"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+
+	sub_s "github.com/LuchaComics/cps-backend/app/organization/datastore"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-type CustomerOperationCreateCommentRequest struct {
-	UserID  primitive.ObjectID `bson:"user_id" json:"user_id"`
-	Content string             `bson:"content" json:"content"`
+type OrganizationOperationCreateCommentRequest struct {
+	OrganizationID primitive.ObjectID `bson:"organization_id" json:"organization_id"`
+	Content        string             `bson:"content" json:"content"`
 }
 
-func UnmarshalOperationCreateCommentRequest(ctx context.Context, r *http.Request) (*CustomerOperationCreateCommentRequest, error) {
+func UnmarshalOperationCreateCommentRequest(ctx context.Context, r *http.Request) (*OrganizationOperationCreateCommentRequest, error) {
 	// Initialize our array which will store all the results from the remote server.
-	var requestData CustomerOperationCreateCommentRequest
+	var requestData OrganizationOperationCreateCommentRequest
 
 	defer r.Body.Close()
 
@@ -37,11 +38,11 @@ func UnmarshalOperationCreateCommentRequest(ctx context.Context, r *http.Request
 	return &requestData, nil
 }
 
-func ValidateOperationCreateCommentRequest(dirtyData *CustomerOperationCreateCommentRequest) error {
+func ValidateOperationCreateCommentRequest(dirtyData *OrganizationOperationCreateCommentRequest) error {
 	e := make(map[string]string)
 
-	if dirtyData.UserID.IsZero() {
-		e["user_id"] = "missing value"
+	if dirtyData.OrganizationID.IsZero() {
+		e["organization_id"] = "missing value"
 	}
 
 	if dirtyData.Content == "" {
@@ -63,7 +64,8 @@ func (h *Handler) OperationCreateComment(w http.ResponseWriter, r *http.Request)
 		httperror.ResponseError(w, err)
 		return
 	}
-	data, err := h.Controller.CreateComment(ctx, reqData.UserID, reqData.Content)
+	log.Println("reqData.OrganizationID -->", reqData.OrganizationID)
+	data, err := h.Controller.CreateComment(ctx, reqData.OrganizationID, reqData.Content)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return
@@ -72,7 +74,7 @@ func (h *Handler) OperationCreateComment(w http.ResponseWriter, r *http.Request)
 	MarshalOperationCreateCommentResponse(data, w)
 }
 
-func MarshalOperationCreateCommentResponse(res *sub_s.User, w http.ResponseWriter) {
+func MarshalOperationCreateCommentResponse(res *sub_s.Organization, w http.ResponseWriter) {
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -40,7 +40,7 @@ func UnmarshalOperationCreateCommentRequest(ctx context.Context, r *http.Request
 func ValidateOperationCreateCommentRequest(dirtyData *UserOperationCreateCommentRequest) error {
 	e := make(map[string]string)
 
-	if dirtyData.UserID.Hex() == "" {
+	if dirtyData.UserID.IsZero() {
 		e["user_id"] = "missing value"
 	}
 
