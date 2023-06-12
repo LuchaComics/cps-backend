@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 
 	domain "github.com/LuchaComics/cps-backend/app/user/datastore"
@@ -15,8 +16,15 @@ import (
 
 // UserController Interface for user business logic controller.
 type UserController interface {
+	Create(ctx context.Context, m *user_s.User) (*user_s.User, error)
 	CreateInitialRootAdmin(ctx context.Context) error
+	GetByID(ctx context.Context, id primitive.ObjectID) (*user_s.User, error)
 	GetUserBySessionUUID(ctx context.Context, sessionUUID string) (*domain.User, error)
+	ArchiveByID(ctx context.Context, id primitive.ObjectID) (*user_s.User, error)
+	DeleteByID(ctx context.Context, id primitive.ObjectID) error
+	ListByFilter(ctx context.Context, f *user_s.UserListFilter) (*user_s.UserListResult, error)
+	UpdateByID(ctx context.Context, nu *user_s.User) (*user_s.User, error)
+	CreateComment(ctx context.Context, customerID primitive.ObjectID, content string) (*user_s.User, error)
 	//TODO: Add more...
 }
 

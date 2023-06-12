@@ -1,4 +1,4 @@
-package customer
+package user
 
 import (
 	"encoding/json"

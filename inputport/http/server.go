@@ -177,6 +177,20 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 	case n == 5 && p[1] == "v1" && p[2] == "customers" && p[3] == "operation" && p[4] == "create-comment" && r.Method == http.MethodPost:
 		port.Customer.OperationCreateComment(w, r)
 
+	// --- CUSTOMERS --- //
+	case n == 3 && p[1] == "v1" && p[2] == "users" && r.Method == http.MethodGet:
+		port.User.List(w, r)
+	case n == 3 && p[1] == "v1" && p[2] == "users" && r.Method == http.MethodPost:
+		port.User.Create(w, r)
+	case n == 4 && p[1] == "v1" && p[2] == "user" && r.Method == http.MethodGet:
+		port.User.GetByID(w, r, p[3])
+	case n == 4 && p[1] == "v1" && p[2] == "user" && r.Method == http.MethodPut:
+		port.User.UpdateByID(w, r, p[3])
+	case n == 4 && p[1] == "v1" && p[2] == "user" && r.Method == http.MethodDelete:
+		port.User.DeleteByID(w, r, p[3])
+	case n == 5 && p[1] == "v1" && p[2] == "users" && p[3] == "operation" && p[4] == "create-comment" && r.Method == http.MethodPost:
+		port.User.OperationCreateComment(w, r)
+
 	// --- CATCH ALL: D.N.E. ---
 	default:
 		http.NotFound(w, r)

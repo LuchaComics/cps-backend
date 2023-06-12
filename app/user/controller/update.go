@@ -12,11 +12,19 @@ import (
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func (impl *CustomerControllerImpl) UpdateByID(ctx context.Context, nu *user_s.User) (*user_s.User, error) {
+func (impl *UserControllerImpl) UpdateByID(ctx context.Context, nu *user_s.User) (*user_s.User, error) {
 	// Extract from our session the following data.
 	userID, _ := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
 	orgID, _ := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
 	orgName, _ := ctx.Value(constants.SessionUserOrganizationName).(string)
+
+	// Extract from our session the following data.
+	userRole := ctx.Value(constants.SessionUserRole).(int8)
+
+	// Apply filtering based on ownership and role.
+	if userRole != user_s.StaffRole {
+		return nil, httperror.NewForForbiddenWithSingleField("message", "you do not have permission")
+	}
 
 	// Lookup the user in our database, else return a `400 Bad Request` error.
 	ou, err := impl.UserStorer.GetByID(ctx, userID)

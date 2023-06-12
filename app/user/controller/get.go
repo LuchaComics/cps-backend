@@ -4,7 +4,30 @@ import (
 	"context"
 
 	domain "github.com/LuchaComics/cps-backend/app/user/datastore"
+	user_s "github.com/LuchaComics/cps-backend/app/user/datastore"
+	"github.com/LuchaComics/cps-backend/config/constants"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/exp/slog"
 )
+
+func (c *UserControllerImpl) GetByID(ctx context.Context, id primitive.ObjectID) (*user_s.User, error) {
+	// Extract from our session the following data.
+	userRole := ctx.Value(constants.SessionUserRole).(int8)
+
+	// Apply filtering based on ownership and role.
+	if userRole != user_s.StaffRole {
+		return nil, httperror.NewForForbiddenWithSingleField("message", "you do not have permission")
+	}
+
+	// Retrieve from our database the record for the specific id.
+	m, err := c.UserStorer.GetByID(ctx, id)
+	if err != nil {
+		c.Logger.Error("database get by id error", slog.Any("error", err))
+		return nil, err
+	}
+	return m, err
+}
 
 // CreateInitialRootAdmin function creates the initial root administrator if not previously created.
 func (c *UserControllerImpl) GetUserBySessionUUID(ctx context.Context, sessionUUID string) (*domain.User, error) {
