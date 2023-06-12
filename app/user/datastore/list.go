@@ -31,7 +31,7 @@ func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) 
 		SetSort(bson.D{{sortField, sortOrder}})
 
 	// Add filter conditions to the query
-	if f.OrganizationID.Hex() != "" {
+	if !f.OrganizationID.IsZero() {
 		query["organization_id"] = f.OrganizationID
 	}
 	if f.Role > 0 {
