@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	UserActiveState   = 1
-	UserInactiveState = 2
+	UserActiveStatus   = 1
+	UserInactiveStatus = 2
 )
 
 type RegisterRequestIDO struct {

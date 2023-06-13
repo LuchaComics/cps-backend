@@ -56,7 +56,7 @@ func (impl SubmissionStorerImpl) ListByFilter(ctx context.Context, f *Submission
 	}
 
 	if f.ExcludeArchived {
-		filter["state"] = bson.M{"$ne": SubmissionArchivedState} // Do not list archived items! This code
+		filter["status"] = bson.M{"$ne": SubmissionArchivedStatus} // Do not list archived items! This code
 	}
 
 	options.SetSort(bson.D{{sortField, 1}}) // Sort in ascending order based on the specified field

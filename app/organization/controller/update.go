@@ -45,7 +45,7 @@ func (c *OrganizationControllerImpl) UpdateByID(ctx context.Context, ns *domain.
 	os.ModifiedByUserID = userID
 	os.ModifiedByUserName = userName
 	os.Type = ns.Type
-	os.State = ns.State
+	os.Status = ns.Status
 	os.Name = ns.Name
 
 	// Save to the database the modified organization.

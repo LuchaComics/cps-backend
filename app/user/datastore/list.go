@@ -61,7 +61,7 @@ func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) 
 	}
 
 	if f.ExcludeArchived {
-		query["state"] = bson.M{"$ne": UserArchivedState} // Do not list archived items! This code
+		query["status"] = bson.M{"$ne": UserArchivedStatus} // Do not list archived items! This code
 	}
 
 	// Full-text search

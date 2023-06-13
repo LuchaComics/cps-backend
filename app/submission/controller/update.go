@@ -101,7 +101,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 
 	// Modify our original submission.
 	os.ModifiedAt = time.Now()
-	// os.State = ns.State //BUGFIX - TODO WITH ROLES
+	// os.Status = ns.Status //BUGFIX - TODO WITH ROLES
 	os.ServiceType = ns.ServiceType
 	os.SubmissionDate = ns.SubmissionDate
 	os.Item = fmt.Sprintf("%v, %v, %v", ns.SeriesTitle, ns.IssueVol, ns.IssueNo)

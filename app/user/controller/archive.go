@@ -33,7 +33,7 @@ func (impl *UserControllerImpl) ArchiveByID(ctx context.Context, id primitive.Ob
 	}
 
 	ou.ModifiedAt = time.Now()
-	ou.State = user_s.UserArchivedState
+	ou.Status = user_s.UserArchivedStatus
 
 	if err := impl.UserStorer.UpdateByID(ctx, ou); err != nil {
 		impl.Logger.Error("user update by id error", slog.Any("error", err))

@@ -19,6 +19,10 @@ func (c *UserControllerImpl) ListByFilter(ctx context.Context, f *user_s.UserLis
 		return nil, httperror.NewForForbiddenWithSingleField("message", "you do not have permission")
 	}
 
+	c.Logger.Debug("listing using filter options:",
+		slog.Any("OrganizationID", f.OrganizationID),
+		slog.Any("Role", f.Role))
+
 	// Filtering the database.
 	m, err := c.UserStorer.ListByFilter(ctx, f)
 	if err != nil {

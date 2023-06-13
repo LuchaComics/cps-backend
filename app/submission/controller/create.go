@@ -58,19 +58,18 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	// user in our system.
 	switch userRole {
 	case u_d.RetailerStaffRole:
-		// Override state.
-		m.State = s_d.SubmissionPendingState
-
-		// Auto-assign the user-if
-		m.UserFirstName = ctx.Value(constants.SessionUserFirstName).(string)
-		m.UserLastName = ctx.Value(constants.SessionUserLastName).(string)
-		m.ServiceType = s_d.PreScreeningServiceType
+		// Override status.
+		m.Status = s_d.SubmissionPendingStatus
 	case u_d.StaffRole:
-		panic("SubmissionControllerImpl | Create | TODO: IMPLEMENT.")
-		m.State = s_d.SubmissionActiveState
+		m.Status = s_d.SubmissionActiveStatus
 	default:
-		m.State = s_d.SubmissionErrorState
+		m.Status = s_d.SubmissionErrorStatus
 	}
+
+	// Auto-assign the user-if
+	m.UserFirstName = ctx.Value(constants.SessionUserFirstName).(string)
+	m.UserLastName = ctx.Value(constants.SessionUserLastName).(string)
+	m.ServiceType = s_d.PreScreeningServiceType
 
 	// Update the `company name` field.
 	userOrgID, ok := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)

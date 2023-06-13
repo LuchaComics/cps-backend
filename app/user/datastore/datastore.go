@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	UserActiveState      = 1
-	UserArchivedState    = 100
+	UserActiveStatus      = 1
+	UserArchivedStatus    = 100
 	StaffRole            = 1
 	RetailerStaffRole    = 2
 	RetailerCustomerRole = 3
@@ -57,7 +57,7 @@ type User struct {
 	ModifiedByUserID          primitive.ObjectID `bson:"modified_by_user_id" json:"modified_by_user_id"`
 	ModifiedAt                time.Time          `bson:"modified_at" json:"modified_at,omitempty"`
 	ModifiedByName            string             `bson:"modified_by_name" json:"modified_by_name"`
-	State                     int8               `bson:"state" json:"state"`
+	Status                     int8               `bson:"status" json:"status"`
 	Comments                  []*UserComment     `bson:"comments" json:"comments"`
 }
 
@@ -80,7 +80,7 @@ type UserListFilter struct {
 	SortField       string             `json:"sort_field"`
 	Offset          uint64             `json:"offset"`
 	Limit           uint64             `json:"limit"`
-	States          []int8             `json:"states"`
+	Statuss          []int8             `json:"statuss"`
 	UUIDs           []string           `json:"uuids"`
 	ExcludeArchived bool               `json:"exclude_archived"`
 	SearchText      string             `json:"search_text"`

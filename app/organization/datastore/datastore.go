@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	OrganizationPendingState  = 1
-	OrganizationActiveState   = 2
-	OrganizationErrorState    = 3
-	OrganizationArchivedState = 4
+	OrganizationPendingStatus  = 1
+	OrganizationActiveStatus   = 2
+	OrganizationErrorStatus    = 3
+	OrganizationArchivedStatus = 4
 	RetailerType              = 1
 )
 
@@ -25,7 +25,7 @@ type Organization struct {
 	ModifiedByUserName string                 `bson:"modified_by_user_name" json:"modified_by_user_name"`
 	ModifiedByUserID   primitive.ObjectID     `bson:"modified_by_user_id" json:"modified_by_user_id"`
 	Type               int8                   `bson:"type" json:"type"`
-	State              int8                   `bson:"state" json:"state"`
+	Status              int8                   `bson:"status" json:"status"`
 	Name               string                 `bson:"name" json:"name"` // Created by system.
 	CreatedAt          time.Time              `bson:"created_at,omitempty" json:"created_at,omitempty"`
 	CreatedByUserName  string                 `bson:"created_by_user_name" json:"created_by_user_name"`
@@ -57,7 +57,7 @@ type OrganizationListFilter struct {
 	// SortField string   `json:"sort_field"`
 	// Offset    uint64   `json:"offset"`
 	// Limit     uint64   `json:"limit"`
-	// States    []int8   `json:"states"`
+	// Statuss    []int8   `json:"statuss"`
 	// UUIDs     []string `json:"uuids"`
 }
 

@@ -107,6 +107,9 @@ func ValidateCreateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.GradingNotes != "" && len(dirtyData.GradingNotes) > 638 {
 		e["grading_notes"] = "over 638 characters"
 	}
+	if dirtyData.Status == 0 {
+		e["status"] = "missing choice"
+	}
 
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)

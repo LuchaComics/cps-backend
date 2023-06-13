@@ -48,7 +48,7 @@ func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *Organiza
 	}
 
 	if f.ExcludeArchived {
-		query["state"] = bson.M{"$ne": OrganizationArchivedState} // Do not list archived items! This code
+		query["status"] = bson.M{"$ne": OrganizationArchivedStatus} // Do not list archived items! This code
 	}
 
 	options.SetSort(bson.D{{sortField, 1}}) // Sort in ascending order based on the specified field

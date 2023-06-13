@@ -137,7 +137,7 @@ func userToSubmissionUserCopy(u *user_s.User) *submission_s.SubmissionUser {
 		AgreePromotionsEmail:      u.AgreePromotionsEmail,
 		CreatedAt:                 u.CreatedAt,
 		ModifiedAt:                u.ModifiedAt,
-		State:                     u.State,
+		Status:                     u.Status,
 		Role:                      u.Role,
 	}
 }
