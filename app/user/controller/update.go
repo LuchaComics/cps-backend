@@ -15,8 +15,6 @@ import (
 func (impl *UserControllerImpl) UpdateByID(ctx context.Context, nu *user_s.User) (*user_s.User, error) {
 	// Extract from our session the following data.
 	userID, _ := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
-	orgID, _ := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
-	orgName, _ := ctx.Value(constants.SessionUserOrganizationName).(string)
 
 	// Extract from our session the following data.
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
@@ -37,8 +35,19 @@ func (impl *UserControllerImpl) UpdateByID(ctx context.Context, nu *user_s.User)
 		return nil, httperror.NewForBadRequestWithSingleField("id", "does not exist")
 	}
 
-	ou.OrganizationID = orgID
-	ou.OrganizationName = orgName
+	// Lookup the organization in our database, else return a `400 Bad Request` error.
+	o, err := impl.OrganizationStorer.GetByID(ctx, nu.OrganizationID)
+	if err != nil {
+		impl.Logger.Error("database error", slog.Any("err", err))
+		return nil, err
+	}
+	if o == nil {
+		impl.Logger.Warn("organization does not exist exists validation error")
+		return nil, httperror.NewForBadRequestWithSingleField("organization_id", "organization does not exist")
+	}
+
+	ou.OrganizationID = o.ID
+	ou.OrganizationName = o.Name
 	ou.FirstName = nu.FirstName
 	ou.LastName = nu.LastName
 	ou.Name = fmt.Sprintf("%s %s", nu.FirstName, nu.LastName)

@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	usr_s "github.com/LuchaComics/cps-backend/app/user/datastore"
@@ -19,6 +20,7 @@ func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*usr_s.User, 
 	// to send a `400 Bad Request` errror message back to the client,
 	err := json.NewDecoder(r.Body).Decode(&requestData) // [1]
 	if err != nil {
+		log.Println("user | UnmarshalUpdateRequest | err:", err)
 		return nil, httperror.NewForSingleField(http.StatusBadRequest, "non_field_error", "payload structure is wrong")
 	}
 
@@ -33,6 +35,12 @@ func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*usr_s.User, 
 func ValidateUpdateRequest(dirtyData *usr_s.User) error {
 	e := make(map[string]string)
 
+	if dirtyData.OrganizationID.IsZero() {
+		e["organization_id"] = "missing value"
+	}
+	if dirtyData.Role == 0 {
+		e["role"] = "missing value"
+	}
 	if dirtyData.FirstName == "" {
 		e["first_name"] = "missing value"
 	}

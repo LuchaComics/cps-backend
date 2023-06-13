@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	UserActiveStatus      = 1
-	UserArchivedStatus    = 100
+	UserActiveStatus     = 1
+	UserArchivedStatus   = 100
 	StaffRole            = 1
 	RetailerStaffRole    = 2
 	RetailerCustomerRole = 3
@@ -57,7 +57,7 @@ type User struct {
 	ModifiedByUserID          primitive.ObjectID `bson:"modified_by_user_id" json:"modified_by_user_id"`
 	ModifiedAt                time.Time          `bson:"modified_at" json:"modified_at,omitempty"`
 	ModifiedByName            string             `bson:"modified_by_name" json:"modified_by_name"`
-	Status                     int8               `bson:"status" json:"status"`
+	Status                    int8               `bson:"status" json:"status"`
 	Comments                  []*UserComment     `bson:"comments" json:"comments"`
 }
 
@@ -80,7 +80,7 @@ type UserListFilter struct {
 	SortField       string             `json:"sort_field"`
 	Offset          uint64             `json:"offset"`
 	Limit           uint64             `json:"limit"`
-	Statuss          []int8             `json:"statuss"`
+	Statuss         []int8             `json:"statuss"`
 	UUIDs           []string           `json:"uuids"`
 	ExcludeArchived bool               `json:"exclude_archived"`
 	SearchText      string             `json:"search_text"`
@@ -94,6 +94,11 @@ type UserListResult struct {
 	Results []*User `json:"results"`
 }
 
+type UserAsSelectOption struct {
+	Value primitive.ObjectID `bson:"_id" json:"value"` // Extract from the database `_id` field and output through API as `value`.
+	Label string             `bson:"name" json:"label"`
+}
+
 // UserStorer Interface for user.
 type UserStorer interface {
 	Create(ctx context.Context, m *User) error
@@ -103,6 +108,7 @@ type UserStorer interface {
 	CheckIfExistsByEmail(ctx context.Context, email string) (bool, error)
 	UpdateByID(ctx context.Context, m *User) error
 	ListByFilter(ctx context.Context, f *UserListFilter) (*UserListResult, error)
+	ListAsSelectOptionByFilter(ctx context.Context, f *UserListFilter) ([]*UserAsSelectOption, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 	// //TODO: Add more...
 }

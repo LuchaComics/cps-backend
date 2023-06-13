@@ -21,6 +21,7 @@ type OrganizationController interface {
 	GetByID(ctx context.Context, id primitive.ObjectID) (*domain.Organization, error)
 	UpdateByID(ctx context.Context, m *domain.Organization) (*domain.Organization, error)
 	ListByFilter(ctx context.Context, f *domain.OrganizationListFilter) (*domain.OrganizationListResult, error)
+	ListAsSelectOptionByFilter(ctx context.Context, f *domain.OrganizationListFilter) ([]*domain.OrganizationAsSelectOption, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 	CreateComment(ctx context.Context, customerID primitive.ObjectID, content string) (*org_d.Organization, error)
 }

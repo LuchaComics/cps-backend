@@ -54,7 +54,7 @@ func InitializeEvent() Application {
 	gatewayController := controller.NewController(conf, slogLogger, provider, jwtProvider, passwordProvider, cacher, emailer, userStorer, organizationStorer)
 	middlewareMiddleware := middleware.NewMiddleware(conf, slogLogger, provider, timeProvider, jwtProvider, gatewayController)
 	handler := gateway.NewHandler(gatewayController)
-	userController := controller2.NewController(conf, slogLogger, provider, passwordProvider, userStorer)
+	userController := controller2.NewController(conf, slogLogger, provider, passwordProvider, organizationStorer, userStorer)
 	userHandler := user.NewHandler(userController)
 	s3Storager := s3.NewStorage(conf, slogLogger, provider)
 	organizationController := controller3.NewController(conf, slogLogger, provider, s3Storager, emailer, organizationStorer)

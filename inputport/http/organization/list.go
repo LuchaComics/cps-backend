@@ -33,3 +33,29 @@ func MarshalListResponse(res *sub_s.OrganizationListResult, w http.ResponseWrite
 		return
 	}
 }
+
+func (h *Handler) ListAsSelectOptionByFilter(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	f := &sub_s.OrganizationListFilter{
+		PageSize:        10,
+		LastID:          "",
+		SortField:       "_id",
+		ExcludeArchived: true,
+	}
+
+	m, err := h.Controller.ListAsSelectOptionByFilter(ctx, f)
+	if err != nil {
+		httperror.ResponseError(w, err)
+		return
+	}
+
+	MarshalListAsSelectOptionResponse(m, w)
+}
+
+func MarshalListAsSelectOptionResponse(res []*sub_s.OrganizationAsSelectOption, w http.ResponseWriter) {
+	if err := json.NewEncoder(w).Encode(&res); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
