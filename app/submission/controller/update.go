@@ -129,7 +129,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	os.CpsPercentageGrade = ns.CpsPercentageGrade
 	// os.UserFirstName = ns.UserFirstName     // NO NEED TO CHANGE AFTER FACT.
 	// os.UserLastName = ns.UserLastName       // NO NEED TO CHANGE AFTER FACT.
-	// os.UserCompanyName = ns.UserCompanyName // NO NEED TO CHANGE AFTER FACT.
+	// os.UserOrganizationName = ns.UserOrganizationName // NO NEED TO CHANGE AFTER FACT.
 	os.Filename = ns.Filename
 	os.Item = fmt.Sprintf("%v, %v, %v", ns.SeriesTitle, ns.IssueVol, ns.IssueNo)
 
@@ -181,9 +181,9 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		CpsPercentageGrade:                 os.CpsPercentageGrade,
 		UserFirstName:                      os.UserFirstName,
 		UserLastName:                       os.UserLastName,
-		UserCompanyName:                    os.UserCompanyName,
+		UserOrganizationName:                    os.UserOrganizationName,
 	}
-	c.Logger.Debug("000000>>>>", slog.String("os.UserFirstName", os.UserFirstName), slog.String("os.UserLastName", os.UserLastName), slog.String("os.UserCompanyName", os.UserCompanyName))
+	c.Logger.Debug("000000>>>>", slog.String("os.UserFirstName", os.UserFirstName), slog.String("os.UserLastName", os.UserLastName), slog.String("os.UserOrganizationName", os.UserOrganizationName))
 	response, err := c.CBFFBuilder.GeneratePDF(r)
 	if err != nil {
 		c.Logger.Error("generate pdf error", slog.Any("error", err))

@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	SubmissionPendingStatus                        = 1
-	SubmissionActiveStatus                         = 2
-	SubmissionErrorStatus                          = 3
-	SubmissionArchivedStatus                       = 100
+	SubmissionPendingStatus                       = 1
+	SubmissionActiveStatus                        = 2
+	SubmissionErrorStatus                         = 3
+	SubmissionArchivedStatus                      = 100
 	PreScreeningServiceType                       = 1
 	PedigreeServiceType                           = 2
 	CPSCapsuleYougradeServiceType                 = 3
@@ -45,7 +45,7 @@ type Submission struct {
 	ModifiedByUserID                   primitive.ObjectID `bson:"modified_by_user_id" json:"modified_by_user_id"`
 	ModifiedByUserRole                 int8               `bson:"modified_by_user_role" json:"modified_by_user_role"`
 	ServiceType                        int8               `bson:"service_type" json:"service_type"`
-	Status                              int8               `bson:"status" json:"status"`
+	Status                             int8               `bson:"status" json:"status"`
 	SubmissionDate                     time.Time          `bson:"submission_date" json:"submission_date"`
 	Item                               string             `bson:"item" json:"item"` // Created by system.
 	SeriesTitle                        string             `bson:"series_title" json:"series_title"`
@@ -74,7 +74,7 @@ type Submission struct {
 	User                               *SubmissionUser    `bson:"user" json:"user"`       // This is the customer this submission belongs to.
 	UserFirstName                      string             `bson:"user_first_name" json:"user_first_name"`
 	UserLastName                       string             `bson:"user_last_name" json:"user_last_name"`
-	UserCompanyName                    string             `bson:"user_company_name" json:"user_company_name"`
+	UserOrganizationName                    string             `bson:"user_organization_name" json:"user_organization_name"`
 	UserSignature                      string             `bson:"user_signature" json:"user_signature"`
 	InspectorSignature                 string             `bson:"inspector_signature" json:"inspector_signature"`
 	InspectorDate                      time.Time          `bson:"inspector_date" json:"inspector_date"`
@@ -141,7 +141,7 @@ type SubmissionUser struct {
 	CreatedAt                 time.Time          `bson:"created_at" json:"created_at,omitempty"`
 	ModifiedAt                time.Time          `bson:"modified_at" json:"modified_at,omitempty"`
 	Role                      int8               `bson:"role" json:"role"`
-	Status                     int8               `bson:"status" json:"status"`
+	Status                    int8               `bson:"status" json:"status"`
 }
 
 type SubmissionListResult struct {

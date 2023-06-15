@@ -110,6 +110,12 @@ func ValidateCreateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.Status == 0 {
 		e["status"] = "missing choice"
 	}
+	if dirtyData.ServiceType == 0 {
+		e["service_type"] = "missing choice"
+	}
+	if dirtyData.OrganizationID.IsZero() {
+		e["organization_id"] = "missing choice"
+	}
 
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)
@@ -122,6 +128,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	data, err := UnmarshalCreateRequest(ctx, r)
 	if err != nil {
+		log.Println("submission | Create | UnmarshalCreateRequest | err:", err)
 		httperror.ResponseError(w, err)
 		return
 	}

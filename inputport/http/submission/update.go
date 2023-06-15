@@ -109,6 +109,13 @@ func ValidateUpdateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.Status == 0 {
 		e["status"] = "missing choice"
 	}
+	if dirtyData.ServiceType == 0 {
+		e["service_type"] = "missing choice"
+	}
+	if dirtyData.OrganizationID.IsZero() {
+		e["organization_id"] = "missing choice"
+	}
+
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)
 	}

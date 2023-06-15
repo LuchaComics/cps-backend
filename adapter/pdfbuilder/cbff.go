@@ -46,7 +46,7 @@ type CBFFBuilderRequestDTO struct {
 	CpsPercentageGrade                 float64   `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
 	UserFirstName                      string    `bson:"user_first_name" json:"user_first_name"`
 	UserLastName                       string    `bson:"user_last_name" json:"user_last_name"`
-	UserCompanyName                    string    `bson:"user_company_name" json:"user_company_name"`
+	UserOrganizationName                    string    `bson:"user_organization_name" json:"user_organization_name"`
 }
 type CBFFBuilderResponseDTO struct {
 	FileName string `json:"file_name"`
@@ -123,7 +123,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 
 	// ROW 3
 	pdf.SetXY(27, 56)
-	pdf.Cell(0, 0, r.UserCompanyName)
+	pdf.Cell(0, 0, r.UserOrganizationName)
 
 	//
 	// RIGHT SIDE

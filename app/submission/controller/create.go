@@ -53,39 +53,37 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		slog.Int64("Role", int64(userRole)),
 		slog.Int64("total", total))
 
-	// DEVELOPERS NOTE:
-	// Every submission creation is dependent on the `role` of the logged in
-	// user in our system.
-	switch userRole {
-	case u_d.RetailerStaffRole:
-		// Override status.
-		m.Status = s_d.SubmissionPendingStatus
-	case u_d.StaffRole:
-		m.Status = s_d.SubmissionActiveStatus
-	default:
-		m.Status = s_d.SubmissionErrorStatus
-	}
-
 	// Auto-assign the user-if
 	m.UserFirstName = ctx.Value(constants.SessionUserFirstName).(string)
 	m.UserLastName = ctx.Value(constants.SessionUserLastName).(string)
-	m.ServiceType = s_d.PreScreeningServiceType
 
-	// Update the `company name` field.
-	userOrgID, ok := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
-	if ok {
-		org, err := c.OrganizationStorer.GetByID(ctx, userOrgID)
-		if err != nil {
-			c.Logger.Error("database get by id error", slog.Any("error", err))
-			return nil, err
-		}
-		if org == nil {
-			c.Logger.Error("database get by id does not exist", slog.Any("organization id", userOrgID))
-			return nil, fmt.Errorf("does not exist for organization id: %v", userOrgID)
-		}
-		m.OrganizationID = org.ID
-		m.UserCompanyName = org.Name
+	// DEVELOPERS NOTE:
+	// Every submission creation is dependent on the `role` of the logged in
+	// user in our system; however, the root administrator has the ability to
+	// assign whatever organization you want.
+	switch userRole {
+	case u_d.RetailerStaffRole:
+		c.Logger.Debug("retailer assigning their organization")
+		m.OrganizationID = ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
+	case u_d.StaffRole:
+		c.Logger.Debug("admin picking custom organization")
+	default:
+		c.Logger.Error("unsupported role", slog.Any("role", userRole))
+		return nil, fmt.Errorf("unsupported role via: %v", userRole)
 	}
+
+	// Lookup the organization.
+	org, err := c.OrganizationStorer.GetByID(ctx, m.OrganizationID)
+	if err != nil {
+		c.Logger.Error("database get by id error", slog.Any("error", err))
+		return nil, err
+	}
+	if org == nil {
+		c.Logger.Error("database get by id does not exist", slog.Any("organization id", m.OrganizationID))
+		return nil, fmt.Errorf("does not exist for organization id: %v", m.OrganizationID)
+	}
+	m.OrganizationID = org.ID
+	m.UserOrganizationName = org.Name
 
 	// Add defaults.
 	m.ID = primitive.NewObjectID()
@@ -149,7 +147,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		CpsPercentageGrade:                 m.CpsPercentageGrade,
 		UserFirstName:                      m.UserFirstName,
 		UserLastName:                       m.UserLastName,
-		UserCompanyName:                    m.UserCompanyName,
+		UserOrganizationName:               m.UserOrganizationName,
 	}
 	response, err := c.CBFFBuilder.GeneratePDF(r)
 	if err != nil {

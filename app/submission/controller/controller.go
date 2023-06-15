@@ -89,7 +89,7 @@ func NewController(
 	// 	OverallLetterGrade:                 "VG",
 	// 	UserFirstName:                      "Bartlomiej",
 	// 	UserLastName:                       "Miks",
-	// 	UserCompanyName:                    "Mika Software Corporation",
+	// 	UserOrganizationName:                    "Mika Software Corporation",
 	// }
 	// res, err := cbffb.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
