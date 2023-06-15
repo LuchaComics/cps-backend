@@ -11,6 +11,8 @@ import (
 	domain "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	org_d "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	organization_s "github.com/LuchaComics/cps-backend/app/organization/datastore"
+	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	user_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/provider/uuid"
 )
@@ -33,6 +35,8 @@ type OrganizationControllerImpl struct {
 	S3                 s3_storage.S3Storager
 	Emailer            mg.Emailer
 	OrganizationStorer organization_s.OrganizationStorer
+	UserStorer         user_s.UserStorer
+	SubmissionStorer   submission_s.SubmissionStorer
 }
 
 func NewController(
@@ -41,7 +45,9 @@ func NewController(
 	uuidp uuid.Provider,
 	s3 s3_storage.S3Storager,
 	emailer mg.Emailer,
-	sub_storer organization_s.OrganizationStorer,
+	org_storer organization_s.OrganizationStorer,
+	usr_storer user_s.UserStorer,
+	sub_storer submission_s.SubmissionStorer,
 ) OrganizationController {
 	s := &OrganizationControllerImpl{
 		Config:             appCfg,
@@ -49,7 +55,9 @@ func NewController(
 		UUID:               uuidp,
 		S3:                 s3,
 		Emailer:            emailer,
-		OrganizationStorer: sub_storer,
+		OrganizationStorer: org_storer,
+		UserStorer:         usr_storer,
+		SubmissionStorer:   sub_storer,
 	}
 	s.Logger.Debug("organization controller initialization started...")
 	s.Logger.Debug("organization controller initialized")
