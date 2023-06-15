@@ -29,6 +29,8 @@ func (impl *CustomerControllerImpl) Create(ctx context.Context, m *user_s.User) 
 	// Modify the customer based on role.
 	orgID, _ := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
 	orgName, _ := ctx.Value(constants.SessionUserOrganizationName).(string)
+	userID, _ := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	userName, _ := ctx.Value(constants.SessionUserName).(string)
 
 	// Add defaults.
 	m.Email = strings.ToLower(m.Email)
@@ -36,7 +38,11 @@ func (impl *CustomerControllerImpl) Create(ctx context.Context, m *user_s.User) 
 	m.OrganizationName = orgName
 	m.ID = primitive.NewObjectID()
 	m.CreatedAt = time.Now()
+	m.CreatedByUserID = userID
+	m.CreatedByName = userName
 	m.ModifiedAt = time.Now()
+	m.ModifiedByUserID = userID
+	m.ModifiedByName = userName
 	m.Role = user_s.RetailerCustomerRole
 	m.Name = fmt.Sprintf("%s %s", m.FirstName, m.LastName)
 	m.LexicalName = fmt.Sprintf("%s, %s", m.LastName, m.FirstName)

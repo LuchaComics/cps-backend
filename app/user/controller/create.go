@@ -18,6 +18,7 @@ func (impl *UserControllerImpl) Create(ctx context.Context, m *user_s.User) (*us
 	// Extract from our session the following data.
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 	userID := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	userName, _ := ctx.Value(constants.SessionUserName).(string)
 
 	// Apply filtering based on ownership and role.
 	if userRole != user_s.StaffRole {
@@ -55,8 +56,10 @@ func (impl *UserControllerImpl) Create(ctx context.Context, m *user_s.User) (*us
 	m.ID = primitive.NewObjectID()
 	m.CreatedAt = time.Now()
 	m.CreatedByUserID = userID
+	m.CreatedByName = userName
 	m.ModifiedAt = time.Now()
 	m.ModifiedByUserID = userID
+	m.ModifiedByName = userName
 	m.Name = fmt.Sprintf("%s %s", m.FirstName, m.LastName)
 	m.LexicalName = fmt.Sprintf("%s, %s", m.LastName, m.FirstName)
 	m.WasEmailVerified = true

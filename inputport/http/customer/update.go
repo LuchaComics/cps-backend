@@ -33,6 +33,9 @@ func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*usr_s.User, 
 func ValidateUpdateRequest(dirtyData *usr_s.User) error {
 	e := make(map[string]string)
 
+	if dirtyData.ID.IsZero() {
+		e["id"] = "missing value"
+	}
 	if dirtyData.FirstName == "" {
 		e["first_name"] = "missing value"
 	}
@@ -79,13 +82,11 @@ func ValidateUpdateRequest(dirtyData *usr_s.User) error {
 
 func (h *Handler) UpdateByID(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := r.Context()
-
 	data, err := UnmarshalUpdateRequest(ctx, r)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return
 	}
-
 	customer, err := h.Controller.UpdateByID(ctx, data)
 	if err != nil {
 		httperror.ResponseError(w, err)

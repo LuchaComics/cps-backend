@@ -64,8 +64,6 @@ func (impl *UserControllerImpl) UpdateByID(ctx context.Context, nu *user_s.User)
 	ou.HowDidYouHearAboutUs = nu.HowDidYouHearAboutUs
 	ou.HowDidYouHearAboutUsOther = nu.HowDidYouHearAboutUsOther
 	ou.AgreePromotionsEmail = nu.AgreePromotionsEmail
-	ou.CreatedByUserID = userID
-	ou.CreatedByName = userName
 	ou.ModifiedByUserID = userID
 	ou.ModifiedByName = userName
 
