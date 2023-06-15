@@ -10,6 +10,7 @@ import (
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	u_d "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config/constants"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
@@ -89,6 +90,15 @@ func (c *SubmissionControllerImpl) SetUser(ctx context.Context, submissionID pri
 }
 
 func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Submission) (*domain.Submission, error) {
+	// DEVELOPERS NOTE:
+	// Every submission creation is dependent on the `role` of the logged in
+	// user in our system so we need to extract it right away.
+	userRole := ctx.Value(constants.SessionUserRole).(int8)
+
+	//
+	// Fetch submission.
+	//
+
 	// Fetch the original submission.
 	os, err := c.SubmissionStorer.GetByID(ctx, ns.ID)
 	if err != nil {
@@ -98,6 +108,42 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	if os == nil {
 		return nil, nil
 	}
+
+	//
+	// Set organization.
+	//
+
+	// DEVELOPERS NOTE:
+	// Every submission creation is dependent on the `role` of the logged in
+	// user in our system; however, the root administrator has the ability to
+	// assign whatever organization you want.
+	switch userRole {
+	case u_d.RetailerStaffRole:
+		c.Logger.Debug("retailer assigning their organization")
+		os.OrganizationID = ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
+	case u_d.StaffRole:
+		c.Logger.Debug("admin picking custom organization")
+	default:
+		c.Logger.Error("unsupported role", slog.Any("role", userRole))
+		return nil, fmt.Errorf("unsupported role via: %v", userRole)
+	}
+
+	// Lookup the organization.
+	org, err := c.OrganizationStorer.GetByID(ctx, ns.OrganizationID)
+	if err != nil {
+		c.Logger.Error("database get by id error", slog.Any("error", err))
+		return nil, err
+	}
+	if org == nil {
+		c.Logger.Error("database get by id does not exist", slog.Any("organization id", ns.OrganizationID))
+		return nil, fmt.Errorf("does not exist for organization id: %v", ns.OrganizationID)
+	}
+	os.OrganizationID = org.ID
+	os.OrganizationName = org.Name
+
+	//
+	// Update records in database.
+	//
 
 	// Modify our original submission.
 	os.ModifiedAt = time.Now()
@@ -139,6 +185,10 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		return nil, err
 	}
 
+	//
+	// Delete pdf file from s3
+	//
+
 	// Delete previous record from remote storage.
 	if err := c.S3.DeleteByKeys(ctx, []string{os.FileUploadS3ObjectKey}); err != nil {
 		c.Logger.Warn("s3 delete by keys error", slog.Any("error", err))
@@ -146,6 +196,10 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		// be a case were the file was removed on the s3 bucket by ourselves
 		// or some other reason.
 	}
+
+	//
+	// Create new PDF file.
+	//
 
 	// Look up the publisher names and get the correct display name or get the other.
 	var publisherNameDisplay string = constants.SubmissionPublisherNames[ns.PublisherName]
@@ -181,9 +235,9 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		CpsPercentageGrade:                 os.CpsPercentageGrade,
 		UserFirstName:                      os.UserFirstName,
 		UserLastName:                       os.UserLastName,
-		UserOrganizationName:                    os.UserOrganizationName,
+		UserOrganizationName:               os.OrganizationName,
 	}
-	c.Logger.Debug("000000>>>>", slog.String("os.UserFirstName", os.UserFirstName), slog.String("os.UserLastName", os.UserLastName), slog.String("os.UserOrganizationName", os.UserOrganizationName))
+	c.Logger.Debug("000000>>>>", slog.String("os.UserFirstName", os.UserFirstName), slog.String("os.UserLastName", os.UserLastName), slog.String("os.OrganizationName", os.OrganizationName))
 	response, err := c.CBFFBuilder.GeneratePDF(r)
 	if err != nil {
 		c.Logger.Error("generate pdf error", slog.Any("error", err))
@@ -203,6 +257,10 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 		c.Logger.Error("s3 upload error", slog.Any("error", err))
 		return nil, err
 	}
+
+	//
+	// Update record with PDF file information with record.
+	//
 
 	// The following will save the S3 key of our file upload into our record.
 	os.FileUploadS3ObjectKey = path

@@ -74,7 +74,6 @@ type Submission struct {
 	User                               *SubmissionUser    `bson:"user" json:"user"`       // This is the customer this submission belongs to.
 	UserFirstName                      string             `bson:"user_first_name" json:"user_first_name"`
 	UserLastName                       string             `bson:"user_last_name" json:"user_last_name"`
-	UserOrganizationName                    string             `bson:"user_organization_name" json:"user_organization_name"`
 	UserSignature                      string             `bson:"user_signature" json:"user_signature"`
 	InspectorSignature                 string             `bson:"inspector_signature" json:"inspector_signature"`
 	InspectorDate                      time.Time          `bson:"inspector_date" json:"inspector_date"`

@@ -83,7 +83,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		return nil, fmt.Errorf("does not exist for organization id: %v", m.OrganizationID)
 	}
 	m.OrganizationID = org.ID
-	m.UserOrganizationName = org.Name
+	m.OrganizationName = org.Name
 
 	// Add defaults.
 	m.ID = primitive.NewObjectID()
@@ -147,7 +147,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		CpsPercentageGrade:                 m.CpsPercentageGrade,
 		UserFirstName:                      m.UserFirstName,
 		UserLastName:                       m.UserLastName,
-		UserOrganizationName:               m.UserOrganizationName,
+		UserOrganizationName:               m.OrganizationName,
 	}
 	response, err := c.CBFFBuilder.GeneratePDF(r)
 	if err != nil {
