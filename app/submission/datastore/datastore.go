@@ -147,6 +147,11 @@ type SubmissionListResult struct {
 	Results []*Submission `json:"results"`
 }
 
+type SubmissionAsSelectOption struct {
+	Value primitive.ObjectID `bson:"_id" json:"value"` // Extract from the database `_id` field and output through API as `value`.
+	Label string             `bson:"name" json:"label"`
+}
+
 // SubmissionStorer Interface for submission.
 type SubmissionStorer interface {
 	Create(ctx context.Context, m *Submission) error
@@ -154,6 +159,7 @@ type SubmissionStorer interface {
 	GetByCPSRN(ctx context.Context, cpsrn string) (*Submission, error)
 	UpdateByID(ctx context.Context, m *Submission) error
 	ListByFilter(ctx context.Context, f *SubmissionListFilter) (*SubmissionListResult, error)
+	ListAsSelectOptionByFilter(ctx context.Context, f *SubmissionListFilter) ([]*SubmissionAsSelectOption, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 	CountAll(ctx context.Context) (int64, error)
 	CountByFilter(ctx context.Context, f *SubmissionListFilter) (int64, error)

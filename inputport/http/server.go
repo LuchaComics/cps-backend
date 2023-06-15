@@ -150,6 +150,8 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		port.Submission.OperationSetUser(w, r)
 	case n == 5 && p[1] == "v1" && p[2] == "submissions" && p[3] == "operation" && p[4] == "create-comment" && r.Method == http.MethodPost:
 		port.Submission.OperationCreateComment(w, r)
+	case n == 4 && p[1] == "v1" && p[2] == "submissions" && p[3] == "select-options" && r.Method == http.MethodGet:
+		port.Submission.ListAsSelectOptionByFilter(w, r)
 
 	// --- ORGANIZATION --- //
 	case n == 3 && p[1] == "v1" && p[2] == "organizations" && r.Method == http.MethodGet:

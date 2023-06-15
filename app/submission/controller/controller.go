@@ -26,6 +26,7 @@ type SubmissionController interface {
 	GetByCPSRN(ctx context.Context, cpsrn string) (*submission_s.Submission, error)
 	UpdateByID(ctx context.Context, m *submission_s.Submission) (*submission_s.Submission, error)
 	ListByFilter(ctx context.Context, f *submission_s.SubmissionListFilter) (*submission_s.SubmissionListResult, error)
+	ListAsSelectOptionByFilter(ctx context.Context, f *submission_s.SubmissionListFilter) ([]*submission_s.SubmissionAsSelectOption, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 	ArchiveByID(ctx context.Context, id primitive.ObjectID) (*submission_s.Submission, error)
 	SetUser(ctx context.Context, submissionID primitive.ObjectID, userID primitive.ObjectID) (*submission_s.Submission, error)
@@ -137,7 +138,7 @@ func userToSubmissionUserCopy(u *user_s.User) *submission_s.SubmissionUser {
 		AgreePromotionsEmail:      u.AgreePromotionsEmail,
 		CreatedAt:                 u.CreatedAt,
 		ModifiedAt:                u.ModifiedAt,
-		Status:                     u.Status,
+		Status:                    u.Status,
 		Role:                      u.Role,
 	}
 }
