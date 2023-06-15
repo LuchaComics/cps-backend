@@ -15,6 +15,7 @@ import (
 func (impl *UserControllerImpl) UpdateByID(ctx context.Context, nu *user_s.User) (*user_s.User, error) {
 	// Extract from our session the following data.
 	userID, _ := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	userName, _ := ctx.Value(constants.SessionUserName).(string)
 
 	// Extract from our session the following data.
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
@@ -25,7 +26,7 @@ func (impl *UserControllerImpl) UpdateByID(ctx context.Context, nu *user_s.User)
 	}
 
 	// Lookup the user in our database, else return a `400 Bad Request` error.
-	ou, err := impl.UserStorer.GetByID(ctx, userID)
+	ou, err := impl.UserStorer.GetByID(ctx, nu.ID)
 	if err != nil {
 		impl.Logger.Error("database error", slog.Any("err", err))
 		return nil, err
@@ -63,6 +64,10 @@ func (impl *UserControllerImpl) UpdateByID(ctx context.Context, nu *user_s.User)
 	ou.HowDidYouHearAboutUs = nu.HowDidYouHearAboutUs
 	ou.HowDidYouHearAboutUsOther = nu.HowDidYouHearAboutUsOther
 	ou.AgreePromotionsEmail = nu.AgreePromotionsEmail
+	ou.CreatedByUserID = userID
+	ou.CreatedByName = userName
+	ou.ModifiedByUserID = userID
+	ou.ModifiedByName = userName
 
 	if err := impl.UserStorer.UpdateByID(ctx, ou); err != nil {
 		impl.Logger.Error("user update by id error", slog.Any("error", err))
