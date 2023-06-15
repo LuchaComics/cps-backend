@@ -3,6 +3,7 @@ package gateway
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 
@@ -20,6 +21,7 @@ func UnmarshalRegisterRequest(ctx context.Context, r *http.Request) (*gateway_s.
 	// to send a `400 Bad Request` errror message back to the client,
 	err := json.NewDecoder(r.Body).Decode(&requestData) // [1]
 	if err != nil {
+		log.Println("Register | UnmarshalRegisterRequest | NewDecoder/Decode | err:", err)
 		return nil, httperror.NewForSingleField(http.StatusBadRequest, "non_field_error", "payload structure is wrong")
 	}
 

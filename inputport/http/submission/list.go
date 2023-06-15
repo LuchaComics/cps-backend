@@ -32,6 +32,16 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 		f.OrganizationID = organizationID
 	}
 
+	userID := query.Get("user_id")
+	if userID != "" {
+		userID, err := primitive.ObjectIDFromHex(userID)
+		if err != nil {
+			httperror.ResponseError(w, err)
+			return
+		}
+		f.UserID = userID
+	}
+
 	// Fet
 	m, err := h.Controller.ListByFilter(ctx, f)
 	if err != nil {
