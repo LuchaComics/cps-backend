@@ -7,6 +7,7 @@ import (
 
 	usr_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*usr_s.User, error) {
@@ -87,6 +88,13 @@ func (h *Handler) UpdateByID(w http.ResponseWriter, r *http.Request, id string) 
 		httperror.ResponseError(w, err)
 		return
 	}
+
+	data.ID, err = primitive.ObjectIDFromHex(id)
+	if err != nil {
+		httperror.ResponseError(w, err)
+		return
+	}
+
 	customer, err := h.Controller.UpdateByID(ctx, data)
 	if err != nil {
 		httperror.ResponseError(w, err)

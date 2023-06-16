@@ -13,6 +13,7 @@ import (
 )
 
 type UserUpdateRequestIDO struct {
+	ID                        primitive.ObjectID `bson:"_id" json:"id"`
 	OrganizationID            primitive.ObjectID `bson:"organization_id" json:"organization_id,omitempty"`
 	FirstName                 string             `json:"first_name"`
 	LastName                  string             `json:"last_name"`
@@ -42,6 +43,7 @@ func (impl *UserControllerImpl) userFromUpdateRequest(requestData *UserUpdateReq
 	}
 
 	return &user_s.User{
+		ID:                        requestData.ID,
 		OrganizationID:            requestData.OrganizationID,
 		FirstName:                 requestData.FirstName,
 		LastName:                  requestData.FirstName,

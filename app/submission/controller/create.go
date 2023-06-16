@@ -192,5 +192,10 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		// Just continue even if we get an error...
 	}
 
+	// The following code will send the email notifications to the correct individuals.
+	if err := c.sendNewSubmissionEmails(m); err != nil {
+		c.Logger.Error("database update error", slog.Any("error", err))
+		// Do not return error, just keep it in the server logs.
+	}
 	return m, nil
 }

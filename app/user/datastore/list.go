@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -167,4 +168,19 @@ func (impl UserStorerImpl) ListAsSelectOptionByFilter(ctx context.Context, f *Us
 	}
 
 	return results, nil
+}
+
+func (impl UserStorerImpl) ListAllRootStaff(ctx context.Context) (*UserListResult, error) {
+	f := &UserListFilter{
+		Role: StaffRole,
+	}
+	return impl.ListByFilter(ctx, f)
+}
+
+func (impl UserStorerImpl) ListAllRetailerStaffForOrganizationID(ctx context.Context, organizationID primitive.ObjectID) (*UserListResult, error) {
+	f := &UserListFilter{
+		Role:           RetailerStaffRole,
+		OrganizationID: organizationID,
+	}
+	return impl.ListByFilter(ctx, f)
 }

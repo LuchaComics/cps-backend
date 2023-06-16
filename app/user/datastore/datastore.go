@@ -109,6 +109,8 @@ type UserStorer interface {
 	UpdateByID(ctx context.Context, m *User) error
 	ListByFilter(ctx context.Context, f *UserListFilter) (*UserListResult, error)
 	ListAsSelectOptionByFilter(ctx context.Context, f *UserListFilter) ([]*UserAsSelectOption, error)
+	ListAllRootStaff(ctx context.Context) (*UserListResult, error)
+	ListAllRetailerStaffForOrganizationID(ctx context.Context, organizationID primitive.ObjectID) (*UserListResult, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 	// //TODO: Add more...
 }
