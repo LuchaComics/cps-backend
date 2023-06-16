@@ -17,7 +17,7 @@ import (
 
 // CustomerController Interface for customer business logic controller.
 type CustomerController interface {
-	Create(ctx context.Context, m *user_s.User) (*user_s.User, error)
+	Create(ctx context.Context, m *CustomerCreateRequestIDO) (*user_s.User, error)
 	GetByID(ctx context.Context, id primitive.ObjectID) (*user_s.User, error)
 	UpdateByID(ctx context.Context, m *user_s.User) (*user_s.User, error)
 	ListByFilter(ctx context.Context, f *user_s.UserListFilter) (*user_s.UserListResult, error)

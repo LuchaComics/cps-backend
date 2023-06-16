@@ -5,13 +5,14 @@ import (
 	"encoding/json"
 	"net/http"
 
+	usr_c "github.com/LuchaComics/cps-backend/app/customer/controller"
 	usr_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func UnmarshalCreateRequest(ctx context.Context, r *http.Request) (*usr_s.User, error) {
+func UnmarshalCreateRequest(ctx context.Context, r *http.Request) (*usr_c.CustomerCreateRequestIDO, error) {
 	// Initialize our array which will store all the results from the remote server.
-	var requestData usr_s.User
+	var requestData *usr_c.CustomerCreateRequestIDO
 
 	defer r.Body.Close()
 
@@ -23,14 +24,14 @@ func UnmarshalCreateRequest(ctx context.Context, r *http.Request) (*usr_s.User, 
 	}
 
 	// Perform our validation and return validation error on any issues detected.
-	if err := ValidateCreateRequest(&requestData); err != nil {
+	if err := ValidateCreateRequest(requestData); err != nil {
 		return nil, err
 	}
 
-	return &requestData, nil
+	return requestData, nil
 }
 
-func ValidateCreateRequest(dirtyData *usr_s.User) error {
+func ValidateCreateRequest(dirtyData *usr_c.CustomerCreateRequestIDO) error {
 	e := make(map[string]string)
 
 	if dirtyData.FirstName == "" {
@@ -69,6 +70,12 @@ func ValidateCreateRequest(dirtyData *usr_s.User) error {
 		if dirtyData.HowDidYouHearAboutUs == 1 && dirtyData.HowDidYouHearAboutUsOther == "" {
 			e["how_did_you_hear_about_us_other"] = "missing value"
 		}
+	}
+
+	// Optional password handling.
+	if dirtyData.PasswordRepeated != dirtyData.Password {
+		e["password"] = "does not match"
+		e["password_repeated"] = "does not match"
 	}
 
 	if len(e) != 0 {

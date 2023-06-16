@@ -14,7 +14,64 @@ import (
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func (impl *UserControllerImpl) Create(ctx context.Context, m *user_s.User) (*user_s.User, error) {
+type UserCreateRequestIDO struct {
+	OrganizationID            primitive.ObjectID `bson:"organization_id" json:"organization_id,omitempty"`
+	FirstName                 string             `json:"first_name"`
+	LastName                  string             `json:"last_name"`
+	Email                     string             `json:"email"`
+	Password                  string             `json:"password"`
+	PasswordRepeated          string             `json:"password_repeated"`
+	Phone                     string             `json:"phone,omitempty"`
+	Country                   string             `json:"country,omitempty"`
+	Region                    string             `json:"region,omitempty"`
+	City                      string             `json:"city,omitempty"`
+	PostalCode                string             `json:"postal_code,omitempty"`
+	AddressLine1              string             `json:"address_line_1,omitempty"`
+	AddressLine2              string             `json:"address_line_2,omitempty"`
+	HowDidYouHearAboutUs      int8               `json:"how_did_you_hear_about_us,omitempty"`
+	HowDidYouHearAboutUsOther string             `json:"how_did_you_hear_about_us_other,omitempty"`
+	AgreeTOS                  bool               `json:"agree_tos,omitempty"`
+	AgreePromotionsEmail      bool               `json:"agree_promotions_email,omitempty"`
+	Status                    int8               `bson:"status" json:"status"`
+	Role                      int8               `bson:"role" json:"role"`
+}
+
+func (impl *UserControllerImpl) userFromCreateRequest(requestData *UserCreateRequestIDO) (*user_s.User, error) {
+	passwordHash, err := impl.Password.GenerateHashFromPassword(requestData.Password)
+	if err != nil {
+		impl.Logger.Error("hashing error", slog.Any("error", err))
+		return nil, err
+	}
+
+	return &user_s.User{
+		OrganizationID:            requestData.OrganizationID,
+		FirstName:                 requestData.FirstName,
+		LastName:                  requestData.FirstName,
+		Email:                     requestData.Email,
+		PasswordHash:              passwordHash,
+		PasswordHashAlgorithm:     impl.Password.AlgorithmName(),
+		Phone:                     requestData.Phone,
+		Country:                   requestData.Country,
+		Region:                    requestData.Region,
+		City:                      requestData.City,
+		PostalCode:                requestData.PostalCode,
+		AddressLine1:              requestData.AddressLine1,
+		AddressLine2:              requestData.AddressLine2,
+		HowDidYouHearAboutUs:      requestData.HowDidYouHearAboutUs,
+		HowDidYouHearAboutUsOther: requestData.HowDidYouHearAboutUsOther,
+		AgreeTOS:                  requestData.AgreeTOS,
+		AgreePromotionsEmail:      requestData.AgreePromotionsEmail,
+		Status:                    requestData.Status,
+		Role:                      requestData.Role,
+	}, nil
+}
+
+func (impl *UserControllerImpl) Create(ctx context.Context, requestData *UserCreateRequestIDO) (*user_s.User, error) {
+	m, err := impl.userFromCreateRequest(requestData)
+	if err != nil {
+		return nil, err
+	}
+
 	// Extract from our session the following data.
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 	userID := ctx.Value(constants.SessionUserID).(primitive.ObjectID)

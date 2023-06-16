@@ -6,13 +6,14 @@ import (
 	"log"
 	"net/http"
 
+	usr_c "github.com/LuchaComics/cps-backend/app/user/controller"
 	usr_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*usr_s.User, error) {
+func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*usr_c.UserUpdateRequestIDO, error) {
 	// Initialize our array which will store all the results from the remote server.
-	var requestData usr_s.User
+	var requestData usr_c.UserUpdateRequestIDO
 
 	defer r.Body.Close()
 
@@ -32,7 +33,7 @@ func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*usr_s.User, 
 	return &requestData, nil
 }
 
-func ValidateUpdateRequest(dirtyData *usr_s.User) error {
+func ValidateUpdateRequest(dirtyData *usr_c.UserUpdateRequestIDO) error {
 	e := make(map[string]string)
 
 	if dirtyData.OrganizationID.IsZero() {

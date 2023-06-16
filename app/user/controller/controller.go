@@ -17,7 +17,7 @@ import (
 
 // UserController Interface for user business logic controller.
 type UserController interface {
-	Create(ctx context.Context, m *user_s.User) (*user_s.User, error)
+	Create(ctx context.Context, requestData *UserCreateRequestIDO) (*user_s.User, error)
 	CreateInitialRootAdmin(ctx context.Context) error
 	GetByID(ctx context.Context, id primitive.ObjectID) (*user_s.User, error)
 	GetUserBySessionUUID(ctx context.Context, sessionUUID string) (*domain.User, error)
@@ -25,7 +25,7 @@ type UserController interface {
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 	ListByFilter(ctx context.Context, f *user_s.UserListFilter) (*user_s.UserListResult, error)
 	ListAsSelectOptionByFilter(ctx context.Context, f *user_s.UserListFilter) ([]*user_s.UserAsSelectOption, error)
-	UpdateByID(ctx context.Context, nu *user_s.User) (*user_s.User, error)
+	UpdateByID(ctx context.Context, request *UserUpdateRequestIDO) (*user_s.User, error)
 	CreateComment(ctx context.Context, customerID primitive.ObjectID, content string) (*user_s.User, error)
 	//TODO: Add more...
 }
