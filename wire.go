@@ -54,6 +54,7 @@ func InitializeEvent() Application {
 		s3_storage.NewStorage,
 		redis.NewCache,
 		pdfbuilder.NewCBFFBuilder,
+		pdfbuilder.NewPCBuilder,
 		user_s.NewDatastore,
 		user_c.NewController,
 		customer_c.NewController,

@@ -46,6 +46,7 @@ type awsConfig struct {
 
 type pdfBuilderConfig struct {
 	CBFFTemplatePath  string `env:"CPS_BACKEND_PDF_BUILDER_CBFF_TEMPLATE_FILE_PATH,required"`
+	PCTemplatePath    string `env:"CPS_BACKEND_PDF_BUILDER_PC_TEMPLATE_FILE_PATH,required"`
 	DataDirectoryPath string `env:"CPS_BACKEND_PDF_BUILDER_DATA_DIRECTORY_PATH,required"`
 }
 
