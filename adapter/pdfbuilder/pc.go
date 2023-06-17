@@ -50,14 +50,9 @@ type PCBuilderRequestDTO struct {
 	UserLastName                       string    `bson:"user_last_name" json:"user_last_name"`
 	UserOrganizationName               string    `bson:"user_organization_name" json:"user_organization_name"`
 }
-type PCBuilderResponseDTO struct {
-	FileName string `json:"file_name"`
-	FilePath string `json:"file_path"`
-	Content  []byte `json:"content"`
-}
 
 type PCBuilder interface {
-	GeneratePDF(dto *PCBuilderRequestDTO) (*PCBuilderResponseDTO, error)
+	GeneratePDF(dto *PCBuilderRequestDTO) (*PDFBuilderResponseDTO, error)
 }
 
 type pcBuilder struct {
@@ -83,7 +78,7 @@ func NewPCBuilder(cfg *c.Conf, logger *slog.Logger, uuidp uuid.Provider) PCBuild
 	}
 }
 
-func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PCBuilderResponseDTO, error) {
+func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDTO, error) {
 	var err error
 
 	// Open our PDF invoice template and create clone it for the PDF invoice we will be building with.
@@ -605,7 +600,7 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PCBuilderResponseDTO
 	//// Return the generate invoice.
 	////
 
-	return &PCBuilderResponseDTO{
+	return &PDFBuilderResponseDTO{
 		FileName: fileName,
 		FilePath: filePath,
 		Content:  bin,

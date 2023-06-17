@@ -18,6 +18,12 @@ import (
 	"github.com/LuchaComics/cps-backend/provider/uuid"
 )
 
+type PDFBuilderResponseDTO struct {
+	FileName string `json:"file_name"`
+	FilePath string `json:"file_path"`
+	Content  []byte `json:"content"`
+}
+
 type CBFFBuilderRequestDTO struct {
 	CPSRN                              string    `bson:"cpsrn" json:"cpSrn"`
 	Filename                           string    `bson:"filename" json:"filename"`
@@ -46,16 +52,11 @@ type CBFFBuilderRequestDTO struct {
 	CpsPercentageGrade                 float64   `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
 	UserFirstName                      string    `bson:"user_first_name" json:"user_first_name"`
 	UserLastName                       string    `bson:"user_last_name" json:"user_last_name"`
-	UserOrganizationName                    string    `bson:"user_organization_name" json:"user_organization_name"`
-}
-type CBFFBuilderResponseDTO struct {
-	FileName string `json:"file_name"`
-	FilePath string `json:"file_path"`
-	Content  []byte `json:"content"`
+	UserOrganizationName               string    `bson:"user_organization_name" json:"user_organization_name"`
 }
 
 type CBFFBuilder interface {
-	GeneratePDF(dto *CBFFBuilderRequestDTO) (*CBFFBuilderResponseDTO, error)
+	GeneratePDF(dto *CBFFBuilderRequestDTO) (*PDFBuilderResponseDTO, error)
 }
 
 type cbffBuilder struct {
@@ -81,7 +82,7 @@ func NewCBFFBuilder(cfg *c.Conf, logger *slog.Logger, uuidp uuid.Provider) CBFFB
 	}
 }
 
-func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderResponseDTO, error) {
+func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*PDFBuilderResponseDTO, error) {
 	var err error
 
 	// Open our PDF invoice template and create clone it for the PDF invoice we will be building with.
@@ -557,7 +558,7 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*CBFFBuilderRespo
 	//// Return the generate invoice.
 	////
 
-	return &CBFFBuilderResponseDTO{
+	return &PDFBuilderResponseDTO{
 		FileName: fileName,
 		FilePath: filePath,
 		Content:  bin,

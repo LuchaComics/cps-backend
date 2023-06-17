@@ -9,6 +9,7 @@ import (
 
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	s_d "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	u_d "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config/constants"
@@ -206,53 +207,99 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	if ns.PublisherName == constants.SubmissionPublisherNameOther {
 		publisherNameDisplay = ns.PublisherNameOther
 	}
-	// The next following lines of code will create the PDF file gnerator
-	// request to be submitted into our PDF file generator to generate the data.
-	r := &pdfbuilder.CBFFBuilderRequestDTO{
-		CPSRN:                              os.CPSRN,
-		Filename:                           fmt.Sprintf("%v.pdf", os.CPSRN),
-		SubmissionDate:                     time.Now(),
-		SeriesTitle:                        os.SeriesTitle,
-		IssueVol:                           os.IssueVol,
-		IssueNo:                            os.IssueNo,
-		IssueCoverYear:                     os.IssueCoverYear,
-		IssueCoverMonth:                    os.IssueCoverMonth,
-		PublisherName:                      publisherNameDisplay,
-		SpecialNotes:                       os.SpecialNotes,
-		GradingNotes:                       os.GradingNotes,
-		CreasesFinding:                     os.CreasesFinding,
-		TearsFinding:                       os.TearsFinding,
-		MissingPartsFinding:                os.MissingPartsFinding,
-		StainsFinding:                      os.StainsFinding,
-		DistortionFinding:                  os.DistortionFinding,
-		PaperQualityFinding:                os.PaperQualityFinding,
-		SpineFinding:                       os.SpineFinding,
-		CoverFinding:                       os.CoverFinding,
-		ShowsSignsOfTamperingOrRestoration: os.ShowsSignsOfTamperingOrRestoration == 1,
-		GradingScale:                       os.GradingScale,
-		OverallLetterGrade:                 os.OverallLetterGrade,
-		OverallNumberGrade:                 os.OverallNumberGrade,
-		CpsPercentageGrade:                 os.CpsPercentageGrade,
-		UserFirstName:                      os.UserFirstName,
-		UserLastName:                       os.UserLastName,
-		UserOrganizationName:               os.OrganizationName,
-	}
-	c.Logger.Debug("000000>>>>", slog.String("os.UserFirstName", os.UserFirstName), slog.String("os.UserLastName", os.UserLastName), slog.String("os.OrganizationName", os.OrganizationName))
-	response, err := c.CBFFBuilder.GeneratePDF(r)
-	if err != nil {
-		c.Logger.Error("generate pdf error", slog.Any("error", err))
-		return nil, err
-	}
-	if response == nil {
-		c.Logger.Error("generate pdf error does not return a response")
-		return nil, errors.New("no response from pdf generator")
+
+	pdfResponse := &pdfbuilder.PDFBuilderResponseDTO{}
+
+	switch os.ServiceType {
+	case s_d.PreScreeningServiceType:
+		// The next following lines of code will create the PDF file gnerator
+		// request to be submitted into our PDF file generator to generate the data.
+		r := &pdfbuilder.CBFFBuilderRequestDTO{
+			CPSRN:                              os.CPSRN,
+			Filename:                           fmt.Sprintf("%v.pdf", os.ID.Hex()),
+			SubmissionDate:                     time.Now(),
+			SeriesTitle:                        os.SeriesTitle,
+			IssueVol:                           os.IssueVol,
+			IssueNo:                            os.IssueNo,
+			IssueCoverYear:                     os.IssueCoverYear,
+			IssueCoverMonth:                    os.IssueCoverMonth,
+			PublisherName:                      publisherNameDisplay,
+			SpecialNotes:                       os.SpecialNotes,
+			GradingNotes:                       os.GradingNotes,
+			CreasesFinding:                     os.CreasesFinding,
+			TearsFinding:                       os.TearsFinding,
+			MissingPartsFinding:                os.MissingPartsFinding,
+			StainsFinding:                      os.StainsFinding,
+			DistortionFinding:                  os.DistortionFinding,
+			PaperQualityFinding:                os.PaperQualityFinding,
+			SpineFinding:                       os.SpineFinding,
+			CoverFinding:                       os.CoverFinding,
+			ShowsSignsOfTamperingOrRestoration: os.ShowsSignsOfTamperingOrRestoration == 1,
+			GradingScale:                       os.GradingScale,
+			OverallLetterGrade:                 os.OverallLetterGrade,
+			OverallNumberGrade:                 os.OverallNumberGrade,
+			CpsPercentageGrade:                 os.CpsPercentageGrade,
+			UserFirstName:                      os.UserFirstName,
+			UserLastName:                       os.UserLastName,
+			UserOrganizationName:               os.OrganizationName,
+		}
+		pdfResponse, err = c.CBFFBuilder.GeneratePDF(r)
+		if err != nil {
+			c.Logger.Error("generate pdf error", slog.Any("error", err))
+			return nil, err
+		}
+		if pdfResponse == nil {
+			c.Logger.Error("generate pdf error does not return a response")
+			return nil, errors.New("no response from pdf generator")
+		}
+	case s_d.PedigreeServiceType:
+		// The next following lines of code will create the PDF file gnerator
+		// request to be submitted into our PDF file generator to generate the data.
+		r := &pdfbuilder.PCBuilderRequestDTO{
+			CPSRN:                              os.CPSRN,
+			Filename:                           fmt.Sprintf("%v.pdf", os.ID.Hex()),
+			SubmissionDate:                     time.Now(),
+			SeriesTitle:                        os.SeriesTitle,
+			IssueVol:                           os.IssueVol,
+			IssueNo:                            os.IssueNo,
+			IssueCoverYear:                     os.IssueCoverYear,
+			IssueCoverMonth:                    os.IssueCoverMonth,
+			PublisherName:                      publisherNameDisplay,
+			SpecialNotes:                       os.SpecialNotes,
+			GradingNotes:                       os.GradingNotes,
+			CreasesFinding:                     os.CreasesFinding,
+			TearsFinding:                       os.TearsFinding,
+			MissingPartsFinding:                os.MissingPartsFinding,
+			StainsFinding:                      os.StainsFinding,
+			DistortionFinding:                  os.DistortionFinding,
+			PaperQualityFinding:                os.PaperQualityFinding,
+			SpineFinding:                       os.SpineFinding,
+			CoverFinding:                       os.CoverFinding,
+			ShowsSignsOfTamperingOrRestoration: os.ShowsSignsOfTamperingOrRestoration == 1,
+			GradingScale:                       os.GradingScale,
+			OverallLetterGrade:                 os.OverallLetterGrade,
+			OverallNumberGrade:                 os.OverallNumberGrade,
+			CpsPercentageGrade:                 os.CpsPercentageGrade,
+			UserFirstName:                      os.UserFirstName,
+			UserLastName:                       os.UserLastName,
+			UserOrganizationName:               os.OrganizationName,
+		}
+		pdfResponse, err = c.PCBuilder.GeneratePDF(r)
+		if err != nil {
+			c.Logger.Error("generate pdf error", slog.Any("error", err))
+			return nil, err
+		}
+		if pdfResponse == nil {
+			c.Logger.Error("generate pdf error does not return a response")
+			return nil, errors.New("no response from pdf generator")
+		}
 	}
 
 	// The next few lines will upload our PDF to our remote storage. Once the
 	// file is saved remotely, we will have a connection to it through a "key"
 	// unique reference to the uploaded file.
-	path := fmt.Sprintf("uploads/%v", response.FileName)
-	err = c.S3.UploadContent(ctx, path, response.Content)
+	path := fmt.Sprintf("uploads/%v", pdfResponse.FileName)
+	err = c.S3.UploadContent(ctx, path, pdfResponse.Content)
 	if err != nil {
 		c.Logger.Error("s3 upload error", slog.Any("error", err))
 		return nil, err
@@ -280,7 +327,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	os.FileUploadDownloadableFileURL = downloadableURL
 
 	// Removing local file from the directory and don't do anything if we have errors.
-	if err := go_os.Remove(response.FilePath); err != nil {
+	if err := go_os.Remove(pdfResponse.FilePath); err != nil {
 		c.Logger.Warn("removing local file error", slog.Any("error", err))
 		// Just continue even if we get an error...
 	}
