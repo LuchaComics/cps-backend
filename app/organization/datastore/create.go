@@ -2,7 +2,6 @@ package datastore
 
 import (
 	"context"
-	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
@@ -28,7 +27,7 @@ func (impl OrganizationStorerImpl) Create(ctx context.Context, u *Organization) 
 	}
 
 	// display the id of the newly inserted object
-	fmt.Println(result.InsertedID)
+	impl.Logger.Debug("insert created", slog.Any("insertedID", result.InsertedID))
 
 	return nil
 }

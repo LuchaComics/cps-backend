@@ -17,7 +17,7 @@ func (impl *UserControllerImpl) ArchiveByID(ctx context.Context, id primitive.Ob
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply filtering based on ownership and role.
-	if userRole != user_s.StaffRole {
+	if userRole != user_s.UserRoleRoot {
 		return nil, httperror.NewForForbiddenWithSingleField("message", "you do not have permission")
 	}
 
@@ -33,7 +33,7 @@ func (impl *UserControllerImpl) ArchiveByID(ctx context.Context, id primitive.Ob
 	}
 
 	ou.ModifiedAt = time.Now()
-	ou.Status = user_s.UserArchivedStatus
+	ou.Status = user_s.UserStatusArchived
 
 	if err := impl.UserStorer.UpdateByID(ctx, ou); err != nil {
 		impl.Logger.Error("user update by id error", slog.Any("error", err))

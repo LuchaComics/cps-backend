@@ -36,7 +36,7 @@ func (impl SubmissionStorerImpl) CountByFilter(ctx context.Context, f *Submissio
 	}
 
 	if f.ExcludeArchived {
-		filter["status"] = bson.M{"$ne": SubmissionArchivedStatus} // Do not list archived items! This code
+		filter["status"] = bson.M{"$ne": SubmissionStatusArchived} // Do not list archived items! This code
 	}
 
 	opts := options.Count().SetHint("_id_")

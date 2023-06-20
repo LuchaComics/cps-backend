@@ -35,7 +35,7 @@ func (c *OrganizationControllerImpl) UpdateByID(ctx context.Context, ns *domain.
 	userName := ctx.Value(constants.SessionUserName).(string)
 
 	// If user is not administrator nor belongs to the organization then error.
-	if userRole != user_d.StaffRole && os.ID != userOrganizationID {
+	if userRole != user_d.UserRoleRoot && os.ID != userOrganizationID {
 		c.Logger.Error("authenticated user is not staff role nor belongs to the organization error",
 			slog.Any("userRole", userRole),
 			slog.Any("userOrganizationID", userOrganizationID))

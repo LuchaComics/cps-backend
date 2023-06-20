@@ -77,7 +77,7 @@ func (impl *GatewayControllerImpl) createUserForRequest(ctx context.Context, req
 		Email:                     req.Email,
 		PasswordHash:              passwordHash,
 		PasswordHashAlgorithm:     impl.Password.AlgorithmName(),
-		Role:                      user_s.RetailerStaffRole,
+		Role:                      user_s.UserRoleRetailer,
 		Phone:                     req.Phone,
 		Country:                   req.Country,
 		Region:                    req.Region,
@@ -97,7 +97,7 @@ func (impl *GatewayControllerImpl) createUserForRequest(ctx context.Context, req
 		WasEmailVerified:          false,
 		EmailVerificationCode:     impl.UUID.NewUUID(),
 		EmailVerificationExpiry:   time.Now().Add(72 * time.Hour),
-		Status:                     user_s.UserActiveStatus,
+		Status:                    user_s.UserStatusActive,
 	}
 	err = impl.UserStorer.Create(ctx, u)
 	if err != nil {
@@ -125,7 +125,7 @@ func (impl *GatewayControllerImpl) createOrganizationForUser(ctx context.Context
 		ModifiedAt:         time.Now(),
 		ModifiedByUserID:   u.ID,
 		ModifiedByUserName: u.Name,
-		Status:              organization_s.OrganizationActiveStatus,
+		Status:             organization_s.OrganizationActiveStatus,
 	}
 	err := impl.OrganizationStorer.Create(ctx, o)
 	if err != nil {

@@ -17,7 +17,7 @@ func (c *SubmissionControllerImpl) ListByFilter(ctx context.Context, f *domain.S
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply filtering based on tenancy if the user is not a system administrator.
-	if userRole != user_d.StaffRole {
+	if userRole != user_d.UserRoleRoot {
 		f.OrganizationID = organizationID
 		c.Logger.Debug("applying security policy to filters",
 			slog.Any("organization_id", organizationID),
@@ -40,7 +40,7 @@ func (c *SubmissionControllerImpl) ListAsSelectOptionByFilter(ctx context.Contex
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply filtering based on tenancy if the user is not a system administrator.
-	if userRole != user_d.StaffRole {
+	if userRole != user_d.UserRoleRoot {
 		f.OrganizationID = organizationID
 		c.Logger.Debug("applying security policy to filters",
 			slog.Any("organization_id", organizationID),

@@ -16,7 +16,7 @@ func (c *UserControllerImpl) GetByID(ctx context.Context, id primitive.ObjectID)
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply filtering based on ownership and role.
-	if userRole != user_s.StaffRole {
+	if userRole != user_s.UserRoleRoot {
 		return nil, httperror.NewForForbiddenWithSingleField("message", "you do not have permission")
 	}
 

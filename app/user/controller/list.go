@@ -15,7 +15,7 @@ func (c *UserControllerImpl) ListByFilter(ctx context.Context, f *user_s.UserLis
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply filtering based on ownership and role.
-	if userRole != user_s.StaffRole {
+	if userRole != user_s.UserRoleRoot {
 		return nil, httperror.NewForForbiddenWithSingleField("message", "you do not have permission")
 	}
 
@@ -37,7 +37,7 @@ func (c *UserControllerImpl) ListAsSelectOptionByFilter(ctx context.Context, f *
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply filtering based on ownership and role.
-	if userRole != user_s.StaffRole {
+	if userRole != user_s.UserRoleRoot {
 		return nil, httperror.NewForForbiddenWithSingleField("message", "you do not have permission")
 	}
 

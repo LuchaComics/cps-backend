@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	UserActiveStatus   = 1
+	UserStatusActive   = 1
 	UserInactiveStatus = 2
 )
 

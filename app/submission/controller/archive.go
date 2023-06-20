@@ -22,7 +22,7 @@ func (c *SubmissionControllerImpl) ArchiveByID(ctx context.Context, id primitive
 
 	// Modify our original submission.
 	os.ModifiedAt = time.Now()
-	os.Status = domain.SubmissionArchivedStatus
+	os.Status = domain.SubmissionStatusArchived
 
 	// Save to the database the modified submission.
 	if err := c.SubmissionStorer.UpdateByID(ctx, os); err != nil {

@@ -16,7 +16,8 @@ const (
 	OrganizationActiveStatus   = 2
 	OrganizationErrorStatus    = 3
 	OrganizationArchivedStatus = 4
-	RetailerType               = 1
+	RootType                   = 1
+	RetailerType               = 2
 )
 
 type Organization struct {

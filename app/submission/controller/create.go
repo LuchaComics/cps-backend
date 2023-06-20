@@ -62,10 +62,10 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	// user in our system; however, the root administrator has the ability to
 	// assign whatever organization you want.
 	switch userRole {
-	case u_d.RetailerStaffRole:
+	case u_d.UserRoleRetailer:
 		c.Logger.Debug("retailer assigning their organization")
 		m.OrganizationID = ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
-	case u_d.StaffRole:
+	case u_d.UserRoleRoot:
 		c.Logger.Debug("admin picking custom organization")
 	default:
 		c.Logger.Error("unsupported role", slog.Any("role", userRole))
@@ -125,7 +125,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	pdfResponse := &pdfbuilder.PDFBuilderResponseDTO{}
 
 	switch m.ServiceType {
-	case s_d.PreScreeningServiceType:
+	case s_d.ServiceTypePreScreening:
 		// The next following lines of code will create the PDF file gnerator
 		// request to be submitted into our PDF file generator to generate the data.
 		r := &pdfbuilder.CBFFBuilderRequestDTO{
@@ -166,7 +166,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 			c.Logger.Error("generate pdf error does not return a response")
 			return nil, errors.New("no response from pdf generator")
 		}
-	case s_d.PedigreeServiceType:
+	case s_d.ServiceTypePedigree:
 		// The next following lines of code will create the PDF file gnerator
 		// request to be submitted into our PDF file generator to generate the data.
 		r := &pdfbuilder.PCBuilderRequestDTO{

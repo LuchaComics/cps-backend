@@ -80,7 +80,7 @@ func (impl *UserControllerImpl) UpdateByID(ctx context.Context, requestData *Use
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply filtering based on ownership and role.
-	if userRole != user_s.StaffRole {
+	if userRole != user_s.UserRoleRoot {
 		return nil, httperror.NewForForbiddenWithSingleField("message", "you do not have permission")
 	}
 

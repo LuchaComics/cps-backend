@@ -78,7 +78,7 @@ func (impl *UserControllerImpl) Create(ctx context.Context, requestData *UserCre
 	userName, _ := ctx.Value(constants.SessionUserName).(string)
 
 	// Apply filtering based on ownership and role.
-	if userRole != user_s.StaffRole {
+	if userRole != user_s.UserRoleRoot {
 		return nil, httperror.NewForForbiddenWithSingleField("message", "you do not have permission")
 	}
 

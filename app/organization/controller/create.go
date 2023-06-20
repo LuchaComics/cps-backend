@@ -20,7 +20,7 @@ func (c *OrganizationControllerImpl) Create(ctx context.Context, m *s_d.Organiza
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply protection based on ownership and role.
-	if userRole != user_d.StaffRole {
+	if userRole != user_d.UserRoleRoot {
 		c.Logger.Error("authenticated user is not staff role error",
 			slog.Any("role", userRole),
 			slog.Any("userID", userID))

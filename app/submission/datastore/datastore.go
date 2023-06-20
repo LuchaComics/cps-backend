@@ -12,13 +12,13 @@ import (
 )
 
 const (
-	SubmissionPendingStatus                       = 1
-	SubmissionActiveStatus                        = 2
-	SubmissionErrorStatus                         = 3
-	SubmissionArchivedStatus                      = 100
-	PreScreeningServiceType                       = 1
-	PedigreeServiceType                           = 2
-	CPSCapsuleYougradeServiceType                 = 3
+	SubmissionStatusPending                       = 1
+	SubmissionStatusActive                        = 2
+	SubmissionStatusError                         = 3
+	SubmissionStatusArchived                      = 100
+	ServiceTypePreScreening                       = 1
+	ServiceTypePedigree                           = 2
+	ServiceTypeCPSCapsuleYougrade                 = 3
 	PoorFinding                                   = 1
 	FairFinding                                   = 2
 	GoodFinding                                   = 3

@@ -17,7 +17,7 @@ func (c *OrganizationControllerImpl) ListByFilter(ctx context.Context, f *domain
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply protection based on ownership and role.
-	if userRole != user_d.StaffRole {
+	if userRole != user_d.UserRoleRoot {
 		c.Logger.Error("authenticated user is not staff role error",
 			slog.Any("role", userRole),
 			slog.Any("userID", userID))
@@ -41,7 +41,7 @@ func (c *OrganizationControllerImpl) ListAsSelectOptionByFilter(ctx context.Cont
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply protection based on ownership and role.
-	if userRole != user_d.StaffRole {
+	if userRole != user_d.UserRoleRoot {
 		c.Logger.Error("authenticated user is not staff role error",
 			slog.Any("role", userRole),
 			slog.Any("userID", userID))

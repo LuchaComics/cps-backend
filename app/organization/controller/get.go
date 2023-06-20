@@ -17,7 +17,7 @@ func (c *OrganizationControllerImpl) GetByID(ctx context.Context, id primitive.O
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// If user is not administrator nor belongs to the organization then error.
-	if userRole != user_d.StaffRole && id != userOrganizationID {
+	if userRole != user_d.UserRoleRoot && id != userOrganizationID {
 		c.Logger.Error("authenticated user is not staff role nor belongs to the organization error",
 			slog.Any("userRole", userRole),
 			slog.Any("userOrganizationID", userOrganizationID))

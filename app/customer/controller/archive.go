@@ -27,7 +27,7 @@ func (impl *CustomerControllerImpl) ArchiveByID(ctx context.Context, id primitiv
 	}
 
 	ou.ModifiedAt = time.Now()
-	ou.Status = user_s.UserArchivedStatus
+	ou.Status = user_s.UserStatusArchived
 
 	if err := impl.UserStorer.UpdateByID(ctx, ou); err != nil {
 		impl.Logger.Error("user update by id error", slog.Any("error", err))

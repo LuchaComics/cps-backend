@@ -15,7 +15,7 @@ func (impl *UserControllerImpl) DeleteByID(ctx context.Context, id primitive.Obj
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply filtering based on ownership and role.
-	if userRole != user_s.StaffRole {
+	if userRole != user_s.UserRoleRoot {
 		return httperror.NewForForbiddenWithSingleField("message", "you do not have permission")
 	}
 

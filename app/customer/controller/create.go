@@ -94,7 +94,7 @@ func (impl *CustomerControllerImpl) Create(ctx context.Context, requestData *Cus
 	m.ModifiedAt = time.Now()
 	m.ModifiedByUserID = userID
 	m.ModifiedByName = userName
-	m.Role = user_s.RetailerCustomerRole
+	m.Role = user_s.UserRoleCustomer
 	m.Name = fmt.Sprintf("%s %s", m.FirstName, m.LastName)
 	m.LexicalName = fmt.Sprintf("%s, %s", m.LastName, m.FirstName)
 	m.WasEmailVerified = true

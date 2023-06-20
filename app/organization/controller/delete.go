@@ -16,7 +16,7 @@ func (impl *OrganizationControllerImpl) DeleteByID(ctx context.Context, id primi
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
 
 	// Apply protection based on ownership and role.
-	if userRole != user_d.StaffRole {
+	if userRole != user_d.UserRoleRoot {
 		impl.Logger.Error("authenticated user is not staff role error",
 			slog.Any("role", userRole),
 			slog.Any("userID", userID))

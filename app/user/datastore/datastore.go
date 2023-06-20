@@ -14,11 +14,11 @@ import (
 )
 
 const (
-	UserActiveStatus     = 1
-	UserArchivedStatus   = 100
-	StaffRole            = 1
-	RetailerStaffRole    = 2
-	RetailerCustomerRole = 3
+	UserStatusActive   = 1
+	UserStatusArchived = 100
+	UserRoleRoot       = 1
+	UserRoleRetailer   = 2
+	UserRoleCustomer   = 3
 )
 
 type User struct {

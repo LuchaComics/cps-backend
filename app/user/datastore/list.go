@@ -62,7 +62,7 @@ func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) 
 	}
 
 	if f.ExcludeArchived {
-		query["status"] = bson.M{"$ne": UserArchivedStatus} // Do not list archived items! This code
+		query["status"] = bson.M{"$ne": UserStatusArchived} // Do not list archived items! This code
 	}
 
 	// Full-text search
@@ -143,7 +143,7 @@ func (impl UserStorerImpl) ListAsSelectOptionByFilter(ctx context.Context, f *Us
 	}
 
 	if f.ExcludeArchived {
-		query["status"] = bson.M{"$ne": UserArchivedStatus} // Do not list archived items! This code
+		query["status"] = bson.M{"$ne": UserStatusArchived} // Do not list archived items! This code
 	}
 
 	// Full-text search
@@ -172,14 +172,14 @@ func (impl UserStorerImpl) ListAsSelectOptionByFilter(ctx context.Context, f *Us
 
 func (impl UserStorerImpl) ListAllRootStaff(ctx context.Context) (*UserListResult, error) {
 	f := &UserListFilter{
-		Role: StaffRole,
+		Role: UserRoleRoot,
 	}
 	return impl.ListByFilter(ctx, f)
 }
 
 func (impl UserStorerImpl) ListAllRetailerStaffForOrganizationID(ctx context.Context, organizationID primitive.ObjectID) (*UserListResult, error) {
 	f := &UserListFilter{
-		Role:           RetailerStaffRole,
+		Role:           UserRoleRetailer,
 		OrganizationID: organizationID,
 	}
 	return impl.ListByFilter(ctx, f)
