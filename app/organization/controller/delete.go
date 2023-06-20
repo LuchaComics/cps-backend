@@ -25,12 +25,6 @@ func (impl *OrganizationControllerImpl) DeleteByID(ctx context.Context, id primi
 		return httperror.NewForForbiddenWithSingleField("message", "you role does not grant you access to this")
 	}
 
-	// Security: Prevent deletion of root user(s).
-	if organization.Type == org_d.RootType {
-		impl.Logger.Warn("root organization cannot be deleted error")
-		return httperror.NewForForbiddenWithSingleField("role", "root organization cannot be deleted")
-	}
-
 	// Update the database.
 	organization, err := impl.GetByID(ctx, id)
 	organization.Status = org_d.OrganizationArchivedStatus
@@ -42,6 +36,16 @@ func (impl *OrganizationControllerImpl) DeleteByID(ctx context.Context, id primi
 		impl.Logger.Error("database returns nothing from get by id")
 		return err
 	}
+	// Security: Prevent deletion of root user(s).
+	if organization.Type == org_d.RootType {
+		impl.Logger.Warn("root organization cannot be deleted error")
+		return httperror.NewForForbiddenWithSingleField("role", "root organization cannot be deleted")
+	}
 
+	// Save to the database the modified organization.
+	if err := impl.OrganizationStorer.UpdateByID(ctx, organization); err != nil {
+		impl.Logger.Error("database update by id error", slog.Any("error", err))
+		return err
+	}
 	return nil
 }
