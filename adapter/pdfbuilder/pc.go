@@ -80,6 +80,8 @@ func NewPCBuilder(cfg *c.Conf, logger *slog.Logger, uuidp uuid.Provider) PCBuild
 }
 
 func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDTO, error) {
+	specialNotesLines := splitText(r.SpecialNotes, 50)
+
 	var err error
 
 	// Open our PDF invoice template and create clone it for the PDF invoice we will be building with.
@@ -117,6 +119,10 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 	// pdf.Cell(0, 0, fmt.Sprintf("%v", ))) // Month (number)
 	// pdf.SetXY(190, 32.5)
 	// pdf.Cell(0, 0, fmt.Sprintf("%v", r.SubmissionDate.Year())) // Day
+
+	// ROW 3
+	pdf.SetXY(100, 40)
+	pdf.Cell(0, 0, specialNotesLines[0])
 
 	pdf.SetFont("Helvetica", "B", 55)
 
@@ -470,8 +476,6 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 	if len(r.SpecialNotes) > 638 {
 		return nil, errors.New("special notes length over 455")
 	}
-
-	specialNotesLines := splitText(r.SpecialNotes, 50)
 
 	if specialNote, ok := getElementAtIndex(specialNotesLines, 0); ok { // ROW 1
 		pdf.SetXY(150, 339+1.85*0)
