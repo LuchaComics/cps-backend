@@ -32,6 +32,12 @@ func (impl *UserControllerImpl) ArchiveByID(ctx context.Context, id primitive.Ob
 		return nil, httperror.NewForBadRequestWithSingleField("id", "does not exist")
 	}
 
+	// Security: Prevent deletion of root user(s).
+	if ou.Role == user_s.UserRoleRoot {
+		impl.Logger.Warn("root user(s) cannot be deleted error")
+		return nil, httperror.NewForForbiddenWithSingleField("role", "root user(s) cannot be deleted")
+	}
+
 	ou.ModifiedAt = time.Now()
 	ou.Status = user_s.UserStatusArchived
 

@@ -30,6 +30,12 @@ func (impl *UserControllerImpl) DeleteByID(ctx context.Context, id primitive.Obj
 		return err
 	}
 
+	// Security: Prevent deletion of root user(s).
+	if user.Role == user_s.UserRoleRoot {
+		impl.Logger.Warn("root user(s) cannot be deleted error")
+		return httperror.NewForForbiddenWithSingleField("role", "root user(s) cannot be deleted")
+	}
+
 	// STEP 2: Delete from database.
 	if err := impl.UserStorer.DeleteByID(ctx, id); err != nil {
 		impl.Logger.Error("database delete by id error", slog.Any("error", err))
