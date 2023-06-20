@@ -70,6 +70,7 @@ type Submission struct {
 	OverallLetterGrade                 string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
 	OverallNumberGrade                 float64            `bson:"overall_number_grade" json:"overall_number_grade"`
 	CpsPercentageGrade                 float64            `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
+	IsOverallLetterGradeNearMintPlus   bool               `bson:"is_overall_letter_grade_near_mint_plus" json:"is_overall_letter_grade_near_mint_plus"`
 	UserID                             primitive.ObjectID `bson:"user_id" json:"user_id"` // This is the customer this submission belongs to.
 	User                               *SubmissionUser    `bson:"user" json:"user"`       // This is the customer this submission belongs to.
 	UserFirstName                      string             `bson:"user_first_name" json:"user_first_name"`

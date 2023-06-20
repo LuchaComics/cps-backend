@@ -89,10 +89,11 @@ func NewController(
 	// 	CoverFinding:                       "VG",
 	// 	GradingScale:                       1,
 	// 	ShowsSignsOfTamperingOrRestoration: true,
-	// 	OverallLetterGrade:                 "VG",
+	// 	OverallLetterGrade:                 "NM",
+	// 	IsOverallLetterGradeNearMintPlus:   true,
 	// 	UserFirstName:                      "Bartlomiej",
 	// 	UserLastName:                       "Miks",
-	// 	UserOrganizationName:                    "Mika Software Corporation",
+	// 	UserOrganizationName:               "Mika Software Corporation",
 	// }
 	// res, err := cbffb.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
@@ -122,7 +123,8 @@ func NewController(
 	// 	CoverFinding:                       "VG",
 	// 	GradingScale:                       1,
 	// 	ShowsSignsOfTamperingOrRestoration: true,
-	// 	OverallLetterGrade:                 "VG",
+	// 	OverallLetterGrade:                 "NM",
+	// 	IsOverallLetterGradeNearMintPlus:   true,
 	// 	UserFirstName:                      "Bartlomiej",
 	// 	UserLastName:                       "Miks",
 	// 	UserOrganizationName:               "Mika Software Corporation",

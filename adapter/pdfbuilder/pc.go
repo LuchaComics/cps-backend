@@ -44,6 +44,7 @@ type PCBuilderRequestDTO struct {
 	ShowsSignsOfTamperingOrRestoration bool      `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
 	GradingScale                       int8      `bson:"grading_scale" json:"grading_scale"`
 	OverallLetterGrade                 string    `bson:"overall_letter_grade" json:"overall_letter_grade"`
+	IsOverallLetterGradeNearMintPlus   bool      `bson:"is_overall_letter_grade_near_mint_plus" json:"is_overall_letter_grade_near_mint_plus"`
 	OverallNumberGrade                 float64   `bson:"overall_number_grade" json:"overall_number_grade"`
 	CpsPercentageGrade                 float64   `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
 	UserFirstName                      string    `bson:"user_first_name" json:"user_first_name"`
@@ -117,13 +118,21 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 	// pdf.SetXY(190, 32.5)
 	// pdf.Cell(0, 0, fmt.Sprintf("%v", r.SubmissionDate.Year())) // Day
 
-	pdf.SetFont("Helvetica", "B", 75)
+	pdf.SetFont("Helvetica", "B", 55)
 
 	// ROW 10 - Grading
 	switch r.GradingScale {
 	case s_d.LetterGradeScale:
-		pdf.SetXY(243, 30)
+		pdf.SetXY(246, 30)
 		pdf.Cell(0, 0, strings.ToUpper(r.OverallLetterGrade))
+
+		// If user has chosen the "NM+" option then run the following...
+		if r.IsOverallLetterGradeNearMintPlus {
+			pdf.SetFont("Helvetica", "B", 25) // Start subscript.
+			pdf.SetXY(276, 23)
+			pdf.Cell(0, 0, "+")
+			pdf.SetFont("Helvetica", "B", 40) // Resume the previous font.
+		}
 	case s_d.NumberGradeScale:
 		pdf.SetXY(243, 30)
 		pdf.Cell(0, 0, fmt.Sprintf("%v", r.OverallNumberGrade))
@@ -436,6 +445,14 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 	case s_d.LetterGradeScale:
 		pdf.SetXY(117, 388)
 		pdf.Cell(0, 0, strings.ToUpper(r.OverallLetterGrade))
+
+		// If user has chosen the "NM+" option then run the following...
+		if r.IsOverallLetterGradeNearMintPlus {
+			pdf.SetFont("Helvetica", "B", 20) // Start subscript.
+			pdf.SetXY(133, 385)
+			pdf.Cell(0, 0, "+")
+			pdf.SetFont("Helvetica", "B", 40) // Resume the previous font.
+		}
 	case s_d.NumberGradeScale:
 		pdf.SetXY(117, 388)
 		pdf.Cell(0, 0, fmt.Sprintf("%v", r.OverallNumberGrade))

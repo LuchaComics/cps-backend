@@ -172,6 +172,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	os.ShowsSignsOfTamperingOrRestoration = ns.ShowsSignsOfTamperingOrRestoration
 	os.GradingScale = ns.GradingScale
 	os.OverallLetterGrade = ns.OverallLetterGrade
+	os.IsOverallLetterGradeNearMintPlus = ns.IsOverallLetterGradeNearMintPlus
 	os.OverallNumberGrade = ns.OverallNumberGrade
 	os.CpsPercentageGrade = ns.CpsPercentageGrade
 	// os.UserFirstName = ns.UserFirstName     // NO NEED TO CHANGE AFTER FACT.
@@ -237,6 +238,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 			ShowsSignsOfTamperingOrRestoration: os.ShowsSignsOfTamperingOrRestoration == 1,
 			GradingScale:                       os.GradingScale,
 			OverallLetterGrade:                 os.OverallLetterGrade,
+			IsOverallLetterGradeNearMintPlus:   os.IsOverallLetterGradeNearMintPlus,
 			OverallNumberGrade:                 os.OverallNumberGrade,
 			CpsPercentageGrade:                 os.CpsPercentageGrade,
 			UserFirstName:                      os.UserFirstName,
