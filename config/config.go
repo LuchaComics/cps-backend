@@ -16,13 +16,14 @@ type Conf struct {
 }
 
 type serverConf struct {
-	Port                 string `env:"CPS_BACKEND_PORT,required"`
-	IP                   string `env:"CPS_BACKEND_IP,required"`
-	HMACSecret           []byte `env:"CPS_BACKEND_HMAC_SECRET,required"`
-	HasDebugging         bool   `env:"CPS_BACKEND_HAS_DEBUGGING,default=true"`
-	InitialAdminEmail    string `env:"CPS_BACKEND_INITIAL_ADMIN_EMAIL,required"`
-	InitialAdminPassword string `env:"CPS_BACKEND_INITIAL_ADMIN_PASSWORD,required"`
-	DomainName           string `env:"CPS_BACKEND_DOMAIN_NAME,required"`
+	Port                         string `env:"CPS_BACKEND_PORT,required"`
+	IP                           string `env:"CPS_BACKEND_IP,required"`
+	HMACSecret                   []byte `env:"CPS_BACKEND_HMAC_SECRET,required"`
+	HasDebugging                 bool   `env:"CPS_BACKEND_HAS_DEBUGGING,default=true"`
+	InitialAdminEmail            string `env:"CPS_BACKEND_INITIAL_ADMIN_EMAIL,required"`
+	InitialAdminPassword         string `env:"CPS_BACKEND_INITIAL_ADMIN_PASSWORD,required"`
+	InitialAdminOrganizationName string `env:"CPS_BACKEND_INITIAL_ADMIN_ORG_NAME,required"`
+	DomainName                   string `env:"CPS_BACKEND_DOMAIN_NAME,required"`
 }
 
 type dbConfig struct {

@@ -70,6 +70,7 @@ services:
         CPS_BACKEND_AWS_BUCKET_NAME: ${CPS_BACKEND_AWS_BUCKET_NAME}
         CPS_BACKEND_INITIAL_ADMIN_EMAIL: ${CPS_BACKEND_INITIAL_ADMIN_EMAIL} # Required email for root admin when project starts up
         CPS_BACKEND_INITIAL_ADMIN_PASSWORD: ${CPS_BACKEND_INITIAL_ADMIN_PASSWORD} # Required password for root admin when project starts up
+        CPS_BACKEND_INITIAL_ADMIN_ORG_NAME: ${CPS_BACKEND_INITIAL_ADMIN_ORG_NAME}
         CPS_BACKEND_DOMAIN_NAME: ${CPS_BACKEND_DOMAIN_NAME}
         AWS_ACCESS_KEY: ${CPS_BACKEND_AWS_ACCESS_KEY} # AWS SDK requires this exact name.
         AWS_SECRET_KEY: ${CPS_BACKEND_AWS_SECRET_KEY} # AWS SDK requires this exact name.
