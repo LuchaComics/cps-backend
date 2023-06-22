@@ -13,7 +13,7 @@ import (
 	"github.com/jung-kurt/gofpdf/contrib/gofpdi"
 	"golang.org/x/exp/slog"
 
-	s_d "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	s_d "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	c "github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/provider/uuid"
 )

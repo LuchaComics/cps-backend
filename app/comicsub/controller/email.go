@@ -9,10 +9,10 @@ import (
 
 	"golang.org/x/exp/slog"
 
-	s_d "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	s_d "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 )
 
-func (impl *SubmissionControllerImpl) sendNewSubmissionEmails(m *s_d.Submission) error {
+func (impl *ComicSubmissionControllerImpl) sendNewComicSubmissionEmails(m *s_d.ComicSubmission) error {
 	//
 	// ROOT
 	//
@@ -27,7 +27,7 @@ func (impl *SubmissionControllerImpl) sendNewSubmissionEmails(m *s_d.Submission)
 	}
 
 	for _, u := range response.Results {
-		if err := impl.sendStaffNewSubmissionEmail(u.Email, m); err != nil {
+		if err := impl.sendStaffNewComicSubmissionEmail(u.Email, m); err != nil {
 			impl.Logger.Error("failed sending stafff email error", slog.Any("error", err))
 			return err
 		}
@@ -48,7 +48,7 @@ func (impl *SubmissionControllerImpl) sendNewSubmissionEmails(m *s_d.Submission)
 	}
 
 	for _, u := range response.Results {
-		if err := impl.sendRetailerNewSubmissionEmail(u.Email, m); err != nil {
+		if err := impl.sendRetailerNewComicSubmissionEmail(u.Email, m); err != nil {
 			impl.Logger.Error("failed sending retailer email error", slog.Any("error", err))
 			return err
 		}
@@ -56,7 +56,7 @@ func (impl *SubmissionControllerImpl) sendNewSubmissionEmails(m *s_d.Submission)
 	return nil
 }
 
-func (impl *SubmissionControllerImpl) sendStaffNewSubmissionEmail(staffEmail string, m *s_d.Submission) error {
+func (impl *ComicSubmissionControllerImpl) sendStaffNewComicSubmissionEmail(staffEmail string, m *s_d.ComicSubmission) error {
 	// FOR TESTING PURPOSES ONLY.
 	fp := path.Join("templates", "staff_submission_created.html")
 	tmpl, err := template.ParseFiles(fp)
@@ -85,17 +85,17 @@ func (impl *SubmissionControllerImpl) sendStaffNewSubmissionEmail(staffEmail str
 	}
 	body := processed.String() // DEVELOPERS NOTE: Convert our long sequence of data into a string.
 
-	if err := impl.Emailer.Send(context.Background(), impl.Emailer.GetSenderEmail(), "New Submission", staffEmail, body); err != nil {
+	if err := impl.Emailer.Send(context.Background(), impl.Emailer.GetSenderEmail(), "New Comic Submission", staffEmail, body); err != nil {
 		impl.Logger.Error("sending error", slog.Any("error", err))
 		return err
 	}
-	impl.Logger.Debug("sent `New Submission` email",
+	impl.Logger.Debug("sent `New Comic Submission` email",
 		slog.String("staff-email", staffEmail),
 		slog.Any("submission-id", m.ID))
 	return nil
 }
 
-func (impl *SubmissionControllerImpl) sendRetailerNewSubmissionEmail(retailerEmail string, m *s_d.Submission) error {
+func (impl *ComicSubmissionControllerImpl) sendRetailerNewComicSubmissionEmail(retailerEmail string, m *s_d.ComicSubmission) error {
 	// FOR TESTING PURPOSES ONLY.
 	fp := path.Join("templates", "retailer_submission_created.html")
 	tmpl, err := template.ParseFiles(fp)

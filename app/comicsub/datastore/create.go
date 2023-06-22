@@ -8,7 +8,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (impl SubmissionStorerImpl) Create(ctx context.Context, u *Submission) error {
+func (impl ComicSubmissionStorerImpl) Create(ctx context.Context, u *ComicSubmission) error {
 	// DEVELOPER NOTES:
 	// According to mongodb documentaiton:
 	//     Non-existent Databases and Collections

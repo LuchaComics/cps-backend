@@ -9,10 +9,10 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (impl SubmissionStorerImpl) GetByID(ctx context.Context, id primitive.ObjectID) (*Submission, error) {
+func (impl ComicSubmissionStorerImpl) GetByID(ctx context.Context, id primitive.ObjectID) (*ComicSubmission, error) {
 	filter := bson.M{"_id": id}
 
-	var result Submission
+	var result ComicSubmission
 	err := impl.Collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -25,10 +25,10 @@ func (impl SubmissionStorerImpl) GetByID(ctx context.Context, id primitive.Objec
 	return &result, nil
 }
 
-func (impl SubmissionStorerImpl) GetByCPSRN(ctx context.Context, cpsrn string) (*Submission, error) {
+func (impl ComicSubmissionStorerImpl) GetByCPSRN(ctx context.Context, cpsrn string) (*ComicSubmission, error) {
 	filter := bson.M{"cpsrn": cpsrn}
 
-	var result Submission
+	var result ComicSubmission
 	err := impl.Collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {

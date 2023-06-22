@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (impl SubmissionStorerImpl) ListByFilter(ctx context.Context, f *SubmissionListFilter) (*SubmissionListResult, error) {
+func (impl ComicSubmissionStorerImpl) ListByFilter(ctx context.Context, f *ComicSubmissionListFilter) (*ComicSubmissionListResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel()
 
@@ -56,7 +56,7 @@ func (impl SubmissionStorerImpl) ListByFilter(ctx context.Context, f *Submission
 	}
 
 	if f.ExcludeArchived {
-		filter["status"] = bson.M{"$ne": SubmissionStatusArchived} // Do not list archived items! This code
+		filter["status"] = bson.M{"$ne": StatusArchived} // Do not list archived items! This code
 	}
 
 	options.SetSort(bson.D{{sortField, 1}}) // Sort in ascending order based on the specified field
@@ -68,17 +68,17 @@ func (impl SubmissionStorerImpl) ListByFilter(ctx context.Context, f *Submission
 	}
 	defer cursor.Close(ctx)
 
-	var results = []*Submission{}
+	var results = []*ComicSubmission{}
 	if err = cursor.All(ctx, &results); err != nil {
 		panic(err)
 	}
 
-	return &SubmissionListResult{
+	return &ComicSubmissionListResult{
 		Results: results,
 	}, nil
 }
 
-func (impl SubmissionStorerImpl) ListAsSelectOptionByFilter(ctx context.Context, f *SubmissionListFilter) ([]*SubmissionAsSelectOption, error) {
+func (impl ComicSubmissionStorerImpl) ListAsSelectOptionByFilter(ctx context.Context, f *ComicSubmissionListFilter) ([]*ComicSubmissionAsSelectOption, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel()
 
@@ -124,7 +124,7 @@ func (impl SubmissionStorerImpl) ListAsSelectOptionByFilter(ctx context.Context,
 	}
 
 	if f.ExcludeArchived {
-		filter["status"] = bson.M{"$ne": SubmissionStatusArchived} // Do not list archived items! This code
+		filter["status"] = bson.M{"$ne": StatusArchived} // Do not list archived items! This code
 	}
 
 	options.SetSort(bson.D{{sortField, 1}}) // Sort in ascending order based on the specified field
@@ -136,7 +136,7 @@ func (impl SubmissionStorerImpl) ListAsSelectOptionByFilter(ctx context.Context,
 	}
 	defer cursor.Close(ctx)
 
-	var results = []*SubmissionAsSelectOption{}
+	var results = []*ComicSubmissionAsSelectOption{}
 	if err = cursor.All(ctx, &results); err != nil {
 		panic(err)
 	}

@@ -8,11 +8,11 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/LuchaComics/cps-backend/config"
+	"github.com/LuchaComics/cps-backend/inputport/http/comicsub"
 	"github.com/LuchaComics/cps-backend/inputport/http/customer"
 	"github.com/LuchaComics/cps-backend/inputport/http/gateway"
 	"github.com/LuchaComics/cps-backend/inputport/http/middleware"
 	"github.com/LuchaComics/cps-backend/inputport/http/organization"
-	"github.com/LuchaComics/cps-backend/inputport/http/submission"
 	"github.com/LuchaComics/cps-backend/inputport/http/user"
 )
 
@@ -22,15 +22,15 @@ type InputPortServer interface {
 }
 
 type httpInputPort struct {
-	Config       *config.Conf
-	Logger       *slog.Logger
-	Server       *http.Server
-	Middleware   middleware.Middleware
-	Gateway      *gateway.Handler
-	User         *user.Handler
-	Organization *organization.Handler
-	Submission   *submission.Handler
-	Customer     *customer.Handler
+	Config          *config.Conf
+	Logger          *slog.Logger
+	Server          *http.Server
+	Middleware      middleware.Middleware
+	Gateway         *gateway.Handler
+	User            *user.Handler
+	Organization    *organization.Handler
+	ComicSubmission *comicsub.Handler
+	Customer        *customer.Handler
 }
 
 func NewInputPort(
@@ -40,7 +40,7 @@ func NewInputPort(
 	gh *gateway.Handler,
 	cu *user.Handler,
 	org *organization.Handler,
-	t *submission.Handler,
+	t *comicsub.Handler,
 	cust *customer.Handler,
 ) InputPortServer {
 	// Initialize the ServeMux.
@@ -60,15 +60,15 @@ func NewInputPort(
 
 	// Create our HTTP server controller.
 	p := &httpInputPort{
-		Config:       configp,
-		Logger:       loggerp,
-		Middleware:   mid,
-		Gateway:      gh,
-		User:         cu,
-		Organization: org,
-		Submission:   t,
-		Customer:     cust,
-		Server:       srv,
+		Config:          configp,
+		Logger:          loggerp,
+		Middleware:      mid,
+		Gateway:         gh,
+		User:            cu,
+		Organization:    org,
+		ComicSubmission: t,
+		Customer:        cust,
+		Server:          srv,
 	}
 
 	// Attach the HTTP server controller to the ServerMux.
@@ -131,27 +131,29 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		// case n == 3 && p[1] == "v1" && p[2] == "profile" && r.Method == http.MethodGet:
 		// ...
 
-	// --- SUBMISSIONS --- //
-	case n == 3 && p[1] == "v1" && p[2] == "submissions" && r.Method == http.MethodGet:
-		port.Submission.List(w, r)
-	case n == 3 && p[1] == "v1" && p[2] == "submissions" && r.Method == http.MethodPost:
-		port.Submission.Create(w, r)
-	case n == 4 && p[1] == "v1" && p[2] == "submission" && r.Method == http.MethodGet:
-		port.Submission.GetByID(w, r, p[3])
-	case n == 4 && p[1] == "v1" && p[2] == "submission" && r.Method == http.MethodPut:
-		port.Submission.UpdateByID(w, r, p[3])
-	case n == 4 && p[1] == "v1" && p[2] == "submission" && r.Method == http.MethodDelete:
-		port.Submission.ArchiveByID(w, r, p[3])
+		// --- REGISTRY --- // (TODO)
 	case n == 4 && p[1] == "v1" && p[2] == "cpsrn" && r.Method == http.MethodGet:
-		port.Submission.GetRegistryByCPSRN(w, r, p[3])
-	case n == 5 && p[1] == "v1" && p[2] == "submission" && p[4] == "perma-delete" && r.Method == http.MethodDelete:
-		port.Submission.DeleteByID(w, r, p[3])
-	case n == 5 && p[1] == "v1" && p[2] == "submissions" && p[3] == "operation" && p[4] == "set-user" && r.Method == http.MethodPost:
-		port.Submission.OperationSetUser(w, r)
-	case n == 5 && p[1] == "v1" && p[2] == "submissions" && p[3] == "operation" && p[4] == "create-comment" && r.Method == http.MethodPost:
-		port.Submission.OperationCreateComment(w, r)
-	case n == 4 && p[1] == "v1" && p[2] == "submissions" && p[3] == "select-options" && r.Method == http.MethodGet:
-		port.Submission.ListAsSelectOptionByFilter(w, r)
+		port.ComicSubmission.GetRegistryByCPSRN(w, r, p[3])
+
+		// --- SUBMISSIONS --- //
+	case n == 3 && p[1] == "v1" && p[2] == "comic-submissions" && r.Method == http.MethodGet:
+		port.ComicSubmission.List(w, r)
+	case n == 3 && p[1] == "v1" && p[2] == "comic-submissions" && r.Method == http.MethodPost:
+		port.ComicSubmission.Create(w, r)
+	case n == 4 && p[1] == "v1" && p[2] == "comic-submission" && r.Method == http.MethodGet:
+		port.ComicSubmission.GetByID(w, r, p[3])
+	case n == 4 && p[1] == "v1" && p[2] == "comic-submission" && r.Method == http.MethodPut:
+		port.ComicSubmission.UpdateByID(w, r, p[3])
+	case n == 4 && p[1] == "v1" && p[2] == "comic-submission" && r.Method == http.MethodDelete:
+		port.ComicSubmission.ArchiveByID(w, r, p[3])
+	case n == 5 && p[1] == "v1" && p[2] == "comic-submission" && p[4] == "perma-delete" && r.Method == http.MethodDelete:
+		port.ComicSubmission.DeleteByID(w, r, p[3])
+	case n == 5 && p[1] == "v1" && p[2] == "comic-submissions" && p[3] == "operation" && p[4] == "set-user" && r.Method == http.MethodPost:
+		port.ComicSubmission.OperationSetUser(w, r)
+	case n == 5 && p[1] == "v1" && p[2] == "comic-submissions" && p[3] == "operation" && p[4] == "create-comment" && r.Method == http.MethodPost:
+		port.ComicSubmission.OperationCreateComment(w, r)
+	case n == 4 && p[1] == "v1" && p[2] == "comic-submissions" && p[3] == "select-options" && r.Method == http.MethodGet:
+		port.ComicSubmission.ListAsSelectOptionByFilter(w, r)
 
 	// --- ORGANIZATION --- //
 	case n == 3 && p[1] == "v1" && p[2] == "organizations" && r.Method == http.MethodGet:

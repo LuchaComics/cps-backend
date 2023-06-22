@@ -8,18 +8,18 @@ import (
 	"time"
 
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
-	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
-	s_d "github.com/LuchaComics/cps-backend/app/submission/datastore"
-	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	domain "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
+	s_d "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
+	submission_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	u_d "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config/constants"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 )
 
-func (c *SubmissionControllerImpl) CreateComment(ctx context.Context, submissionID primitive.ObjectID, content string) (*submission_s.Submission, error) {
+func (c *ComicSubmissionControllerImpl) CreateComment(ctx context.Context, submissionID primitive.ObjectID, content string) (*submission_s.ComicSubmission, error) {
 	// Fetch the original submission.
-	s, err := c.SubmissionStorer.GetByID(ctx, submissionID)
+	s, err := c.ComicSubmissionStorer.GetByID(ctx, submissionID)
 	if err != nil {
 		c.Logger.Error("database get by id error", slog.Any("error", err))
 		return nil, err
@@ -47,7 +47,7 @@ func (c *SubmissionControllerImpl) CreateComment(ctx context.Context, submission
 	s.Comments = append(s.Comments, comment)
 
 	// Save to the database the modified submission.
-	if err := c.SubmissionStorer.UpdateByID(ctx, s); err != nil {
+	if err := c.ComicSubmissionStorer.UpdateByID(ctx, s); err != nil {
 		c.Logger.Error("database update by id error", slog.Any("error", err))
 		return nil, err
 	}
@@ -55,9 +55,9 @@ func (c *SubmissionControllerImpl) CreateComment(ctx context.Context, submission
 	return s, nil
 }
 
-func (c *SubmissionControllerImpl) SetUser(ctx context.Context, submissionID primitive.ObjectID, userID primitive.ObjectID) (*submission_s.Submission, error) {
+func (c *ComicSubmissionControllerImpl) SetUser(ctx context.Context, submissionID primitive.ObjectID, userID primitive.ObjectID) (*submission_s.ComicSubmission, error) {
 	// Fetch the original submission.
-	os, err := c.SubmissionStorer.GetByID(ctx, submissionID)
+	os, err := c.ComicSubmissionStorer.GetByID(ctx, submissionID)
 	if err != nil {
 		c.Logger.Error("database get by id error", slog.Any("error", err))
 		return nil, err
@@ -82,7 +82,7 @@ func (c *SubmissionControllerImpl) SetUser(ctx context.Context, submissionID pri
 	os.User = userToSubmissionUserCopy(cust)
 
 	// Save to the database the modified submission.
-	if err := c.SubmissionStorer.UpdateByID(ctx, os); err != nil {
+	if err := c.ComicSubmissionStorer.UpdateByID(ctx, os); err != nil {
 		c.Logger.Error("database update by id error", slog.Any("error", err))
 		return nil, err
 	}
@@ -90,7 +90,7 @@ func (c *SubmissionControllerImpl) SetUser(ctx context.Context, submissionID pri
 	return os, nil
 }
 
-func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Submission) (*domain.Submission, error) {
+func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.ComicSubmission) (*domain.ComicSubmission, error) {
 	// DEVELOPERS NOTE:
 	// Every submission creation is dependent on the `role` of the logged in
 	// user in our system so we need to extract it right away.
@@ -101,7 +101,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	//
 
 	// Fetch the original submission.
-	os, err := c.SubmissionStorer.GetByID(ctx, ns.ID)
+	os, err := c.ComicSubmissionStorer.GetByID(ctx, ns.ID)
 	if err != nil {
 		c.Logger.Error("database get by id error", slog.Any("error", err))
 		return nil, err
@@ -182,7 +182,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	os.Item = fmt.Sprintf("%v, %v, %v", ns.SeriesTitle, ns.IssueVol, ns.IssueNo)
 
 	// Save to the database the modified submission.
-	if err := c.SubmissionStorer.UpdateByID(ctx, os); err != nil {
+	if err := c.ComicSubmissionStorer.UpdateByID(ctx, os); err != nil {
 		c.Logger.Error("database update by id error", slog.Any("error", err))
 		return nil, err
 	}
@@ -315,7 +315,7 @@ func (c *SubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.Su
 	os.FileUploadS3ObjectKey = path
 	os.ModifiedAt = time.Now()
 
-	if err := c.SubmissionStorer.UpdateByID(ctx, os); err != nil {
+	if err := c.ComicSubmissionStorer.UpdateByID(ctx, os); err != nil {
 		c.Logger.Error("database update error", slog.Any("error", err))
 		return nil, err
 	}

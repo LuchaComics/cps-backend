@@ -1,4 +1,4 @@
-package submission
+package comicsub
 
 import (
 	"context"
@@ -6,19 +6,19 @@ import (
 	"log"
 	"net/http"
 
-	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	sub_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type SubmissionOperationSetUserRequest struct {
+type ComicSubmissionOperationSetUserRequest struct {
 	SubmissionID primitive.ObjectID `bson:"submission_id" json:"submission_id"`
 	CustomerID   primitive.ObjectID `bson:"customer_id" json:"customer_id"`
 }
 
-func UnmarshalOperationSetUserRequest(ctx context.Context, r *http.Request) (*SubmissionOperationSetUserRequest, error) {
+func UnmarshalOperationSetUserRequest(ctx context.Context, r *http.Request) (*ComicSubmissionOperationSetUserRequest, error) {
 	// Initialize our array which will store all the results from the remote server.
-	var requestData SubmissionOperationSetUserRequest
+	var requestData ComicSubmissionOperationSetUserRequest
 
 	defer r.Body.Close()
 
@@ -37,7 +37,7 @@ func UnmarshalOperationSetUserRequest(ctx context.Context, r *http.Request) (*Su
 	return &requestData, nil
 }
 
-func ValidateOperationSetUserRequest(dirtyData *SubmissionOperationSetUserRequest) error {
+func ValidateOperationSetUserRequest(dirtyData *ComicSubmissionOperationSetUserRequest) error {
 	e := make(map[string]string)
 
 	if dirtyData.SubmissionID.Hex() == "" {
@@ -71,7 +71,7 @@ func (h *Handler) OperationSetUser(w http.ResponseWriter, r *http.Request) {
 	MarshalOperationSetUserResponse(data, w)
 }
 
-func MarshalOperationSetUserResponse(res *sub_s.Submission, w http.ResponseWriter) {
+func MarshalOperationSetUserResponse(res *sub_s.ComicSubmission, w http.ResponseWriter) {
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

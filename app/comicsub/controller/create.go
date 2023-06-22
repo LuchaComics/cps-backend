@@ -11,13 +11,13 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
-	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
-	s_d "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	domain "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
+	s_d "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	u_d "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config/constants"
 )
 
-func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission) (*s_d.Submission, error) {
+func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, m *s_d.ComicSubmission) (*s_d.ComicSubmission, error) {
 	// DEVELOPERS NOTE:
 	// Every submission creation is dependent on the `role` of the logged in
 	// user in our system so we need to extract it right away.
@@ -41,8 +41,8 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 		c.Kmutex.Unlock("CPS-BACKEND-SUBMISSION-INSERTION") // Step 5
 		c.Logger.Debug("removing mutex")
 	}()
-	f := &domain.SubmissionListFilter{CreatedByUserRole: userRole} // Part of ID requires count of staff or retailer.
-	total, err := c.SubmissionStorer.CountByFilter(ctx, f)         // Step 2
+	f := &domain.ComicSubmissionListFilter{CreatedByUserRole: userRole} // Part of ID requires count of staff or retailer.
+	total, err := c.ComicSubmissionStorer.CountByFilter(ctx, f)         // Step 2
 	if err != nil {
 		c.Logger.Error("count all submissions error", slog.Any("error", err))
 		return nil, err
@@ -107,7 +107,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	}
 
 	// Save to our database.
-	if err := c.SubmissionStorer.Create(ctx, m); err != nil {
+	if err := c.ComicSubmissionStorer.Create(ctx, m); err != nil {
 		c.Logger.Error("database create error", slog.Any("error", err))
 		return nil, err
 	}
@@ -223,7 +223,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	m.FileUploadS3ObjectKey = path
 	m.ModifiedAt = time.Now()
 
-	if err := c.SubmissionStorer.UpdateByID(ctx, m); err != nil {
+	if err := c.ComicSubmissionStorer.UpdateByID(ctx, m); err != nil {
 		c.Logger.Error("database update error", slog.Any("error", err))
 		return nil, err
 	}
@@ -243,7 +243,7 @@ func (c *SubmissionControllerImpl) Create(ctx context.Context, m *s_d.Submission
 	}
 
 	// The following code will send the email notifications to the correct individuals.
-	if err := c.sendNewSubmissionEmails(m); err != nil {
+	if err := c.sendNewComicSubmissionEmails(m); err != nil {
 		c.Logger.Error("database update error", slog.Any("error", err))
 		// Do not return error, just keep it in the server logs.
 	}

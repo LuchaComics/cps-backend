@@ -32,3 +32,9 @@ tasks:
       - docker build -f ./Dockerfile -t rodolfossp/cps-backend:latest --platform linux/amd64 .
       - docker tag rodolfossp/cps-backend:latest rodolfossp/cps-backend:latest
       - docker push rodolfossp/cps-backend:latest
+
+  vendor:
+    desc: Save all the libraries into our code repository
+    cmds:
+      - go mod download
+      - go mod vendor

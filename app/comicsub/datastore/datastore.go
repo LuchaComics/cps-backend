@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	SubmissionStatusPending                       = 1
-	SubmissionStatusActive                        = 2
-	SubmissionStatusError                         = 3
-	SubmissionStatusArchived                      = 100
+	StatusPending                                 = 1
+	StatusActive                                  = 2
+	StatusError                                   = 3
+	StatusArchived                                = 100
 	ServiceTypePreScreening                       = 1
 	ServiceTypePedigree                           = 2
 	ServiceTypeCPSCapsuleYougrade                 = 3
@@ -35,7 +35,7 @@ const (
 	SubmissionCollectibleTypeCard                 = 2
 )
 
-type Submission struct {
+type ComicSubmission struct {
 	ID                                 primitive.ObjectID `bson:"_id" json:"id"`
 	OrganizationID                     primitive.ObjectID `bson:"organization_id" json:"organization_id"`
 	OrganizationName                   string             `bson:"organization_name" json:"organization_name"`
@@ -112,7 +112,7 @@ type SubmissionComment struct {
 	Content          string             `bson:"content" json:"content"`
 }
 
-type SubmissionListFilter struct {
+type ComicSubmissionListFilter struct {
 	PageSize          int64
 	LastID            string
 	SortField         string
@@ -147,40 +147,40 @@ type SubmissionUser struct {
 	Status                    int8               `bson:"status" json:"status"`
 }
 
-type SubmissionListResult struct {
-	Results []*Submission `json:"results"`
+type ComicSubmissionListResult struct {
+	Results []*ComicSubmission `json:"results"`
 }
 
-type SubmissionAsSelectOption struct {
+type ComicSubmissionAsSelectOption struct {
 	Value primitive.ObjectID `bson:"_id" json:"value"` // Extract from the database `_id` field and output through API as `value`.
 	Label string             `bson:"name" json:"label"`
 }
 
-// SubmissionStorer Interface for submission.
-type SubmissionStorer interface {
-	Create(ctx context.Context, m *Submission) error
-	GetByID(ctx context.Context, id primitive.ObjectID) (*Submission, error)
-	GetByCPSRN(ctx context.Context, cpsrn string) (*Submission, error)
-	UpdateByID(ctx context.Context, m *Submission) error
-	ListByFilter(ctx context.Context, f *SubmissionListFilter) (*SubmissionListResult, error)
-	ListAsSelectOptionByFilter(ctx context.Context, f *SubmissionListFilter) ([]*SubmissionAsSelectOption, error)
+// ComicSubmissionStorer Interface for submission.
+type ComicSubmissionStorer interface {
+	Create(ctx context.Context, m *ComicSubmission) error
+	GetByID(ctx context.Context, id primitive.ObjectID) (*ComicSubmission, error)
+	GetByCPSRN(ctx context.Context, cpsrn string) (*ComicSubmission, error)
+	UpdateByID(ctx context.Context, m *ComicSubmission) error
+	ListByFilter(ctx context.Context, f *ComicSubmissionListFilter) (*ComicSubmissionListResult, error)
+	ListAsSelectOptionByFilter(ctx context.Context, f *ComicSubmissionListFilter) ([]*ComicSubmissionAsSelectOption, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
 	CountAll(ctx context.Context) (int64, error)
-	CountByFilter(ctx context.Context, f *SubmissionListFilter) (int64, error)
+	CountByFilter(ctx context.Context, f *ComicSubmissionListFilter) (int64, error)
 	// //TODO: Add more...
 }
 
-type SubmissionStorerImpl struct {
+type ComicSubmissionStorerImpl struct {
 	Logger     *slog.Logger
 	DbClient   *mongo.Client
 	Collection *mongo.Collection
 }
 
-func NewDatastore(appCfg *c.Conf, loggerp *slog.Logger, client *mongo.Client) SubmissionStorer {
+func NewDatastore(appCfg *c.Conf, loggerp *slog.Logger, client *mongo.Client) ComicSubmissionStorer {
 	// ctx := context.Background()
 	uc := client.Database(appCfg.DB.Name).Collection("submissions")
 
-	s := &SubmissionStorerImpl{
+	s := &ComicSubmissionStorerImpl{
 		Logger:     loggerp,
 		DbClient:   client,
 		Collection: uc,

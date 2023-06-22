@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (impl SubmissionStorerImpl) CountAll(ctx context.Context) (int64, error) {
+func (impl ComicSubmissionStorerImpl) CountAll(ctx context.Context) (int64, error) {
 
 	opts := options.Count().SetHint("_id_")
 	count, err := impl.Collection.CountDocuments(ctx, bson.D{}, opts)
@@ -19,7 +19,7 @@ func (impl SubmissionStorerImpl) CountAll(ctx context.Context) (int64, error) {
 	return count, nil
 }
 
-func (impl SubmissionStorerImpl) CountByFilter(ctx context.Context, f *SubmissionListFilter) (int64, error) {
+func (impl ComicSubmissionStorerImpl) CountByFilter(ctx context.Context, f *ComicSubmissionListFilter) (int64, error) {
 
 	filter := bson.M{}
 
@@ -36,7 +36,7 @@ func (impl SubmissionStorerImpl) CountByFilter(ctx context.Context, f *Submissio
 	}
 
 	if f.ExcludeArchived {
-		filter["status"] = bson.M{"$ne": SubmissionStatusArchived} // Do not list archived items! This code
+		filter["status"] = bson.M{"$ne": StatusArchived} // Do not list archived items! This code
 	}
 
 	opts := options.Count().SetHint("_id_")

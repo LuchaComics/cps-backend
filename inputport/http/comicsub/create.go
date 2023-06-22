@@ -1,18 +1,18 @@
-package submission
+package comicsub
 
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 
-	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	sub_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*sub_s.Submission, error) {
+func UnmarshalCreateRequest(ctx context.Context, r *http.Request) (*sub_s.ComicSubmission, error) {
 	// Initialize our array which will store all the results from the remote server.
-	var requestData sub_s.Submission
+	var requestData sub_s.ComicSubmission
 
 	defer r.Body.Close()
 
@@ -20,18 +20,18 @@ func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*sub_s.Submis
 	// to send a `400 Bad Request` errror message back to the client,
 	err := json.NewDecoder(r.Body).Decode(&requestData) // [1]
 	if err != nil {
+		log.Println(err)
 		return nil, httperror.NewForSingleField(http.StatusBadRequest, "non_field_error", "payload structure is wrong")
 	}
 
 	// Perform our validation and return validation error on any issues detected.
-	if err := ValidateUpdateRequest(&requestData); err != nil {
+	if err := ValidateCreateRequest(&requestData); err != nil {
 		return nil, err
 	}
-
 	return &requestData, nil
 }
 
-func ValidateUpdateRequest(dirtyData *sub_s.Submission) error {
+func ValidateCreateRequest(dirtyData *sub_s.ComicSubmission) error {
 	e := make(map[string]string)
 
 	// if dirtyData.ServiceType == 0 {
@@ -116,6 +116,9 @@ func ValidateUpdateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.OrganizationID.IsZero() {
 		e["organization_id"] = "missing choice"
 	}
+	if dirtyData.CollectibleType == 0 {
+		e["collectible_type"] = "missing choice"
+	}
 
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)
@@ -123,31 +126,26 @@ func ValidateUpdateRequest(dirtyData *sub_s.Submission) error {
 	return nil
 }
 
-func (h *Handler) UpdateByID(w http.ResponseWriter, r *http.Request, id string) {
+func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	data, err := UnmarshalUpdateRequest(ctx, r)
+	data, err := UnmarshalCreateRequest(ctx, r)
+	if err != nil {
+		log.Println("comicsub | Create | UnmarshalCreateRequest | err:", err)
+		httperror.ResponseError(w, err)
+		return
+	}
+
+	data, err = h.Controller.Create(ctx, data)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return
 	}
 
-	data.ID, err = primitive.ObjectIDFromHex(id)
-	if err != nil {
-		httperror.ResponseError(w, err)
-		return
-	}
-
-	submission, err := h.Controller.UpdateByID(ctx, data)
-	if err != nil {
-		httperror.ResponseError(w, err)
-		return
-	}
-
-	MarshalUpdateResponse(submission, w)
+	MarshalCreateResponse(data, w)
 }
 
-func MarshalUpdateResponse(res *sub_s.Submission, w http.ResponseWriter) {
+func MarshalCreateResponse(res *sub_s.ComicSubmission, w http.ResponseWriter) {
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

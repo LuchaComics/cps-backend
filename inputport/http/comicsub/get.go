@@ -1,4 +1,4 @@
-package submission
+package comicsub
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	sub_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
@@ -28,7 +28,7 @@ func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request, id string) {
 	MarshalDetailResponse(m, w)
 }
 
-func MarshalDetailResponse(res *sub_s.Submission, w http.ResponseWriter) {
+func MarshalDetailResponse(res *sub_s.ComicSubmission, w http.ResponseWriter) {
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

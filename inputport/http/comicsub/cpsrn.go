@@ -1,11 +1,11 @@
-package submission
+package comicsub
 
 import (
 	"encoding/json"
 	"net/http"
 	"time"
 
-	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	sub_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
@@ -42,7 +42,7 @@ type RegistryReponse struct {
 	CpsPercentageGrade                 float64   `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
 }
 
-func MarshalRegistryResponse(s *sub_s.Submission, w http.ResponseWriter) {
+func MarshalRegistryResponse(s *sub_s.ComicSubmission, w http.ResponseWriter) {
 	resp := &RegistryReponse{
 		CPSRN:                              s.CPSRN,
 		SubmissionDate:                     s.SubmissionDate,

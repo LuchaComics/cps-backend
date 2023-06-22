@@ -8,8 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 
+	sub_d "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	domain "github.com/LuchaComics/cps-backend/app/organization/datastore"
-	sub_d "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	user_d "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config/constants"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
@@ -60,7 +60,7 @@ func (c *OrganizationControllerImpl) UpdateByID(ctx context.Context, ns *domain.
 		c.updateOrganizationNameForAllUsers(ctx, org)
 	}(os)
 	go func(org *domain.Organization) {
-		c.updateOrganizationNameForAllSubmissions(ctx, org)
+		c.updateOrganizationNameForAllComicSubmissions(ctx, org)
 	}(os)
 
 	return os, nil
@@ -85,10 +85,10 @@ func (c *OrganizationControllerImpl) updateOrganizationNameForAllUsers(ctx conte
 	return nil
 }
 
-func (c *OrganizationControllerImpl) updateOrganizationNameForAllSubmissions(ctx context.Context, ns *domain.Organization) error {
+func (c *OrganizationControllerImpl) updateOrganizationNameForAllComicSubmissions(ctx context.Context, ns *domain.Organization) error {
 	c.Logger.Debug("Beginning to update organization name for all submissions")
-	f := &sub_d.SubmissionListFilter{OrganizationID: ns.ID}
-	uu, err := c.SubmissionStorer.ListByFilter(ctx, f)
+	f := &sub_d.ComicSubmissionListFilter{OrganizationID: ns.ID}
+	uu, err := c.ComicSubmissionStorer.ListByFilter(ctx, f)
 	if err != nil {
 		c.Logger.Error("database update by id error", slog.Any("error", err))
 		return err
@@ -96,7 +96,7 @@ func (c *OrganizationControllerImpl) updateOrganizationNameForAllSubmissions(ctx
 	for _, u := range uu.Results {
 		u.OrganizationName = ns.Name
 		log.Println("--->", u)
-		// if err := c.SubmissionStorer.UpdateByID(ctx, u); err != nil {
+		// if err := c.ComicSubmissionStorer.UpdateByID(ctx, u); err != nil {
 		// 	c.Logger.Error("database update by id error", slog.Any("error", err))
 		// 	return err
 		// }

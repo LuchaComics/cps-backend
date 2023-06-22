@@ -7,13 +7,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 
-	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	domain "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func (c *SubmissionControllerImpl) GetByID(ctx context.Context, id primitive.ObjectID) (*domain.Submission, error) {
+func (c *ComicSubmissionControllerImpl) GetByID(ctx context.Context, id primitive.ObjectID) (*domain.ComicSubmission, error) {
 	// Retrieve from our database the record for the specific id.
-	m, err := c.SubmissionStorer.GetByID(ctx, id)
+	m, err := c.ComicSubmissionStorer.GetByID(ctx, id)
 	if err != nil {
 		c.Logger.Error("database get by id error", slog.Any("error", err))
 		return nil, err
@@ -32,9 +32,9 @@ func (c *SubmissionControllerImpl) GetByID(ctx context.Context, id primitive.Obj
 	return m, err
 }
 
-func (c *SubmissionControllerImpl) GetByCPSRN(ctx context.Context, cpsrn string) (*domain.Submission, error) {
+func (c *ComicSubmissionControllerImpl) GetByCPSRN(ctx context.Context, cpsrn string) (*domain.ComicSubmission, error) {
 	// Retrieve from our database the record for the specific cspn.
-	m, err := c.SubmissionStorer.GetByCPSRN(ctx, cpsrn)
+	m, err := c.ComicSubmissionStorer.GetByCPSRN(ctx, cpsrn)
 	if err != nil {
 		c.Logger.Error("database get by id error", slog.Any("error", err))
 		return nil, err

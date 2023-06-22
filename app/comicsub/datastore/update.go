@@ -7,7 +7,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (impl SubmissionStorerImpl) UpdateByID(ctx context.Context, m *Submission) error {
+func (impl ComicSubmissionStorerImpl) UpdateByID(ctx context.Context, m *ComicSubmission) error {
 	filter := bson.D{{"_id", m.ID}}
 
 	update := bson.M{ // DEVELOPERS NOTE: https://stackoverflow.com/a/60946010

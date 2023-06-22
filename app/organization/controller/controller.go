@@ -8,10 +8,10 @@ import (
 
 	mg "github.com/LuchaComics/cps-backend/adapter/emailer/mailgun"
 	s3_storage "github.com/LuchaComics/cps-backend/adapter/storage/s3"
+	comicsub_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	domain "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	org_d "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	organization_s "github.com/LuchaComics/cps-backend/app/organization/datastore"
-	submission_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
 	user_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/provider/uuid"
@@ -29,14 +29,14 @@ type OrganizationController interface {
 }
 
 type OrganizationControllerImpl struct {
-	Config             *config.Conf
-	Logger             *slog.Logger
-	UUID               uuid.Provider
-	S3                 s3_storage.S3Storager
-	Emailer            mg.Emailer
-	OrganizationStorer organization_s.OrganizationStorer
-	UserStorer         user_s.UserStorer
-	SubmissionStorer   submission_s.SubmissionStorer
+	Config                *config.Conf
+	Logger                *slog.Logger
+	UUID                  uuid.Provider
+	S3                    s3_storage.S3Storager
+	Emailer               mg.Emailer
+	OrganizationStorer    organization_s.OrganizationStorer
+	UserStorer            user_s.UserStorer
+	ComicSubmissionStorer comicsub_s.ComicSubmissionStorer
 }
 
 func NewController(
@@ -47,17 +47,17 @@ func NewController(
 	emailer mg.Emailer,
 	org_storer organization_s.OrganizationStorer,
 	usr_storer user_s.UserStorer,
-	sub_storer submission_s.SubmissionStorer,
+	csub_storer comicsub_s.ComicSubmissionStorer,
 ) OrganizationController {
 	s := &OrganizationControllerImpl{
-		Config:             appCfg,
-		Logger:             loggerp,
-		UUID:               uuidp,
-		S3:                 s3,
-		Emailer:            emailer,
-		OrganizationStorer: org_storer,
-		UserStorer:         usr_storer,
-		SubmissionStorer:   sub_storer,
+		Config:                appCfg,
+		Logger:                loggerp,
+		UUID:                  uuidp,
+		S3:                    s3,
+		Emailer:               emailer,
+		OrganizationStorer:    org_storer,
+		UserStorer:            usr_storer,
+		ComicSubmissionStorer: csub_storer,
 	}
 	s.Logger.Debug("organization controller initialization started...")
 	s.Logger.Debug("organization controller initialized")

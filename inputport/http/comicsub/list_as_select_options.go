@@ -1,10 +1,10 @@
-package submission
+package comicsub
 
 import (
 	"encoding/json"
 	"net/http"
 
-	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	sub_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -13,7 +13,7 @@ func (h *Handler) ListAsSelectOptionByFilter(w http.ResponseWriter, r *http.Requ
 	ctx := r.Context()
 
 	// Initialize the list filter with base results and then override them with the URL parameters.
-	f := &sub_s.SubmissionListFilter{
+	f := &sub_s.ComicSubmissionListFilter{
 		PageSize:        10,
 		LastID:          "",
 		SortField:       "_id",
@@ -52,7 +52,7 @@ func (h *Handler) ListAsSelectOptionByFilter(w http.ResponseWriter, r *http.Requ
 	MarshalListAsSelectOptionResponse(m, w)
 }
 
-func MarshalListAsSelectOptionResponse(res []*sub_s.SubmissionAsSelectOption, w http.ResponseWriter) {
+func MarshalListAsSelectOptionResponse(res []*sub_s.ComicSubmissionAsSelectOption, w http.ResponseWriter) {
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

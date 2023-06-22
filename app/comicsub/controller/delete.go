@@ -7,7 +7,7 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (impl *SubmissionControllerImpl) DeleteByID(ctx context.Context, id primitive.ObjectID) error {
+func (impl *ComicSubmissionControllerImpl) DeleteByID(ctx context.Context, id primitive.ObjectID) error {
 	// STEP 1: Lookup the record or error.
 	submission, err := impl.GetByID(ctx, id)
 	if err != nil {
@@ -28,7 +28,7 @@ func (impl *SubmissionControllerImpl) DeleteByID(ctx context.Context, id primiti
 	}
 
 	// STEP 3: Delete from database.
-	if err := impl.SubmissionStorer.DeleteByID(ctx, id); err != nil {
+	if err := impl.ComicSubmissionStorer.DeleteByID(ctx, id); err != nil {
 		impl.Logger.Error("database delete by id error", slog.Any("error", err))
 		return err
 	}

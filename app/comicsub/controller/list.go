@@ -3,14 +3,14 @@ package controller
 import (
 	"context"
 
-	domain "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	domain "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	user_d "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config/constants"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
 )
 
-func (c *SubmissionControllerImpl) ListByFilter(ctx context.Context, f *domain.SubmissionListFilter) (*domain.SubmissionListResult, error) {
+func (c *ComicSubmissionControllerImpl) ListByFilter(ctx context.Context, f *domain.ComicSubmissionListFilter) (*domain.ComicSubmissionListResult, error) {
 	// Extract from our session the following data.
 	organizationID := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
 	userID := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
@@ -25,7 +25,7 @@ func (c *SubmissionControllerImpl) ListByFilter(ctx context.Context, f *domain.S
 			slog.Any("user_role", userRole))
 	}
 
-	m, err := c.SubmissionStorer.ListByFilter(ctx, f)
+	m, err := c.ComicSubmissionStorer.ListByFilter(ctx, f)
 	if err != nil {
 		c.Logger.Error("database list by filter error", slog.Any("error", err))
 		return nil, err
@@ -33,7 +33,7 @@ func (c *SubmissionControllerImpl) ListByFilter(ctx context.Context, f *domain.S
 	return m, err
 }
 
-func (c *SubmissionControllerImpl) ListAsSelectOptionByFilter(ctx context.Context, f *domain.SubmissionListFilter) ([]*domain.SubmissionAsSelectOption, error) {
+func (c *ComicSubmissionControllerImpl) ListAsSelectOptionByFilter(ctx context.Context, f *domain.ComicSubmissionListFilter) ([]*domain.ComicSubmissionAsSelectOption, error) {
 	// Extract from our session the following data.
 	organizationID := ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID)
 	userID := ctx.Value(constants.SessionUserID).(primitive.ObjectID)
@@ -48,7 +48,7 @@ func (c *SubmissionControllerImpl) ListAsSelectOptionByFilter(ctx context.Contex
 			slog.Any("user_role", userRole))
 	}
 
-	m, err := c.SubmissionStorer.ListAsSelectOptionByFilter(ctx, f)
+	m, err := c.ComicSubmissionStorer.ListAsSelectOptionByFilter(ctx, f)
 	if err != nil {
 		c.Logger.Error("database list as select option by filter error", slog.Any("error", err))
 		return nil, err

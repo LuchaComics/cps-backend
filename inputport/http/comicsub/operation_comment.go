@@ -1,4 +1,4 @@
-package submission
+package comicsub
 
 import (
 	"context"
@@ -6,19 +6,19 @@ import (
 	"log"
 	"net/http"
 
-	sub_s "github.com/LuchaComics/cps-backend/app/submission/datastore"
+	sub_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type SubmissionOperationCreateCommentRequest struct {
+type ComicSubmissionOperationCreateCommentRequest struct {
 	SubmissionID primitive.ObjectID `bson:"submission_id" json:"submission_id"`
 	Content      string             `bson:"content" json:"content"`
 }
 
-func UnmarshalOperationCreateCommentRequest(ctx context.Context, r *http.Request) (*SubmissionOperationCreateCommentRequest, error) {
+func UnmarshalOperationCreateCommentRequest(ctx context.Context, r *http.Request) (*ComicSubmissionOperationCreateCommentRequest, error) {
 	// Initialize our array which will store all the results from the remote server.
-	var requestData SubmissionOperationCreateCommentRequest
+	var requestData ComicSubmissionOperationCreateCommentRequest
 
 	defer r.Body.Close()
 
@@ -37,7 +37,7 @@ func UnmarshalOperationCreateCommentRequest(ctx context.Context, r *http.Request
 	return &requestData, nil
 }
 
-func ValidateOperationCreateCommentRequest(dirtyData *SubmissionOperationCreateCommentRequest) error {
+func ValidateOperationCreateCommentRequest(dirtyData *ComicSubmissionOperationCreateCommentRequest) error {
 	e := make(map[string]string)
 
 	if dirtyData.SubmissionID.Hex() == "" {
@@ -72,7 +72,7 @@ func (h *Handler) OperationCreateComment(w http.ResponseWriter, r *http.Request)
 	MarshalOperationCreateCommentResponse(data, w)
 }
 
-func MarshalOperationCreateCommentResponse(res *sub_s.Submission, w http.ResponseWriter) {
+func MarshalOperationCreateCommentResponse(res *sub_s.ComicSubmission, w http.ResponseWriter) {
 	if err := json.NewEncoder(w).Encode(&res); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

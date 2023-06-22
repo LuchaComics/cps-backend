@@ -1,4 +1,4 @@
-package submission
+package comicsub
 
 import (
 	"net/http"
