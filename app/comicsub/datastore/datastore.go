@@ -31,8 +31,7 @@ const (
 	LetterGradeScale                              = 1
 	NumberGradeScale                              = 2
 	CPSPercentageGradingScale                     = 3
-	SubmissionCollectibleTypeComic                = 1
-	SubmissionCollectibleTypeCard                 = 2
+	CollectibleTypeGeneric                        = 1
 )
 
 type ComicSubmission struct {
