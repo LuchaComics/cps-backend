@@ -177,7 +177,7 @@ type ComicSubmissionStorerImpl struct {
 
 func NewDatastore(appCfg *c.Conf, loggerp *slog.Logger, client *mongo.Client) ComicSubmissionStorer {
 	// ctx := context.Background()
-	uc := client.Database(appCfg.DB.Name).Collection("submissions")
+	uc := client.Database(appCfg.DB.Name).Collection("comic_submissions")
 
 	s := &ComicSubmissionStorerImpl{
 		Logger:     loggerp,
