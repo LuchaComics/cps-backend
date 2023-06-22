@@ -46,7 +46,7 @@ func (impl *UserControllerImpl) userFromUpdateRequest(requestData *UserUpdateReq
 		ID:                        requestData.ID,
 		OrganizationID:            requestData.OrganizationID,
 		FirstName:                 requestData.FirstName,
-		LastName:                  requestData.FirstName,
+		LastName:                  requestData.LastName,
 		Email:                     requestData.Email,
 		PasswordHash:              passwordHash,
 		PasswordHashAlgorithm:     impl.Password.AlgorithmName(),

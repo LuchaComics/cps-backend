@@ -46,7 +46,7 @@ func (impl *UserControllerImpl) userFromCreateRequest(requestData *UserCreateReq
 	return &user_s.User{
 		OrganizationID:            requestData.OrganizationID,
 		FirstName:                 requestData.FirstName,
-		LastName:                  requestData.FirstName,
+		LastName:                  requestData.LastName,
 		Email:                     requestData.Email,
 		PasswordHash:              passwordHash,
 		PasswordHashAlgorithm:     impl.Password.AlgorithmName(),

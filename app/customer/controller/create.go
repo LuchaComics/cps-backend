@@ -42,7 +42,7 @@ func (impl *CustomerControllerImpl) userFromCreateRequest(requestData *CustomerC
 
 	return &user_s.User{
 		FirstName:                 requestData.FirstName,
-		LastName:                  requestData.FirstName,
+		LastName:                  requestData.LastName,
 		Email:                     requestData.Email,
 		PasswordHash:              passwordHash,
 		PasswordHashAlgorithm:     impl.Password.AlgorithmName(),
