@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"log"
 	"time"
 
 	"golang.org/x/exp/slog"
@@ -67,7 +68,15 @@ func NewController(
 		UserStorer:         usr_storer,
 		OrganizationStorer: org_storer,
 	}
+	s.Logger.Debug("gateway controller initialization started...")
 
+	// Execute the code which will check to see if we have an initial account
+	// if not then we'll need to create it.
+	if err := s.createInitialRootAdmin(context.Background()); err != nil {
+		log.Fatal(err) // We terminate app here b/c dependency injection not allowed to fail, so fail here at startup of dynamodb.
+	}
+
+	s.Logger.Debug("gateway controller initialized")
 	return s
 }
 

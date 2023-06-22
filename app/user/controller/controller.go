@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"log"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
@@ -18,7 +17,6 @@ import (
 // UserController Interface for user business logic controller.
 type UserController interface {
 	Create(ctx context.Context, requestData *UserCreateRequestIDO) (*user_s.User, error)
-	CreateInitialRootAdmin(ctx context.Context) error
 	GetByID(ctx context.Context, id primitive.ObjectID) (*user_s.User, error)
 	GetUserBySessionUUID(ctx context.Context, sessionUUID string) (*domain.User, error)
 	ArchiveByID(ctx context.Context, id primitive.ObjectID) (*user_s.User, error)
@@ -56,12 +54,6 @@ func NewController(
 		UserStorer:         usr_storer,
 	}
 	s.Logger.Debug("user controller initialization started...")
-
-	// Execute the code which will check to see if we have an initial account
-	// if not then we'll need to create it.
-	if err := s.CreateInitialRootAdmin(context.Background()); err != nil {
-		log.Fatal(err) // We terminate app here b/c dependency injection not allowed to fail, so fail here at startup of dynamodb.
-	}
 
 	s.Logger.Debug("user controller initialized")
 	return s

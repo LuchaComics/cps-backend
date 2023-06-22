@@ -11,15 +11,15 @@ import (
 	domain "github.com/LuchaComics/cps-backend/app/user/datastore"
 )
 
-// CreateInitialRootAdmin function creates the initial root administrator if not previously created.
-func (c *UserControllerImpl) CreateInitialRootAdmin(ctx context.Context) error {
+// createInitialRootAdmin function creates the initial root administrator if not previously created.
+func (c *GatewayControllerImpl) createInitialRootAdmin(ctx context.Context) error {
 	doesExist, err := c.UserStorer.CheckIfExistsByEmail(ctx, c.Config.AppServer.InitialAdminEmail)
 	if err != nil {
 		c.Logger.Error("database check if exists error", slog.Any("error", err))
 		return err
 	}
 	if doesExist == false {
-		c.Logger.Info("No root user detected, proceeding to create now...")
+		c.Logger.Info("no root user detected, proceeding to create now...")
 		passwordHash, err := c.Password.GenerateHashFromPassword(c.Config.AppServer.InitialAdminPassword)
 		if err != nil {
 			c.Logger.Error("hashing error", slog.Any("error", err))
