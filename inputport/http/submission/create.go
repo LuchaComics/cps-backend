@@ -116,6 +116,9 @@ func ValidateCreateRequest(dirtyData *sub_s.Submission) error {
 	if dirtyData.OrganizationID.IsZero() {
 		e["organization_id"] = "missing choice"
 	}
+	if dirtyData.CollectibleType == 0 {
+		e["collectible_type"] = "missing choice"
+	}
 
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)

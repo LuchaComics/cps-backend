@@ -31,6 +31,8 @@ const (
 	LetterGradeScale                              = 1
 	NumberGradeScale                              = 2
 	CPSPercentageGradingScale                     = 3
+	SubmissionCollectibleTypeComic                = 1
+	SubmissionCollectibleTypeCard                 = 2
 )
 
 type Submission struct {
@@ -95,6 +97,7 @@ type Submission struct {
 	FileUploadS3ObjectKey              string             `bson:"file_upload_s3_key" json:"file_upload_s3_object_key"`
 	FileUploadDownloadableFileURL      string
 	Comments                           []*SubmissionComment `bson:"comments" json:"comments,omitempty"`
+	CollectibleType                    int8                 `bson:"collectible_type" json:"collectible_type"`
 }
 
 type SubmissionComment struct {
