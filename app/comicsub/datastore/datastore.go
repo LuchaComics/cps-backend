@@ -112,9 +112,13 @@ type SubmissionComment struct {
 }
 
 type ComicSubmissionListFilter struct {
-	PageSize          int64
-	LastID            string
-	SortField         string
+	// Pagination related.
+	Cursor    primitive.ObjectID
+	PageSize  int64
+	SortField string
+	SortOrder int8 // 1=ascending | -1=descending
+
+	// Filter related.
 	OrganizationID    primitive.ObjectID
 	UserID            primitive.ObjectID
 	UserEmail         string
@@ -147,7 +151,9 @@ type SubmissionUser struct {
 }
 
 type ComicSubmissionListResult struct {
-	Results []*ComicSubmission `json:"results"`
+	Results     []*ComicSubmission `json:"results"`
+	NextCursor  primitive.ObjectID `json:"next_cursor"`
+	HasNextPage bool               `json:"has_next_page"`
 }
 
 type ComicSubmissionAsSelectOption struct {

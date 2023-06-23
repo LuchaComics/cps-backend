@@ -14,9 +14,10 @@ func (h *Handler) ListAsSelectOptionByFilter(w http.ResponseWriter, r *http.Requ
 
 	// Initialize the list filter with base results and then override them with the URL parameters.
 	f := &sub_s.ComicSubmissionListFilter{
-		PageSize:        10,
-		LastID:          "",
+		Cursor:          primitive.NilObjectID,
+		PageSize:        1_000_000,
 		SortField:       "_id",
+		SortOrder:       1, // 1=ascending | -1=descending
 		ExcludeArchived: true,
 	}
 

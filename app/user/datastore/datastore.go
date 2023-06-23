@@ -74,12 +74,15 @@ type UserComment struct {
 }
 
 type UserListFilter struct {
+	// Pagination related.
+	Cursor    primitive.ObjectID
+	PageSize  int64
+	SortField string
+	SortOrder int8 // 1=ascending | -1=descending
+
+	// Filter related.
 	OrganizationID  primitive.ObjectID `bson:"organization_id" json:"organization_id,omitempty"`
 	Role            int8               `bson:"role" json:"role"`
-	SortOrder       string             `json:"sort_order"`
-	SortField       string             `json:"sort_field"`
-	Offset          uint64             `json:"offset"`
-	Limit           uint64             `json:"limit"`
 	Statuss         []int8             `json:"statuss"`
 	UUIDs           []string           `json:"uuids"`
 	ExcludeArchived bool               `json:"exclude_archived"`
@@ -91,7 +94,9 @@ type UserListFilter struct {
 }
 
 type UserListResult struct {
-	Results []*User `json:"results"`
+	Results     []*User            `json:"results"`
+	NextCursor  primitive.ObjectID `json:"next_cursor"`
+	HasNextPage bool               `json:"has_next_page"`
 }
 
 type UserAsSelectOption struct {

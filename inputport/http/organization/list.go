@@ -3,19 +3,44 @@ package organization
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	sub_s "github.com/LuchaComics/cps-backend/app/organization/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	f := &sub_s.OrganizationListFilter{
-		PageSize:        10,
-		LastID:          "",
+		Cursor:          primitive.NilObjectID,
+		PageSize:        6,
 		SortField:       "_id",
+		SortOrder:       1, // 1=ascending | -1=descending
 		ExcludeArchived: true,
+	}
+
+	// Here is where you extract url parameters.
+	query := r.URL.Query()
+
+	cursor := query.Get("cursor")
+	if cursor != "" {
+		cursor, err := primitive.ObjectIDFromHex(cursor)
+		if err != nil {
+			httperror.ResponseError(w, err)
+			return
+		}
+		f.Cursor = cursor
+	}
+
+	pageSize := query.Get("page_size")
+	if pageSize != "" {
+		pageSize, _ := strconv.ParseInt(pageSize, 10, 64)
+		if pageSize == 0 || pageSize > 250 {
+			pageSize = 250
+		}
+		f.PageSize = pageSize
 	}
 
 	m, err := h.Controller.ListByFilter(ctx, f)
@@ -38,9 +63,10 @@ func (h *Handler) ListAsSelectOptionByFilter(w http.ResponseWriter, r *http.Requ
 	ctx := r.Context()
 
 	f := &sub_s.OrganizationListFilter{
-		PageSize:        10,
-		LastID:          "",
+		Cursor:          primitive.NilObjectID,
+		PageSize:        6,
 		SortField:       "_id",
+		SortOrder:       1, // 1=ascending | -1=descending
 		ExcludeArchived: true,
 	}
 

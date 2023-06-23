@@ -3,6 +3,7 @@ package comicsub
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	sub_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
@@ -14,9 +15,10 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 
 	// Initialize the list filter with base results and then override them with the URL parameters.
 	f := &sub_s.ComicSubmissionListFilter{
-		PageSize:        10,
-		LastID:          "",
+		Cursor:          primitive.NilObjectID,
+		PageSize:        11,
 		SortField:       "_id",
+		SortOrder:       1, // 1=ascending | -1=descending
 		ExcludeArchived: true,
 	}
 
@@ -40,6 +42,25 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		f.UserID = userID
+	}
+
+	cursor := query.Get("cursor")
+	if cursor != "" {
+		cursor, err := primitive.ObjectIDFromHex(cursor)
+		if err != nil {
+			httperror.ResponseError(w, err)
+			return
+		}
+		f.Cursor = cursor
+	}
+
+	pageSize := query.Get("page_size")
+	if pageSize != "" {
+		pageSize, _ := strconv.ParseInt(pageSize, 10, 64)
+		if pageSize == 0 || pageSize > 250 {
+			pageSize = 250
+		}
+		f.PageSize = pageSize
 	}
 
 	// Fet

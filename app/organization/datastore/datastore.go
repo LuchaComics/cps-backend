@@ -47,23 +47,22 @@ type OrganizationComment struct {
 }
 
 type OrganizationListFilter struct {
-	PageSize        int64
-	LastID          string
-	SortField       string
+	// Pagination related.
+	Cursor    primitive.ObjectID
+	PageSize  int64
+	SortField string
+	SortOrder int8 // 1=ascending | -1=descending
+
+	// Filter related.
 	UserID          primitive.ObjectID
 	UserRole        int8
 	ExcludeArchived bool
-
-	// SortOrder string   `json:"sort_order"`
-	// SortField string   `json:"sort_field"`
-	// Offset    uint64   `json:"offset"`
-	// Limit     uint64   `json:"limit"`
-	// Statuss    []int8   `json:"statuss"`
-	// UUIDs     []string `json:"uuids"`
 }
 
 type OrganizationListResult struct {
-	Results []*Organization `json:"results"`
+	Results     []*Organization    `json:"results"`
+	NextCursor  primitive.ObjectID `json:"next_cursor"`
+	HasNextPage bool               `json:"has_next_page"`
 }
 
 type OrganizationAsSelectOption struct {
