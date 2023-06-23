@@ -2,8 +2,8 @@ package config
 
 import (
 	"log"
-
-	"github.com/joeshaw/envdecode"
+	"os"
+	"strconv"
 )
 
 type Conf struct {
@@ -16,52 +16,100 @@ type Conf struct {
 }
 
 type serverConf struct {
-	Port                         string `env:"CPS_BACKEND_PORT,required"`
-	IP                           string `env:"CPS_BACKEND_IP,required"`
-	HMACSecret                   []byte `env:"CPS_BACKEND_HMAC_SECRET,required"`
-	HasDebugging                 bool   `env:"CPS_BACKEND_HAS_DEBUGGING,default=true"`
-	InitialAdminEmail            string `env:"CPS_BACKEND_INITIAL_ADMIN_EMAIL,required"`
-	InitialAdminPassword         string `env:"CPS_BACKEND_INITIAL_ADMIN_PASSWORD,required"`
-	InitialAdminOrganizationName string `env:"CPS_BACKEND_INITIAL_ADMIN_ORG_NAME,required"`
-	DomainName                   string `env:"CPS_BACKEND_DOMAIN_NAME,required"`
+	Port                         string
+	IP                           string
+	HMACSecret                   []byte
+	HasDebugging                 bool
+	InitialAdminEmail            string
+	InitialAdminPassword         string
+	InitialAdminOrganizationName string
+	DomainName                   string
 }
 
 type dbConfig struct {
-	URI  string `env:"CPS_BACKEND_DB_URI,required"`
-	Name string `env:"CPS_BACKEND_DB_NAME,required"`
+	URI  string
+	Name string
 }
 
 type cacheConfig struct {
-	Host     string `env:"CPS_BACKEND_CACHE_HOST,required"`
-	Port     string `env:"CPS_BACKEND_CACHE_PORT,required"`
-	Password string `env:"CPS_BACKEND_CACHE_PASSWORD,required"`
+	Host     string
+	Port     string
+	Password string
 }
 
 type awsConfig struct {
-	AccessKey  string `env:"CPS_BACKEND_AWS_ACCESS_KEY,required"`
-	SecretKey  string `env:"CPS_BACKEND_AWS_SECRET_KEY,required"`
-	Endpoint   string `env:"CPS_BACKEND_AWS_ENDPOINT,required"`
-	Region     string `env:"CPS_BACKEND_AWS_REGION,required"`
-	BucketName string `env:"CPS_BACKEND_AWS_BUCKET_NAME,required"`
+	AccessKey  string
+	SecretKey  string
+	Endpoint   string
+	Region     string
+	BucketName string
 }
 
 type pdfBuilderConfig struct {
-	CBFFTemplatePath  string `env:"CPS_BACKEND_PDF_BUILDER_CBFF_TEMPLATE_FILE_PATH,required"`
-	PCTemplatePath    string `env:"CPS_BACKEND_PDF_BUILDER_PC_TEMPLATE_FILE_PATH,required"`
-	DataDirectoryPath string `env:"CPS_BACKEND_PDF_BUILDER_DATA_DIRECTORY_PATH,required"`
+	CBFFTemplatePath  string
+	PCTemplatePath    string
+	DataDirectoryPath string
 }
 
 type mailgunConfig struct {
-	APIKey      string `env:"CPS_BACKEND_MAILGUN_API_KEY,required"`
-	Domain      string `env:"CPS_BACKEND_MAILGUN_DOMAIN,required"`
-	APIBase     string `env:"CPS_BACKEND_MAILGUN_API_BASE,required"`
-	SenderEmail string `env:"CPS_BACKEND_MAILGUN_SENDER_EMAIL,required"`
+	APIKey      string
+	Domain      string
+	APIBase     string
+	SenderEmail string
 }
 
 func New() *Conf {
 	var c Conf
-	if err := envdecode.StrictDecode(&c); err != nil {
-		log.Fatalf("Failed to decode: %s", err)
-	}
+	c.AppServer.Port = getEnv("CPS_BACKEND_PORT", true)
+	c.AppServer.IP = getEnv("CPS_BACKEND_IP", true)
+	c.AppServer.HMACSecret = []byte(getEnv("CPS_BACKEND_HMAC_SECRET", true))
+	c.AppServer.HasDebugging = getEnvBool("CPS_BACKEND_HAS_DEBUGGING", true, true)
+	c.AppServer.InitialAdminEmail = getEnv("CPS_BACKEND_INITIAL_ADMIN_EMAIL", true)
+	c.AppServer.InitialAdminPassword = getEnv("CPS_BACKEND_INITIAL_ADMIN_PASSWORD", true)
+	c.AppServer.InitialAdminOrganizationName = getEnv("CPS_BACKEND_INITIAL_ADMIN_ORG_NAME", true)
+	c.AppServer.DomainName = getEnv("CPS_BACKEND_DOMAIN_NAME", true)
+
+	c.DB.URI = getEnv("CPS_BACKEND_DB_URI", true)
+	c.DB.Name = getEnv("CPS_BACKEND_DB_NAME", true)
+
+	c.Cache.Host = getEnv("CPS_BACKEND_CACHE_HOST", true)
+	c.Cache.Port = getEnv("CPS_BACKEND_CACHE_PORT", true)
+	c.Cache.Password = getEnv("CPS_BACKEND_CACHE_PASSWORD", true)
+
+	c.AWS.AccessKey = getEnv("CPS_BACKEND_AWS_ACCESS_KEY", true)
+	c.AWS.SecretKey = getEnv("CPS_BACKEND_AWS_SECRET_KEY", true)
+	c.AWS.Endpoint = getEnv("CPS_BACKEND_AWS_ENDPOINT", true)
+	c.AWS.Region = getEnv("CPS_BACKEND_AWS_REGION", true)
+	c.AWS.BucketName = getEnv("CPS_BACKEND_AWS_BUCKET_NAME", true)
+
+	c.PDFBuilder.CBFFTemplatePath = getEnv("CPS_BACKEND_PDF_BUILDER_CBFF_TEMPLATE_FILE_PATH", true)
+	c.PDFBuilder.PCTemplatePath = getEnv("CPS_BACKEND_PDF_BUILDER_PC_TEMPLATE_FILE_PATH", true)
+	c.PDFBuilder.DataDirectoryPath = getEnv("CPS_BACKEND_PDF_BUILDER_DATA_DIRECTORY_PATH", true)
+
+	c.Emailer.APIKey = getEnv("CPS_BACKEND_MAILGUN_API_KEY", true)
+	c.Emailer.Domain = getEnv("CPS_BACKEND_MAILGUN_DOMAIN", true)
+	c.Emailer.APIBase = getEnv("CPS_BACKEND_MAILGUN_API_BASE", true)
+	c.Emailer.SenderEmail = getEnv("CPS_BACKEND_MAILGUN_SENDER_EMAIL", true)
+
 	return &c
+}
+
+func getEnv(key string, required bool) string {
+	value := os.Getenv(key)
+	if required && value == "" {
+		log.Fatalf("Environment variable not found: %s", key)
+	}
+	return value
+}
+
+func getEnvBool(key string, required bool, defaultValue bool) bool {
+	valueStr := getEnv(key, required)
+	if valueStr == "" {
+		return defaultValue
+	}
+	value, err := strconv.ParseBool(valueStr)
+	if err != nil {
+		log.Fatalf("Invalid boolean value for environment variable %s", key)
+	}
+	return value
 }
