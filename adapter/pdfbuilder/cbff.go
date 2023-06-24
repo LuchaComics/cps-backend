@@ -151,6 +151,9 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*PDFBuilderRespon
 		} else {
 			pdf.Cell(0, 0, fmt.Sprintf("%v", int(r.IssueCoverYear)))
 		}
+	} else { // No cover date year.
+		pdf.SetXY(257, 47.5)
+		pdf.Cell(0, 0, "-")
 	}
 
 	// ROW 3
