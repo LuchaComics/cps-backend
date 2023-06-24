@@ -143,6 +143,9 @@ func (bdr *cbffBuilder) GeneratePDF(r *CBFFBuilderRequestDTO) (*PDFBuilderRespon
 	if r.IssueCoverMonth < 12 && r.IssueCoverMonth > 0 {
 		pdf.SetXY(238, 47.5)
 		pdf.Cell(0, 0, fmt.Sprintf("%v", time.Month(int(r.IssueCoverMonth))))
+	} else {
+		pdf.SetXY(238, 47.5)
+		pdf.Cell(0, 0, "-") // No cover year date.
 	}
 	if r.IssueCoverYear > 1 {
 		pdf.SetXY(257, 47.5)

@@ -199,6 +199,9 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 	if r.IssueCoverMonth < 12 && r.IssueCoverMonth > 0 {
 		pdf.SetXY(163, 325)
 		pdf.Cell(0, 0, fmt.Sprintf("%v", time.Month(int(r.IssueCoverMonth))))
+	} else {
+		pdf.SetXY(163, 325)
+		pdf.Cell(0, 0, "-") // No cover year date.
 	}
 	if r.IssueCoverYear > 1 {
 		pdf.SetXY(178, 325)
