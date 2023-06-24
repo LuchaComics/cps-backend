@@ -39,7 +39,6 @@ func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) 
 	if f.Phone != "" {
 		filter["phone"] = f.Phone
 	}
-
 	if f.ExcludeArchived {
 		filter["status"] = bson.M{"$ne": UserStatusArchived} // Do not list archived items! This code
 	}
@@ -47,7 +46,7 @@ func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) 
 	// Include additional filters for our cursor-based pagination pertaining to sorting and limit.
 	options := options.Find().
 		SetSort(bson.M{f.SortField: f.SortOrder}).
-		SetLimit(f.PageSize + 1)
+		SetLimit(f.PageSize)
 
 	// Include Full-text search
 	if f.SearchText != "" {
@@ -78,7 +77,7 @@ func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) 
 		}
 		results = append(results, document)
 		// Stop fetching documents if we have reached the desired page size
-		if int64(len(results)) == f.PageSize {
+		if int64(len(results)) >= f.PageSize {
 			hasNextPage = true
 			break
 		}
@@ -88,7 +87,7 @@ func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) 
 	nextCursor := primitive.NilObjectID
 	if int64(len(results)) == f.PageSize {
 		// Remove the extra document from the current page
-		results = results[:len(results)-1]
+		results = results[:len(results)]
 
 		// Get the last document's _id as the next cursor
 		nextCursor = results[len(results)-1].ID

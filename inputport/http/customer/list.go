@@ -15,7 +15,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 
 	f := &sub_s.UserListFilter{
 		Cursor:          primitive.NilObjectID,
-		PageSize:        11,
+		PageSize:        25,
 		SortField:       "_id",
 		SortOrder:       1, // 1=ascending | -1=descending
 		ExcludeArchived: true,

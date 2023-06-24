@@ -42,6 +42,7 @@ services:
       - '27017:27017'
     volumes:
       - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
     restart: unless-stopped
     logging:
       driver: none
@@ -105,6 +106,8 @@ volumes:
   app_data:
     external: true
   mongodb_data:
+    external: true
+  mongodb_config:
     external: true
   cache_data:
     external: true

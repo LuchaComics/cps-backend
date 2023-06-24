@@ -31,7 +31,7 @@ func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *Organiza
 	// Include additional filters for our cursor-based pagination pertaining to sorting and limit.
 	options := options.Find().
 		SetSort(bson.M{f.SortField: f.SortOrder}).
-		SetLimit(f.PageSize + 1)
+		SetLimit(f.PageSize)
 
 	// Execute the query
 	cursor, err := impl.Collection.Find(ctx, filter, options)
@@ -55,7 +55,7 @@ func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *Organiza
 		}
 		results = append(results, document)
 		// Stop fetching documents if we have reached the desired page size
-		if int64(len(results)) == f.PageSize {
+		if int64(len(results)) >= f.PageSize {
 			hasNextPage = true
 			break
 		}
@@ -65,7 +65,7 @@ func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *Organiza
 	nextCursor := primitive.NilObjectID
 	if int64(len(results)) == f.PageSize {
 		// Remove the extra document from the current page
-		results = results[:len(results)-1]
+		results = results[:len(results)]
 
 		// Get the last document's _id as the next cursor
 		nextCursor = results[len(results)-1].ID

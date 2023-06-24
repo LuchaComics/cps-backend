@@ -16,7 +16,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	// Initialize the list filter with base results and then override them with the URL parameters.
 	f := &sub_s.ComicSubmissionListFilter{
 		Cursor:          primitive.NilObjectID,
-		PageSize:        11,
+		PageSize:        25,
 		SortField:       "_id",
 		SortOrder:       1, // 1=ascending | -1=descending
 		ExcludeArchived: true,
