@@ -3,16 +3,18 @@ package comicsub
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 
+	sub_c "github.com/LuchaComics/cps-backend/app/comicsub/controller"
 	sub_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*sub_s.ComicSubmission, error) {
+func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*sub_c.ComicSubmissionUpdateRequestIDO, error) {
 	// Initialize our array which will store all the results from the remote server.
-	var requestData sub_s.ComicSubmission
+	var requestData sub_c.ComicSubmissionUpdateRequestIDO
 
 	defer r.Body.Close()
 
@@ -20,6 +22,7 @@ func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*sub_s.ComicS
 	// to send a `400 Bad Request` errror message back to the client,
 	err := json.NewDecoder(r.Body).Decode(&requestData) // [1]
 	if err != nil {
+		log.Println(err)
 		return nil, httperror.NewForSingleField(http.StatusBadRequest, "non_field_error", "payload structure is wrong")
 	}
 
@@ -31,7 +34,7 @@ func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*sub_s.ComicS
 	return &requestData, nil
 }
 
-func ValidateUpdateRequest(dirtyData *sub_s.ComicSubmission) error {
+func ValidateUpdateRequest(dirtyData *sub_c.ComicSubmissionUpdateRequestIDO) error {
 	e := make(map[string]string)
 
 	// if dirtyData.ServiceType == 0 {
@@ -126,23 +129,25 @@ func ValidateUpdateRequest(dirtyData *sub_s.ComicSubmission) error {
 func (h *Handler) UpdateByID(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := r.Context()
 
-	data, err := UnmarshalUpdateRequest(ctx, r)
+	d, err := UnmarshalUpdateRequest(ctx, r)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return
 	}
 
-	data.ID, err = primitive.ObjectIDFromHex(id)
+	d.ID, err = primitive.ObjectIDFromHex(id)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return
 	}
 
-	submission, err := h.Controller.UpdateByID(ctx, data)
+	submission, err := h.Controller.UpdateByID(ctx, d)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return
 	}
+
+	log.Println("--->", submission)
 
 	MarshalUpdateResponse(submission, w)
 }

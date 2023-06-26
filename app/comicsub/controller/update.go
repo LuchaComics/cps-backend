@@ -7,94 +7,91 @@ import (
 	go_os "os"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/exp/slog"
+
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	domain "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	s_d "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	submission_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	u_d "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config/constants"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"golang.org/x/exp/slog"
+	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func (c *ComicSubmissionControllerImpl) CreateComment(ctx context.Context, submissionID primitive.ObjectID, content string) (*submission_s.ComicSubmission, error) {
-	// Fetch the original submission.
-	s, err := c.ComicSubmissionStorer.GetByID(ctx, submissionID)
-	if err != nil {
-		c.Logger.Error("database get by id error", slog.Any("error", err))
-		return nil, err
-	}
-	if s == nil {
-		return nil, nil
-	}
-
-	// Create our comment.
-	comment := &submission_s.SubmissionComment{
-		ID:               primitive.NewObjectID(),
-		Content:          content,
-		OrganizationID:   ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID),
-		CreatedByUserID:  ctx.Value(constants.SessionUserID).(primitive.ObjectID),
-		CreatedByName:    ctx.Value(constants.SessionUserName).(string),
-		CreatedAt:        time.Now(),
-		ModifiedByUserID: ctx.Value(constants.SessionUserID).(primitive.ObjectID),
-		ModifiedByName:   ctx.Value(constants.SessionUserName).(string),
-		ModifiedAt:       time.Now(),
-	}
-
-	// Add our comment to the comments.
-	s.ModifiedByUserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
-	s.ModifiedAt = time.Now()
-	s.Comments = append(s.Comments, comment)
-
-	// Save to the database the modified submission.
-	if err := c.ComicSubmissionStorer.UpdateByID(ctx, s); err != nil {
-		c.Logger.Error("database update by id error", slog.Any("error", err))
-		return nil, err
-	}
-
-	return s, nil
+type ComicSubmissionUpdateRequestIDO struct {
+	ID                                 primitive.ObjectID `bson:"id,omitempty" json:"id,omitempty"`
+	OrganizationID                     primitive.ObjectID `bson:"organization_id,omitempty" json:"organization_id,omitempty"`
+	ServiceType                        int8               `bson:"service_type" json:"service_type"`
+	SubmissionDate                     time.Time          `bson:"submission_date" json:"submission_date"`
+	SeriesTitle                        string             `bson:"series_title" json:"series_title"`
+	IssueVol                           string             `bson:"issue_vol" json:"issue_vol"`
+	IssueNo                            string             `bson:"issue_no" json:"issue_no"`
+	IssueCoverYear                     int64              `bson:"issue_cover_year" json:"issue_cover_year"`
+	IssueCoverMonth                    int8               `bson:"issue_cover_month" json:"issue_cover_month"`
+	PublisherName                      int8               `bson:"publisher_name" json:"publisher_name"`
+	PublisherNameOther                 string             `bson:"publisher_name_other" json:"publisher_name_other"`
+	SpecialNotes                       string             `bson:"special_notes" json:"special_notes"`
+	GradingNotes                       string             `bson:"grading_notes" json:"grading_notes"`
+	CreasesFinding                     string             `bson:"creases_finding" json:"creases_finding"`
+	TearsFinding                       string             `bson:"tears_finding" json:"tears_finding"`
+	MissingPartsFinding                string             `bson:"missing_parts_finding" json:"missing_parts_finding"`
+	StainsFinding                      string             `bson:"stains_finding" json:"stains_finding"`
+	DistortionFinding                  string             `bson:"distortion_finding" json:"distortion_finding"`
+	PaperQualityFinding                string             `bson:"paper_quality_finding" json:"paper_quality_finding"`
+	SpineFinding                       string             `bson:"spine_finding" json:"spine_finding"`
+	CoverFinding                       string             `bson:"cover_finding" json:"cover_finding"`
+	ShowsSignsOfTamperingOrRestoration int8               `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
+	GradingScale                       int8               `bson:"grading_scale" json:"grading_scale"`
+	OverallLetterGrade                 string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
+	OverallNumberGrade                 float64            `bson:"overall_number_grade" json:"overall_number_grade"`
+	CpsPercentageGrade                 float64            `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
+	IsOverallLetterGradeNearMintPlus   bool               `bson:"is_overall_letter_grade_near_mint_plus" json:"is_overall_letter_grade_near_mint_plus"`
+	CollectibleType                    int8               `bson:"collectible_type" json:"collectible_type"`
+	Status                             int8               `bson:"status" json:"status"`
 }
 
-func (c *ComicSubmissionControllerImpl) SetUser(ctx context.Context, submissionID primitive.ObjectID, userID primitive.ObjectID) (*submission_s.ComicSubmission, error) {
-	// Fetch the original submission.
-	os, err := c.ComicSubmissionStorer.GetByID(ctx, submissionID)
-	if err != nil {
-		c.Logger.Error("database get by id error", slog.Any("error", err))
-		return nil, err
+func comicSubmissionFromModify(req *ComicSubmissionUpdateRequestIDO) *s_d.ComicSubmission {
+	return &s_d.ComicSubmission{
+		ID:                                 req.ID,
+		OrganizationID:                     req.OrganizationID,
+		ServiceType:                        req.ServiceType,
+		SubmissionDate:                     req.SubmissionDate,
+		SeriesTitle:                        req.SeriesTitle,
+		IssueVol:                           req.IssueVol,
+		IssueNo:                            req.IssueNo,
+		IssueCoverYear:                     req.IssueCoverYear,
+		IssueCoverMonth:                    req.IssueCoverMonth,
+		PublisherName:                      req.PublisherName,
+		PublisherNameOther:                 req.PublisherNameOther,
+		SpecialNotes:                       req.SpecialNotes,
+		GradingNotes:                       req.GradingNotes,
+		CreasesFinding:                     req.CreasesFinding,
+		TearsFinding:                       req.TearsFinding,
+		MissingPartsFinding:                req.MissingPartsFinding,
+		StainsFinding:                      req.StainsFinding,
+		DistortionFinding:                  req.DistortionFinding,
+		PaperQualityFinding:                req.PaperQualityFinding,
+		SpineFinding:                       req.SpineFinding,
+		CoverFinding:                       req.CoverFinding,
+		ShowsSignsOfTamperingOrRestoration: req.ShowsSignsOfTamperingOrRestoration,
+		GradingScale:                       req.GradingScale,
+		OverallLetterGrade:                 req.OverallLetterGrade,
+		OverallNumberGrade:                 req.OverallNumberGrade,
+		CpsPercentageGrade:                 req.CpsPercentageGrade,
+		IsOverallLetterGradeNearMintPlus:   req.IsOverallLetterGradeNearMintPlus,
+		CollectibleType:                    req.CollectibleType,
+		Status:                             req.Status,
 	}
-	if os == nil {
-		return nil, nil
-	}
-
-	// Fetch the original submission.
-	cust, err := c.UserStorer.GetByID(ctx, userID)
-	if err != nil {
-		c.Logger.Error("database get by id error", slog.Any("error", err))
-		return nil, err
-	}
-	if os == nil {
-		return nil, nil
-	}
-
-	// Modify our original submission.
-	os.ModifiedAt = time.Now()
-	os.UserID = userID
-	os.User = userToSubmissionUserCopy(cust)
-
-	// Save to the database the modified submission.
-	if err := c.ComicSubmissionStorer.UpdateByID(ctx, os); err != nil {
-		c.Logger.Error("database update by id error", slog.Any("error", err))
-		return nil, err
-	}
-
-	return os, nil
 }
 
-func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, ns *domain.ComicSubmission) (*domain.ComicSubmission, error) {
+func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *ComicSubmissionUpdateRequestIDO) (*domain.ComicSubmission, error) {
 	// DEVELOPERS NOTE:
 	// Every submission creation is dependent on the `role` of the logged in
 	// user in our system so we need to extract it right away.
 	userRole := ctx.Value(constants.SessionUserRole).(int8)
+
+	ns := comicSubmissionFromModify(req) // Convert into our data-structure.
 
 	//
 	// Fetch submission.
@@ -107,7 +104,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, ns *doma
 		return nil, err
 	}
 	if os == nil {
-		return nil, nil
+		c.Logger.Warn("submission does not exist error", slog.Any("id", req.ID))
+		return nil, httperror.NewForBadRequestWithSingleField("id", fmt.Sprintf("submission does not exist for ID: %v", req.ID))
 	}
 
 	//
@@ -332,6 +330,79 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, ns *doma
 	if err := go_os.Remove(pdfResponse.FilePath); err != nil {
 		c.Logger.Warn("removing local file error", slog.Any("error", err))
 		// Just continue even if we get an error...
+	}
+
+	return os, nil
+}
+
+func (c *ComicSubmissionControllerImpl) CreateComment(ctx context.Context, submissionID primitive.ObjectID, content string) (*submission_s.ComicSubmission, error) {
+	// Fetch the original submission.
+	s, err := c.ComicSubmissionStorer.GetByID(ctx, submissionID)
+	if err != nil {
+		c.Logger.Error("database get by id error", slog.Any("error", err))
+		return nil, err
+	}
+	if s == nil {
+		return nil, nil
+	}
+
+	// Create our comment.
+	comment := &submission_s.SubmissionComment{
+		ID:               primitive.NewObjectID(),
+		Content:          content,
+		OrganizationID:   ctx.Value(constants.SessionUserOrganizationID).(primitive.ObjectID),
+		CreatedByUserID:  ctx.Value(constants.SessionUserID).(primitive.ObjectID),
+		CreatedByName:    ctx.Value(constants.SessionUserName).(string),
+		CreatedAt:        time.Now(),
+		ModifiedByUserID: ctx.Value(constants.SessionUserID).(primitive.ObjectID),
+		ModifiedByName:   ctx.Value(constants.SessionUserName).(string),
+		ModifiedAt:       time.Now(),
+	}
+
+	// Add our comment to the comments.
+	s.ModifiedByUserID = ctx.Value(constants.SessionUserID).(primitive.ObjectID)
+	s.ModifiedAt = time.Now()
+	s.Comments = append(s.Comments, comment)
+
+	// Save to the database the modified submission.
+	if err := c.ComicSubmissionStorer.UpdateByID(ctx, s); err != nil {
+		c.Logger.Error("database update by id error", slog.Any("error", err))
+		return nil, err
+	}
+
+	return s, nil
+}
+
+func (c *ComicSubmissionControllerImpl) SetUser(ctx context.Context, submissionID primitive.ObjectID, userID primitive.ObjectID) (*submission_s.ComicSubmission, error) {
+	// Fetch the original submission.
+	os, err := c.ComicSubmissionStorer.GetByID(ctx, submissionID)
+	if err != nil {
+		c.Logger.Error("database get by id error", slog.Any("error", err))
+		return nil, err
+	}
+	if os == nil {
+		return nil, nil
+	}
+
+	// Fetch the original submission.
+	cust, err := c.UserStorer.GetByID(ctx, userID)
+	if err != nil {
+		c.Logger.Error("database get by id error", slog.Any("error", err))
+		return nil, err
+	}
+	if os == nil {
+		return nil, nil
+	}
+
+	// Modify our original submission.
+	os.ModifiedAt = time.Now()
+	os.UserID = userID
+	os.User = userToSubmissionUserCopy(cust)
+
+	// Save to the database the modified submission.
+	if err := c.ComicSubmissionStorer.UpdateByID(ctx, os); err != nil {
+		c.Logger.Error("database update by id error", slog.Any("error", err))
+		return nil, err
 	}
 
 	return os, nil

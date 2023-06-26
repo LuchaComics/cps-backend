@@ -36,14 +36,14 @@ const (
 
 type ComicSubmission struct {
 	ID                                 primitive.ObjectID `bson:"_id" json:"id"`
-	OrganizationID                     primitive.ObjectID `bson:"organization_id" json:"organization_id"`
+	OrganizationID                     primitive.ObjectID `bson:"organization_id,omitempty" json:"organization_id,omitempty"`
 	OrganizationName                   string             `bson:"organization_name" json:"organization_name"`
 	CPSRN                              string             `bson:"cpsrn" json:"cpsrn"`
 	CreatedAt                          time.Time          `bson:"created_at,omitempty" json:"created_at,omitempty"`
-	CreatedByUserID                    primitive.ObjectID `bson:"created_by_user_id" json:"created_by_user_id"`
+	CreatedByUserID                    primitive.ObjectID `bson:"created_by_user_id,omitempty" json:"created_by_user_id,omitempty"`
 	CreatedByUserRole                  int8               `bson:"created_by_user_role" json:"created_by_user_role"`
 	ModifiedAt                         time.Time          `bson:"modified_at,omitempty" json:"modified_at,omitempty"`
-	ModifiedByUserID                   primitive.ObjectID `bson:"modified_by_user_id" json:"modified_by_user_id"`
+	ModifiedByUserID                   primitive.ObjectID `bson:"modified_by_user_id,omitempty" json:"modified_by_user_id,omitempty"`
 	ModifiedByUserRole                 int8               `bson:"modified_by_user_role" json:"modified_by_user_role"`
 	ServiceType                        int8               `bson:"service_type" json:"service_type"`
 	Status                             int8               `bson:"status" json:"status"`
@@ -72,8 +72,8 @@ type ComicSubmission struct {
 	OverallNumberGrade                 float64            `bson:"overall_number_grade" json:"overall_number_grade"`
 	CpsPercentageGrade                 float64            `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
 	IsOverallLetterGradeNearMintPlus   bool               `bson:"is_overall_letter_grade_near_mint_plus" json:"is_overall_letter_grade_near_mint_plus"`
-	UserID                             primitive.ObjectID `bson:"user_id" json:"user_id"` // This is the customer this submission belongs to.
-	User                               *SubmissionUser    `bson:"user" json:"user"`       // This is the customer this submission belongs to.
+	UserID                             primitive.ObjectID `bson:"user_id,omitempty" json:"user_id,omitempty"` // This is the customer this submission belongs to.
+	User                               *SubmissionUser    `bson:"user" json:"user"`                           // This is the customer this submission belongs to.
 	UserFirstName                      string             `bson:"user_first_name" json:"user_first_name"`
 	UserLastName                       string             `bson:"user_last_name" json:"user_last_name"`
 	UserSignature                      string             `bson:"user_signature" json:"user_signature"`

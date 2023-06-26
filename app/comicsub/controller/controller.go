@@ -21,10 +21,10 @@ import (
 
 // ComicSubmissionController Interface for submission business logic controller.
 type ComicSubmissionController interface {
-	Create(ctx context.Context, m *submission_s.ComicSubmission) (*submission_s.ComicSubmission, error)
+	Create(ctx context.Context, req *ComicSubmissionCreateRequestIDO) (*submission_s.ComicSubmission, error)
 	GetByID(ctx context.Context, id primitive.ObjectID) (*submission_s.ComicSubmission, error)
 	GetByCPSRN(ctx context.Context, cpsrn string) (*submission_s.ComicSubmission, error)
-	UpdateByID(ctx context.Context, m *submission_s.ComicSubmission) (*submission_s.ComicSubmission, error)
+	UpdateByID(ctx context.Context, req *ComicSubmissionUpdateRequestIDO) (*submission_s.ComicSubmission, error)
 	ListByFilter(ctx context.Context, f *submission_s.ComicSubmissionListFilter) (*submission_s.ComicSubmissionListResult, error)
 	ListAsSelectOptionByFilter(ctx context.Context, f *submission_s.ComicSubmissionListFilter) ([]*submission_s.ComicSubmissionAsSelectOption, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error

@@ -31,6 +31,7 @@ type GatewayController interface {
 	PasswordReset(ctx context.Context, code string, password string) error
 	Profile(ctx context.Context) (*user_s.User, error)
 	ProfileUpdate(ctx context.Context, nu *user_s.User) error
+	ProfileChangePassword(ctx context.Context, req *ProfileChangePasswordRequestIDO) error
 	//TODO: Add more...
 }
 

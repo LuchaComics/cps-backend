@@ -17,15 +17,81 @@ import (
 	"github.com/LuchaComics/cps-backend/config/constants"
 )
 
-func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, m *s_d.ComicSubmission) (*s_d.ComicSubmission, error) {
+type ComicSubmissionCreateRequestIDO struct {
+	OrganizationID                     primitive.ObjectID `bson:"organization_id,omitempty" json:"organization_id,omitempty"`
+	ServiceType                        int8               `bson:"service_type" json:"service_type"`
+	SubmissionDate                     time.Time          `bson:"submission_date" json:"submission_date"`
+	SeriesTitle                        string             `bson:"series_title" json:"series_title"`
+	IssueVol                           string             `bson:"issue_vol" json:"issue_vol"`
+	IssueNo                            string             `bson:"issue_no" json:"issue_no"`
+	IssueCoverYear                     int64              `bson:"issue_cover_year" json:"issue_cover_year"`
+	IssueCoverMonth                    int8               `bson:"issue_cover_month" json:"issue_cover_month"`
+	PublisherName                      int8               `bson:"publisher_name" json:"publisher_name"`
+	PublisherNameOther                 string             `bson:"publisher_name_other" json:"publisher_name_other"`
+	SpecialNotes                       string             `bson:"special_notes" json:"special_notes"`
+	GradingNotes                       string             `bson:"grading_notes" json:"grading_notes"`
+	CreasesFinding                     string             `bson:"creases_finding" json:"creases_finding"`
+	TearsFinding                       string             `bson:"tears_finding" json:"tears_finding"`
+	MissingPartsFinding                string             `bson:"missing_parts_finding" json:"missing_parts_finding"`
+	StainsFinding                      string             `bson:"stains_finding" json:"stains_finding"`
+	DistortionFinding                  string             `bson:"distortion_finding" json:"distortion_finding"`
+	PaperQualityFinding                string             `bson:"paper_quality_finding" json:"paper_quality_finding"`
+	SpineFinding                       string             `bson:"spine_finding" json:"spine_finding"`
+	CoverFinding                       string             `bson:"cover_finding" json:"cover_finding"`
+	ShowsSignsOfTamperingOrRestoration int8               `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
+	GradingScale                       int8               `bson:"grading_scale" json:"grading_scale"`
+	OverallLetterGrade                 string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
+	OverallNumberGrade                 float64            `bson:"overall_number_grade" json:"overall_number_grade"`
+	CpsPercentageGrade                 float64            `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
+	IsOverallLetterGradeNearMintPlus   bool               `bson:"is_overall_letter_grade_near_mint_plus" json:"is_overall_letter_grade_near_mint_plus"`
+	CollectibleType                    int8               `bson:"collectible_type" json:"collectible_type"`
+	Status                             int8               `bson:"status" json:"status"`
+}
+
+func comicSubmissionFromCreate(req *ComicSubmissionCreateRequestIDO) *s_d.ComicSubmission {
+	return &s_d.ComicSubmission{
+		OrganizationID:                     req.OrganizationID,
+		ServiceType:                        req.ServiceType,
+		SubmissionDate:                     req.SubmissionDate,
+		SeriesTitle:                        req.SeriesTitle,
+		IssueVol:                           req.IssueVol,
+		IssueNo:                            req.IssueNo,
+		IssueCoverYear:                     req.IssueCoverYear,
+		IssueCoverMonth:                    req.IssueCoverMonth,
+		PublisherName:                      req.PublisherName,
+		PublisherNameOther:                 req.PublisherNameOther,
+		SpecialNotes:                       req.SpecialNotes,
+		GradingNotes:                       req.GradingNotes,
+		CreasesFinding:                     req.CreasesFinding,
+		TearsFinding:                       req.TearsFinding,
+		MissingPartsFinding:                req.MissingPartsFinding,
+		StainsFinding:                      req.StainsFinding,
+		DistortionFinding:                  req.DistortionFinding,
+		PaperQualityFinding:                req.PaperQualityFinding,
+		SpineFinding:                       req.SpineFinding,
+		CoverFinding:                       req.CoverFinding,
+		ShowsSignsOfTamperingOrRestoration: req.ShowsSignsOfTamperingOrRestoration,
+		GradingScale:                       req.GradingScale,
+		OverallLetterGrade:                 req.OverallLetterGrade,
+		OverallNumberGrade:                 req.OverallNumberGrade,
+		CpsPercentageGrade:                 req.CpsPercentageGrade,
+		IsOverallLetterGradeNearMintPlus:   req.IsOverallLetterGradeNearMintPlus,
+		CollectibleType:                    req.CollectibleType,
+		Status:                             req.Status,
+	}
+}
+
+func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSubmissionCreateRequestIDO) (*s_d.ComicSubmission, error) {
 	// DEVELOPERS NOTE:
 	// Every submission creation is dependent on the `role` of the logged in
 	// user in our system so we need to extract it right away.
 	userRole, ok := ctx.Value(constants.SessionUserRole).(int8)
 	if !ok {
 		c.Logger.Error("user role not extracted from session")
-		return nil, fmt.Errorf("user role not extracted from session for submission id: %v", m.ID)
+		return nil, fmt.Errorf("user role not extracted from session for submission with user role: %v", userRole)
 	}
+
+	m := comicSubmissionFromCreate(req) // Convert into our data-structure.
 
 	// DEVELOPERS NOTE:
 	// Every submission needs to have a unique `CPS Registry Number` (CPRN)

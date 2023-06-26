@@ -6,13 +6,14 @@ import (
 	"log"
 	"net/http"
 
+	sub_c "github.com/LuchaComics/cps-backend/app/comicsub/controller"
 	sub_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
 )
 
-func UnmarshalCreateRequest(ctx context.Context, r *http.Request) (*sub_s.ComicSubmission, error) {
+func UnmarshalCreateRequest(ctx context.Context, r *http.Request) (*sub_c.ComicSubmissionCreateRequestIDO, error) {
 	// Initialize our array which will store all the results from the remote server.
-	var requestData sub_s.ComicSubmission
+	var requestData sub_c.ComicSubmissionCreateRequestIDO
 
 	defer r.Body.Close()
 
@@ -31,7 +32,7 @@ func UnmarshalCreateRequest(ctx context.Context, r *http.Request) (*sub_s.ComicS
 	return &requestData, nil
 }
 
-func ValidateCreateRequest(dirtyData *sub_s.ComicSubmission) error {
+func ValidateCreateRequest(dirtyData *sub_c.ComicSubmissionCreateRequestIDO) error {
 	e := make(map[string]string)
 
 	// if dirtyData.ServiceType == 0 {
@@ -136,13 +137,13 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err = h.Controller.Create(ctx, data)
+	res, err := h.Controller.Create(ctx, data)
 	if err != nil {
 		httperror.ResponseError(w, err)
 		return
 	}
 
-	MarshalCreateResponse(data, w)
+	MarshalCreateResponse(res, w)
 }
 
 func MarshalCreateResponse(res *sub_s.ComicSubmission, w http.ResponseWriter) {
