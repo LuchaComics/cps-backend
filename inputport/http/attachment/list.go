@@ -36,7 +36,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ownershipID := query.Get("ownership_id")
-	if cursor != "" {
+	if ownershipID != "" {
 		ownershipID, err := primitive.ObjectIDFromHex(ownershipID)
 		if err != nil {
 			httperror.ResponseError(w, err)

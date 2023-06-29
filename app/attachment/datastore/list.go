@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/exp/slog"
 )
 
 func (impl AttachmentStorerImpl) ListByFilter(ctx context.Context, f *AttachmentListFilter) (*AttachmentListResult, error) {
@@ -30,6 +31,16 @@ func (impl AttachmentStorerImpl) ListByFilter(ctx context.Context, f *Attachment
 	if f.ExcludeArchived {
 		filter["status"] = bson.M{"$ne": StatusArchived} // Do not list archived items! This code
 	}
+
+	impl.Logger.Debug("fetching attachments list",
+		slog.Any("Cursor", f.Cursor),
+		slog.Int64("PageSize", f.PageSize),
+		slog.String("SortField", f.SortField),
+		slog.Any("SortOrder", f.SortOrder),
+		slog.Any("OrganizationID", f.OrganizationID),
+		slog.Any("OwnershipID", f.OwnershipID),
+		slog.Any("ExcludeArchived", f.ExcludeArchived),
+	)
 
 	// Include additional filters for our cursor-based pagination pertaining to sorting and limit.
 	options := options.Find().
