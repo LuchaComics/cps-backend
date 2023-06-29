@@ -24,6 +24,7 @@ type AttachmentController interface {
 	ListByFilter(ctx context.Context, f *domain.AttachmentListFilter) (*domain.AttachmentListResult, error)
 	ListAsSelectOptionByFilter(ctx context.Context, f *domain.AttachmentListFilter) ([]*domain.AttachmentAsSelectOption, error)
 	DeleteByID(ctx context.Context, id primitive.ObjectID) error
+	PermanentlyDeleteByID(ctx context.Context, id primitive.ObjectID) error
 }
 
 type AttachmentControllerImpl struct {
