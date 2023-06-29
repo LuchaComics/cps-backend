@@ -87,13 +87,13 @@ func ValidateUpdateRequest(dirtyData *sub_c.ComicSubmissionUpdateRequestIDO) err
 	if dirtyData.GradingScale <= 0 || dirtyData.GradingScale > 3 {
 		e["grading_scale"] = "missing choice"
 	} else {
-		if dirtyData.OverallLetterGrade == "" && dirtyData.GradingScale == sub_s.LetterGradeScale {
+		if dirtyData.OverallLetterGrade == "" && dirtyData.GradingScale == sub_s.GradingScaleLetter {
 			e["overall_letter_grade"] = "missing value"
 		}
-		if dirtyData.OverallNumberGrade <= 0 && dirtyData.OverallNumberGrade > 10 && dirtyData.GradingScale == sub_s.NumberGradeScale {
+		if dirtyData.OverallNumberGrade <= 0 && dirtyData.OverallNumberGrade > 10 && dirtyData.GradingScale == sub_s.GradingScaleNumber {
 			e["overall_number_grade"] = "missing value"
 		}
-		if dirtyData.CpsPercentageGrade < 5 && dirtyData.CpsPercentageGrade > 100 && dirtyData.GradingScale == sub_s.CPSPercentageGradingScale {
+		if dirtyData.CpsPercentageGrade < 5 && dirtyData.CpsPercentageGrade > 100 && dirtyData.GradingScale == sub_s.GradingScaleCPSPercentage {
 			e["cps_percentage_grade"] = "missing value"
 		}
 	}

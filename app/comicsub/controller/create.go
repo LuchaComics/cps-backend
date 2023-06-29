@@ -30,6 +30,7 @@ type ComicSubmissionCreateRequestIDO struct {
 	PublisherNameOther                 string             `bson:"publisher_name_other" json:"publisher_name_other"`
 	SpecialNotes                       string             `bson:"special_notes" json:"special_notes"`
 	GradingNotes                       string             `bson:"grading_notes" json:"grading_notes"`
+	IsCpsIndieMintGem                  bool               `bson:"is_cps_indie_mint_gem" json:"is_cps_indie_mint_gem"`
 	CreasesFinding                     string             `bson:"creases_finding" json:"creases_finding"`
 	TearsFinding                       string             `bson:"tears_finding" json:"tears_finding"`
 	MissingPartsFinding                string             `bson:"missing_parts_finding" json:"missing_parts_finding"`
@@ -62,6 +63,7 @@ func comicSubmissionFromCreate(req *ComicSubmissionCreateRequestIDO) *s_d.ComicS
 		PublisherNameOther:                 req.PublisherNameOther,
 		SpecialNotes:                       req.SpecialNotes,
 		GradingNotes:                       req.GradingNotes,
+		IsCpsIndieMintGem:                  req.IsCpsIndieMintGem,
 		CreasesFinding:                     req.CreasesFinding,
 		TearsFinding:                       req.TearsFinding,
 		MissingPartsFinding:                req.MissingPartsFinding,

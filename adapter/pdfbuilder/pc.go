@@ -45,6 +45,7 @@ type PCBuilderRequestDTO struct {
 	GradingScale                       int8      `bson:"grading_scale" json:"grading_scale"`
 	OverallLetterGrade                 string    `bson:"overall_letter_grade" json:"overall_letter_grade"`
 	IsOverallLetterGradeNearMintPlus   bool      `bson:"is_overall_letter_grade_near_mint_plus" json:"is_overall_letter_grade_near_mint_plus"`
+	IsCpsIndieMintGem                  bool      `bson:"is_cps_indie_mint_gem" json:"is_cps_indie_mint_gem"`
 	OverallNumberGrade                 float64   `bson:"overall_number_grade" json:"overall_number_grade"`
 	CpsPercentageGrade                 float64   `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
 	UserFirstName                      string    `bson:"user_first_name" json:"user_first_name"`
@@ -128,7 +129,7 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 
 	// ROW 10 - Grading
 	switch r.GradingScale {
-	case s_d.LetterGradeScale:
+	case s_d.GradingScaleLetter:
 		pdf.SetXY(246, 30)
 		pdf.Cell(0, 0, strings.ToUpper(r.OverallLetterGrade))
 
@@ -139,10 +140,10 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 			pdf.Cell(0, 0, "+")
 			pdf.SetFont("Helvetica", "B", 40) // Resume the previous font.
 		}
-	case s_d.NumberGradeScale:
+	case s_d.GradingScaleNumber:
 		pdf.SetXY(243, 30)
 		pdf.Cell(0, 0, fmt.Sprintf("%v", r.OverallNumberGrade))
-	case s_d.CPSPercentageGradingScale:
+	case s_d.GradingScaleCPSPercentage:
 		pdf.SetXY(243, 30)
 		pdf.Cell(0, 0, fmt.Sprintf("%v%%", r.CpsPercentageGrade))
 	}
@@ -454,7 +455,7 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 
 	// ROW 10 - Grading
 	switch r.GradingScale {
-	case s_d.LetterGradeScale:
+	case s_d.GradingScaleLetter:
 		pdf.SetXY(117, 388)
 		pdf.Cell(0, 0, strings.ToUpper(r.OverallLetterGrade))
 
@@ -465,10 +466,10 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 			pdf.Cell(0, 0, "+")
 			pdf.SetFont("Helvetica", "B", 40) // Resume the previous font.
 		}
-	case s_d.NumberGradeScale:
+	case s_d.GradingScaleNumber:
 		pdf.SetXY(117, 388)
 		pdf.Cell(0, 0, fmt.Sprintf("%v", r.OverallNumberGrade))
-	case s_d.CPSPercentageGradingScale:
+	case s_d.GradingScaleCPSPercentage:
 		pdf.SetXY(117, 388)
 		pdf.Cell(0, 0, fmt.Sprintf("%v%%", r.CpsPercentageGrade))
 	}

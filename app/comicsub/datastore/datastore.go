@@ -19,18 +19,18 @@ const (
 	ServiceTypePreScreening                       = 1
 	ServiceTypePedigree                           = 2
 	ServiceTypeCPSCapsuleYougrade                 = 3
-	PoorFinding                                   = 1
-	FairFinding                                   = 2
-	GoodFinding                                   = 3
-	VeryGoodFinding                               = 4
-	FineFinding                                   = 5
-	VeryFineFinding                               = 6
-	NearMintFinding                               = 7
+	FindingPoor                                   = 1
+	FindingFair                                   = 2
+	FindingGood                                   = 3
+	FindingVeryGood                               = 4
+	FindingFine                                   = 5
+	FindingVeryFine                               = 6
+	FindingNearMint                               = 7
 	YesItShowsSignsOfTamperingOrRestoration       = 1
 	NoItDoesNotShowsSignsOfTamperingOrRestoration = 2
-	LetterGradeScale                              = 1
-	NumberGradeScale                              = 2
-	CPSPercentageGradingScale                     = 3
+	GradingScaleLetter                            = 1
+	GradingScaleNumber                            = 2
+	GradingScaleCPSPercentage                     = 3
 	CollectibleTypeGeneric                        = 1
 )
 
@@ -72,6 +72,7 @@ type ComicSubmission struct {
 	OverallNumberGrade                 float64            `bson:"overall_number_grade" json:"overall_number_grade"`
 	CpsPercentageGrade                 float64            `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
 	IsOverallLetterGradeNearMintPlus   bool               `bson:"is_overall_letter_grade_near_mint_plus" json:"is_overall_letter_grade_near_mint_plus"`
+	IsCpsIndieMintGem                  bool               `bson:"is_cps_indie_mint_gem" json:"is_cps_indie_mint_gem"`
 	UserID                             primitive.ObjectID `bson:"user_id,omitempty" json:"user_id,omitempty"` // This is the customer this submission belongs to.
 	User                               *SubmissionUser    `bson:"user" json:"user"`                           // This is the customer this submission belongs to.
 	UserFirstName                      string             `bson:"user_first_name" json:"user_first_name"`
