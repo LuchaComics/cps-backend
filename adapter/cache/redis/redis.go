@@ -2,7 +2,7 @@ package redis
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -26,17 +26,18 @@ type cache struct {
 
 func NewCache(cfg *c.Conf, logger *slog.Logger) Cacher {
 	logger.Debug("cache initializing...")
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", cfg.Cache.Host, cfg.Cache.Port),
-		Password: cfg.Cache.Password, // no password set
-		DB:       0,                  // use default DB
-	})
+	opt, err := redis.ParseURL(cfg.Cache.URI)
+	if err != nil {
+		logger.Error("cache failed parsing url error", slog.Any("err", err), slog.String("URI", cfg.Cache.URI))
+		log.Fatal(err)
+	}
+	rdb := redis.NewClient(opt)
 
 	// Confirm connection made with our application and redis.
 	response, err := rdb.Ping(context.Background()).Result()
 	if err != nil {
 		logger.Error("cache failed pinging redis", slog.Any("err", err))
-		panic("")
+		log.Fatal(err)
 	}
 
 	logger.Debug("cache initialized with successful redis ping response", slog.Any("resp", response))

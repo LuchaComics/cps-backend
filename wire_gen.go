@@ -12,6 +12,8 @@ import (
 	"github.com/LuchaComics/cps-backend/adapter/pdfbuilder"
 	"github.com/LuchaComics/cps-backend/adapter/storage/mongodb"
 	"github.com/LuchaComics/cps-backend/adapter/storage/s3"
+	controller6 "github.com/LuchaComics/cps-backend/app/attachment/controller"
+	datastore4 "github.com/LuchaComics/cps-backend/app/attachment/datastore"
 	controller4 "github.com/LuchaComics/cps-backend/app/comicsub/controller"
 	datastore3 "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	controller5 "github.com/LuchaComics/cps-backend/app/customer/controller"
@@ -22,6 +24,7 @@ import (
 	"github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/config"
 	"github.com/LuchaComics/cps-backend/inputport/http"
+	"github.com/LuchaComics/cps-backend/inputport/http/attachment"
 	"github.com/LuchaComics/cps-backend/inputport/http/comicsub"
 	"github.com/LuchaComics/cps-backend/inputport/http/customer"
 	"github.com/LuchaComics/cps-backend/inputport/http/gateway"
@@ -68,7 +71,10 @@ func InitializeEvent() Application {
 	comicsubHandler := comicsub.NewHandler(comicSubmissionController)
 	customerController := controller5.NewController(conf, slogLogger, provider, s3Storager, passwordProvider, cbffBuilder, emailer, userStorer)
 	customerHandler := customer.NewHandler(customerController)
-	inputPortServer := http.NewInputPort(conf, slogLogger, middlewareMiddleware, handler, userHandler, organizationHandler, comicsubHandler, customerHandler)
+	attachmentStorer := datastore4.NewDatastore(conf, slogLogger, client)
+	attachmentController := controller6.NewController(conf, slogLogger, provider, s3Storager, emailer, attachmentStorer, userStorer, comicSubmissionStorer)
+	attachmentHandler := attachment.NewHandler(attachmentController)
+	inputPortServer := http.NewInputPort(conf, slogLogger, middlewareMiddleware, handler, userHandler, organizationHandler, comicsubHandler, customerHandler, attachmentHandler)
 	application := NewApplication(slogLogger, inputPortServer)
 	return application
 }

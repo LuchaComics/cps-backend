@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"mime/multipart"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -21,6 +22,7 @@ import (
 
 type S3Storager interface {
 	UploadContent(ctx context.Context, objectKey string, content []byte) error
+	UploadContentFromMulipart(ctx context.Context, objectKey string, file multipart.File) error
 	BucketExists(ctx context.Context, bucketName string) (bool, error)
 	GetDownloadablePresignedURL(ctx context.Context, key string, duration time.Duration) (string, error)
 	GetPresignedURL(ctx context.Context, key string, duration time.Duration) (string, error)
@@ -91,6 +93,22 @@ func (s *s3Storager) UploadContent(ctx context.Context, objectKey string, conten
 		Key:    aws.String(objectKey),
 		Body:   bytes.NewReader(content),
 	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *s3Storager) UploadContentFromMulipart(ctx context.Context, objectKey string, file multipart.File) error {
+	// Create the S3 upload input parameters
+	params := &s3.PutObjectInput{
+		Bucket: aws.String(s.BucketName),
+		Key:    aws.String(objectKey),
+		Body:   file,
+	}
+
+	// Perform the file upload to S3
+	_, err := s.S3Client.PutObject(ctx, params)
 	if err != nil {
 		return err
 	}

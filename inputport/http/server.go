@@ -8,6 +8,7 @@ import (
 	"golang.org/x/exp/slog"
 
 	"github.com/LuchaComics/cps-backend/config"
+	"github.com/LuchaComics/cps-backend/inputport/http/attachment"
 	"github.com/LuchaComics/cps-backend/inputport/http/comicsub"
 	"github.com/LuchaComics/cps-backend/inputport/http/customer"
 	"github.com/LuchaComics/cps-backend/inputport/http/gateway"
@@ -31,6 +32,7 @@ type httpInputPort struct {
 	Organization    *organization.Handler
 	ComicSubmission *comicsub.Handler
 	Customer        *customer.Handler
+	Attachment      *attachment.Handler
 }
 
 func NewInputPort(
@@ -42,6 +44,7 @@ func NewInputPort(
 	org *organization.Handler,
 	t *comicsub.Handler,
 	cust *customer.Handler,
+	att *attachment.Handler,
 ) InputPortServer {
 	// Initialize the ServeMux.
 	mux := http.NewServeMux()
@@ -68,6 +71,7 @@ func NewInputPort(
 		Organization:    org,
 		ComicSubmission: t,
 		Customer:        cust,
+		Attachment:      att,
 		Server:          srv,
 	}
 
@@ -202,6 +206,18 @@ func (port *httpInputPort) HandleRequests(w http.ResponseWriter, r *http.Request
 		port.User.OperationCreateComment(w, r)
 	case n == 4 && p[1] == "v1" && p[2] == "users" && p[3] == "select-options" && r.Method == http.MethodGet:
 		port.User.ListAsSelectOptions(w, r)
+
+	// --- ATTACHMENTS --- //
+	case n == 3 && p[1] == "v1" && p[2] == "attachments" && r.Method == http.MethodGet:
+		port.Attachment.List(w, r)
+	case n == 3 && p[1] == "v1" && p[2] == "attachments" && r.Method == http.MethodPost:
+		port.Attachment.Create(w, r)
+	case n == 4 && p[1] == "v1" && p[2] == "attachment" && r.Method == http.MethodGet:
+		port.Attachment.GetByID(w, r, p[3])
+	case n == 4 && p[1] == "v1" && p[2] == "attachment" && r.Method == http.MethodPut:
+		port.Attachment.UpdateByID(w, r, p[3])
+	case n == 4 && p[1] == "v1" && p[2] == "attachment" && r.Method == http.MethodDelete:
+		port.Attachment.DeleteByID(w, r, p[3])
 
 	// --- CATCH ALL: D.N.E. ---
 	default:

@@ -32,9 +32,7 @@ type dbConfig struct {
 }
 
 type cacheConfig struct {
-	Host     string
-	Port     string
-	Password string
+	URI string
 }
 
 type awsConfig struct {
@@ -72,9 +70,7 @@ func New() *Conf {
 	c.DB.URI = getEnv("CPS_BACKEND_DB_URI", true)
 	c.DB.Name = getEnv("CPS_BACKEND_DB_NAME", true)
 
-	c.Cache.Host = getEnv("CPS_BACKEND_CACHE_HOST", true)
-	c.Cache.Port = getEnv("CPS_BACKEND_CACHE_PORT", true)
-	c.Cache.Password = getEnv("CPS_BACKEND_CACHE_PASSWORD", true)
+	c.Cache.URI = getEnv("CPS_BACKEND_CACHE_URI", true)
 
 	c.AWS.AccessKey = getEnv("CPS_BACKEND_AWS_ACCESS_KEY", true)
 	c.AWS.SecretKey = getEnv("CPS_BACKEND_AWS_SECRET_KEY", true)
