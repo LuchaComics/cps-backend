@@ -59,7 +59,9 @@ func (c *AttachmentControllerImpl) UpdateByID(ctx context.Context, req *Attachme
 	// Fetch the original attachment.
 	os, err := c.AttachmentStorer.GetByID(ctx, req.ID)
 	if err != nil {
-		c.Logger.Error("database get by id error", slog.Any("error", err))
+		c.Logger.Error("database get by id error",
+			slog.Any("error", err),
+			slog.Any("attachment_id", req.ID))
 		return nil, err
 	}
 	if os == nil {
@@ -75,7 +77,7 @@ func (c *AttachmentControllerImpl) UpdateByID(ctx context.Context, req *Attachme
 	userName := ctx.Value(constants.SessionUserName).(string)
 
 	// If user is not administrator nor belongs to the attachment then error.
-	if userRole != user_d.UserRoleRoot && os.ID != userOrganizationID {
+	if userRole != user_d.UserRoleRoot && os.OrganizationID != userOrganizationID {
 		c.Logger.Error("authenticated user is not staff role nor belongs to the attachment error",
 			slog.Any("userRole", userRole),
 			slog.Any("userOrganizationID", userOrganizationID))

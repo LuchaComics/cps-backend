@@ -5,26 +5,66 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
+	a_c "github.com/LuchaComics/cps-backend/app/attachment/controller"
 	sub_c "github.com/LuchaComics/cps-backend/app/attachment/controller"
 	sub_s "github.com/LuchaComics/cps-backend/app/attachment/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func UnmarshalUpdateRequest(ctx context.Context, r *http.Request) (*sub_c.AttachmentUpdateRequestIDO, error) {
-	// Initialize our array which will store all the results from the remote server.
-	var requestData sub_c.AttachmentUpdateRequestIDO
-
 	defer r.Body.Close()
 
-	// Read the JSON string and convert it into our golang stuct else we need
-	// to send a `400 Bad Request` errror message back to the client,
-	if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
-		log.Println(err)
-		return nil, httperror.NewForSingleField(http.StatusBadRequest, "non_field_error", "payload structure is wrong")
+	// Parse the multipart form data
+	err := r.ParseMultipartForm(32 << 20) // Limit the maximum memory used for parsing to 32MB
+	if err != nil {
+		log.Println("UnmarshalUpdateRequest:ParseMultipartForm:err:", err)
+		return nil, err
 	}
 
-	return &requestData, nil
+	// Get the values of form fields
+	id := r.FormValue("id")
+	name := r.FormValue("name")
+	description := r.FormValue("description")
+	ownershipID := r.FormValue("ownership_id")
+	ownershipTypeStr := r.FormValue("ownership_type")
+	ownershipType, _ := strconv.ParseInt(ownershipTypeStr, 10, 64)
+
+	// Get the uploaded file from the request
+	file, header, err := r.FormFile("file")
+	if err != nil {
+		log.Println("UnmarshalUpdateRequest:FormFile:err:", err)
+		// return nil, err, http.StatusInternalServerError
+	}
+
+	oid, err := primitive.ObjectIDFromHex(ownershipID)
+	if err != nil {
+		log.Println("UnmarshalUpdateRequest: primitive.ObjectIDFromHex:err:", err)
+	}
+
+	aid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		log.Println("UnmarshalUpdateRequest: primitive.ObjectIDFromHex:err:", err)
+	}
+
+	// Initialize our array which will store all the results from the remote server.
+	requestData := &a_c.AttachmentUpdateRequestIDO{
+		ID:            aid,
+		Name:          name,
+		Description:   description,
+		OwnershipID:   oid,
+		OwnershipType: int8(ownershipType),
+	}
+
+	if header != nil {
+		// Extract filename and filetype from the file header
+		requestData.FileName = header.Filename
+		requestData.FileType = header.Header.Get("Content-Type")
+		requestData.File = file
+	}
+	return requestData, nil
 }
 
 func (h *Handler) UpdateByID(w http.ResponseWriter, r *http.Request, id string) {
@@ -35,7 +75,6 @@ func (h *Handler) UpdateByID(w http.ResponseWriter, r *http.Request, id string) 
 		httperror.ResponseError(w, err)
 		return
 	}
-
 	attachment, err := h.Controller.UpdateByID(ctx, data)
 	if err != nil {
 		httperror.ResponseError(w, err)
