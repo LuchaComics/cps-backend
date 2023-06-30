@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -49,8 +48,6 @@ func (c *OrganizationControllerImpl) CreateComment(ctx context.Context, organiza
 		c.Logger.Error("database update by id error", slog.Any("error", err))
 		return nil, err
 	}
-
-	log.Println("---->", comment)
 
 	return s, nil
 }

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -76,7 +75,6 @@ func (c *OrganizationControllerImpl) updateOrganizationNameForAllUsers(ctx conte
 	}
 	for _, u := range uu.Results {
 		u.OrganizationName = ns.Name
-		log.Println("--->", u)
 		// if err := c.UserStorer.UpdateByID(ctx, u); err != nil {
 		// 	c.Logger.Error("database update by id error", slog.Any("error", err))
 		// 	return err
@@ -95,7 +93,6 @@ func (c *OrganizationControllerImpl) updateOrganizationNameForAllComicSubmission
 	}
 	for _, u := range uu.Results {
 		u.OrganizationName = ns.Name
-		log.Println("--->", u)
 		// if err := c.ComicSubmissionStorer.UpdateByID(ctx, u); err != nil {
 		// 	c.Logger.Error("database update by id error", slog.Any("error", err))
 		// 	return err

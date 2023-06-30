@@ -63,7 +63,9 @@ func NewStorage(appConf *c.Conf, logger *slog.Logger, uuidp uuid.Provider) S3Sto
 
 	// STEP 3\: Load up s3 instance.
 	s3Client := s3.NewFromConfig(sdkConfig)
-	logger.Debug("s3 initialized")
+
+	// For debugging purposes only.
+	logger.Debug("s3 connected to remote service")
 
 	// Create our storage handler.
 	s3Storage := &s3Storager{
@@ -82,6 +84,9 @@ func NewStorage(appConf *c.Conf, logger *slog.Logger, uuidp uuid.Provider) S3Sto
 	if !doesExist {
 		log.Fatal("bucket name does not exist") // We need to crash the program at start to satisfy google wire requirement of having no errors.
 	}
+
+	// For debugging purposes only.
+	logger.Debug("s3 initialized")
 
 	// Return our s3 storage handler.
 	return s3Storage
