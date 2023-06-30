@@ -120,6 +120,12 @@ func ValidateCreateRequest(dirtyData *sub_c.ComicSubmissionCreateRequestIDO) err
 	if dirtyData.CollectibleType == 0 {
 		e["collectible_type"] = "missing choice"
 	}
+	if dirtyData.SpecialDetails == 0 {
+		e["special_details"] = "missing choice"
+	}
+	if dirtyData.SpecialDetailsOther == "" && dirtyData.SpecialDetails == 1 {
+		e["special_details_other"] = "missing choice"
+	}
 
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)

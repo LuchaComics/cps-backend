@@ -56,6 +56,8 @@ type CBFFBuilderRequestDTO struct {
 	UserLastName                       string                     `bson:"user_last_name" json:"user_last_name"`
 	UserOrganizationName               string                     `bson:"user_organization_name" json:"user_organization_name"`
 	Signatures                         []*s_d.SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
+	SpecialDetails                     int8                       `bson:"special_details" json:"special_details"`
+	SpecialDetailsOther                string                     `bson:"special_details_other" json:"special_details_other"`
 }
 
 type CBFFBuilder interface {

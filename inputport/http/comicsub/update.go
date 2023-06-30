@@ -119,6 +119,9 @@ func ValidateUpdateRequest(dirtyData *sub_c.ComicSubmissionUpdateRequestIDO) err
 	if dirtyData.OrganizationID.IsZero() {
 		e["organization_id"] = "missing choice"
 	}
+	if dirtyData.SpecialDetailsOther == "" && dirtyData.SpecialDetails == 1 {
+		e["special_details_other"] = "missing choice"
+	}
 
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)

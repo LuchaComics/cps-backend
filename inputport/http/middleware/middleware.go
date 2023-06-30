@@ -312,7 +312,7 @@ func (mid *middleware) PostJWTProcessorMiddleware(fn http.HandlerFunc) http.Hand
 			ctx = context.WithValue(ctx, constants.SessionUser, user)
 
 			// For debugging purposes only.
-			mid.Logger.Info("Fetched session record",
+			mid.Logger.Debug("Fetched session record",
 				slog.Any("ID", user.ID),
 				slog.String("SessionID", sessionID),
 				slog.String("Name", user.Name),

@@ -51,6 +51,8 @@ type ComicSubmissionUpdateRequestIDO struct {
 	CollectibleType                    int8                          `bson:"collectible_type" json:"collectible_type"`
 	Status                             int8                          `bson:"status" json:"status"`
 	Signatures                         []*domain.SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
+	SpecialDetails                     int8                          `bson:"special_details" json:"special_details"`
+	SpecialDetailsOther                string                        `bson:"special_details_other" json:"special_details_other"`
 }
 
 func comicSubmissionFromModify(req *ComicSubmissionUpdateRequestIDO) *s_d.ComicSubmission {
@@ -86,6 +88,8 @@ func comicSubmissionFromModify(req *ComicSubmissionUpdateRequestIDO) *s_d.ComicS
 		CollectibleType:                    req.CollectibleType,
 		Status:                             req.Status,
 		Signatures:                         req.Signatures,
+		SpecialDetails:                     req.SpecialDetails,
+		SpecialDetailsOther:                req.SpecialDetailsOther,
 	}
 }
 
@@ -184,6 +188,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	os.Filename = ns.Filename
 	os.Item = fmt.Sprintf("%v, %v, %v", ns.SeriesTitle, ns.IssueVol, ns.IssueNo)
 	os.Signatures = ns.Signatures
+	os.SpecialDetails = ns.SpecialDetails
+	os.SpecialDetailsOther = ns.SpecialDetailsOther
 
 	// Save to the database the modified submission.
 	if err := c.ComicSubmissionStorer.UpdateByID(ctx, os); err != nil {
@@ -194,6 +200,9 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	//
 	// Delete pdf file from s3
 	//
+
+	c.Logger.Debug("S3 will delete previous upload",
+		slog.String("path", os.FileUploadS3ObjectKey))
 
 	// Delete previous record from remote storage.
 	if err := c.S3.DeleteByKeys(ctx, []string{os.FileUploadS3ObjectKey}); err != nil {
@@ -249,6 +258,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			UserLastName:                       os.UserLastName,
 			UserOrganizationName:               os.OrganizationName,
 			Signatures:                         os.Signatures,
+			SpecialDetails:                     os.SpecialDetails,
+			SpecialDetailsOther:                os.SpecialDetailsOther,
 		}
 		pdfResponse, err = c.CBFFBuilder.GeneratePDF(r)
 		if err != nil {
@@ -291,6 +302,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			UserLastName:                       os.UserLastName,
 			UserOrganizationName:               os.OrganizationName,
 			Signatures:                         os.Signatures,
+			SpecialDetails:                     os.SpecialDetails,
+			SpecialDetailsOther:                os.SpecialDetailsOther,
 		}
 		pdfResponse, err = c.PCBuilder.GeneratePDF(r)
 		if err != nil {
@@ -307,11 +320,18 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	// file is saved remotely, we will have a connection to it through a "key"
 	// unique reference to the uploaded file.
 	path := fmt.Sprintf("uploads/%v", pdfResponse.FileName)
+
+	c.Logger.Debug("S3 will upload...",
+		slog.String("path", path))
+
 	err = c.S3.UploadContent(ctx, path, pdfResponse.Content)
 	if err != nil {
 		c.Logger.Error("s3 upload error", slog.Any("error", err))
 		return nil, err
 	}
+
+	c.Logger.Debug("S3 uploaded with success",
+		slog.String("path", path))
 
 	//
 	// Update record with PDF file information with record.

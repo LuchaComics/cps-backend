@@ -34,6 +34,14 @@ const (
 	GradingScaleNumber                            = 2
 	GradingScaleCPSPercentage                     = 3
 	CollectibleTypeGeneric                        = 1
+	SpecialDetailsRegularEdition                  = 2
+	SpecialDetailsDirectEdition                   = 3
+	SpecialDetailsNewsstandEdition                = 4
+	SpecialDetailsVariantCover                    = 5
+	SpecialDetailsCanadianPriceVariant            = 6
+	SpecialDetailsFacsimile                       = 7
+	SpecialDetailsReprint                         = 8
+	SpecialDetailsOther                           = 1
 )
 
 type ComicSubmission struct {
@@ -101,6 +109,8 @@ type ComicSubmission struct {
 	Comments                           []*SubmissionComment   `bson:"comments" json:"comments,omitempty"`
 	CollectibleType                    int8                   `bson:"collectible_type" json:"collectible_type"`
 	Signatures                         []*SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
+	SpecialDetails                     int8                   `bson:"special_details" json:"special_details"`
+	SpecialDetailsOther                string                 `bson:"special_details_other" json:"special_details_other"`
 }
 
 type SubmissionComment struct {

@@ -48,6 +48,8 @@ type ComicSubmissionCreateRequestIDO struct {
 	CollectibleType                    int8                          `bson:"collectible_type" json:"collectible_type"`
 	Status                             int8                          `bson:"status" json:"status"`
 	Signatures                         []*domain.SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
+	SpecialDetails                     int8                          `bson:"special_details" json:"special_details"`
+	SpecialDetailsOther                string                        `bson:"special_details_other" json:"special_details_other"`
 }
 
 func comicSubmissionFromCreate(req *ComicSubmissionCreateRequestIDO) *s_d.ComicSubmission {
@@ -82,6 +84,8 @@ func comicSubmissionFromCreate(req *ComicSubmissionCreateRequestIDO) *s_d.ComicS
 		CollectibleType:                    req.CollectibleType,
 		Status:                             req.Status,
 		Signatures:                         req.Signatures,
+		SpecialDetails:                     req.SpecialDetails,
+		SpecialDetailsOther:                req.SpecialDetailsOther,
 	}
 }
 
@@ -118,7 +122,7 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 		return nil, err
 	}
 	m.CPSRN = c.CPSRN.GenerateNumber(userRole, total) // Step 3 & 4
-	c.Logger.Error("Generated CPSRN",
+	c.Logger.Debug("Generated CPSRN",
 		slog.String("CPSRN", m.CPSRN),
 		slog.Int64("Role", int64(userRole)),
 		slog.Int64("total", total))
@@ -236,6 +240,8 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			UserLastName:                       m.UserLastName,
 			UserOrganizationName:               m.OrganizationName,
 			Signatures:                         m.Signatures,
+			SpecialDetails:                     m.SpecialDetails,
+			SpecialDetailsOther:                m.SpecialDetailsOther,
 		}
 		pdfResponse, err = c.CBFFBuilder.GeneratePDF(r)
 		if err != nil {
@@ -278,6 +284,8 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			UserLastName:                       m.UserLastName,
 			UserOrganizationName:               m.OrganizationName,
 			Signatures:                         m.Signatures,
+			SpecialDetails:                     m.SpecialDetails,
+			SpecialDetailsOther:                m.SpecialDetailsOther,
 		}
 		pdfResponse, err = c.PCBuilder.GeneratePDF(r)
 		if err != nil {
@@ -294,11 +302,18 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 	// file is saved remotely, we will have a connection to it through a "key"
 	// unique reference to the uploaded file.
 	path := fmt.Sprintf("uploads/%v", pdfResponse.FileName)
+
+	c.Logger.Debug("S3 will upload...",
+		slog.String("path", path))
+
 	err = c.S3.UploadContent(ctx, path, pdfResponse.Content)
 	if err != nil {
 		c.Logger.Error("s3 upload error", slog.Any("error", err))
 		return nil, err
 	}
+
+	c.Logger.Debug("S3 uploaded with success",
+		slog.String("path", path))
 
 	// The following will save the S3 key of our file upload into our record.
 	m.FileUploadS3ObjectKey = path
