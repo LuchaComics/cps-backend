@@ -18,7 +18,9 @@ const (
 	StatusArchived                                = 100
 	ServiceTypePreScreening                       = 1
 	ServiceTypePedigree                           = 2
-	ServiceTypeCPSCapsuleYougrade                 = 3
+	ServiceTypeCPSCapsule                         = 3
+	ServiceTypeCPSCapsuleIndieMintGem             = 4
+	ServiceTypeCPSCapsuleSignatureCollection      = 5
 	FindingPoor                                   = 1
 	FindingFair                                   = 2
 	FindingGood                                   = 3
