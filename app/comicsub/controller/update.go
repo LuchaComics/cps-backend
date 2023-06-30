@@ -20,36 +20,37 @@ import (
 )
 
 type ComicSubmissionUpdateRequestIDO struct {
-	ID                                 primitive.ObjectID `bson:"id,omitempty" json:"id,omitempty"`
-	OrganizationID                     primitive.ObjectID `bson:"organization_id,omitempty" json:"organization_id,omitempty"`
-	ServiceType                        int8               `bson:"service_type" json:"service_type"`
-	SubmissionDate                     time.Time          `bson:"submission_date" json:"submission_date"`
-	SeriesTitle                        string             `bson:"series_title" json:"series_title"`
-	IssueVol                           string             `bson:"issue_vol" json:"issue_vol"`
-	IssueNo                            string             `bson:"issue_no" json:"issue_no"`
-	IssueCoverYear                     int64              `bson:"issue_cover_year" json:"issue_cover_year"`
-	IssueCoverMonth                    int8               `bson:"issue_cover_month" json:"issue_cover_month"`
-	PublisherName                      int8               `bson:"publisher_name" json:"publisher_name"`
-	PublisherNameOther                 string             `bson:"publisher_name_other" json:"publisher_name_other"`
-	SpecialNotes                       string             `bson:"special_notes" json:"special_notes"`
-	GradingNotes                       string             `bson:"grading_notes" json:"grading_notes"`
-	IsCpsIndieMintGem                  bool               `bson:"is_cps_indie_mint_gem" json:"is_cps_indie_mint_gem"`
-	CreasesFinding                     string             `bson:"creases_finding" json:"creases_finding"`
-	TearsFinding                       string             `bson:"tears_finding" json:"tears_finding"`
-	MissingPartsFinding                string             `bson:"missing_parts_finding" json:"missing_parts_finding"`
-	StainsFinding                      string             `bson:"stains_finding" json:"stains_finding"`
-	DistortionFinding                  string             `bson:"distortion_finding" json:"distortion_finding"`
-	PaperQualityFinding                string             `bson:"paper_quality_finding" json:"paper_quality_finding"`
-	SpineFinding                       string             `bson:"spine_finding" json:"spine_finding"`
-	CoverFinding                       string             `bson:"cover_finding" json:"cover_finding"`
-	ShowsSignsOfTamperingOrRestoration int8               `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
-	GradingScale                       int8               `bson:"grading_scale" json:"grading_scale"`
-	OverallLetterGrade                 string             `bson:"overall_letter_grade" json:"overall_letter_grade"`
-	OverallNumberGrade                 float64            `bson:"overall_number_grade" json:"overall_number_grade"`
-	CpsPercentageGrade                 float64            `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
-	IsOverallLetterGradeNearMintPlus   bool               `bson:"is_overall_letter_grade_near_mint_plus" json:"is_overall_letter_grade_near_mint_plus"`
-	CollectibleType                    int8               `bson:"collectible_type" json:"collectible_type"`
-	Status                             int8               `bson:"status" json:"status"`
+	ID                                 primitive.ObjectID            `bson:"id,omitempty" json:"id,omitempty"`
+	OrganizationID                     primitive.ObjectID            `bson:"organization_id,omitempty" json:"organization_id,omitempty"`
+	ServiceType                        int8                          `bson:"service_type" json:"service_type"`
+	SubmissionDate                     time.Time                     `bson:"submission_date" json:"submission_date"`
+	SeriesTitle                        string                        `bson:"series_title" json:"series_title"`
+	IssueVol                           string                        `bson:"issue_vol" json:"issue_vol"`
+	IssueNo                            string                        `bson:"issue_no" json:"issue_no"`
+	IssueCoverYear                     int64                         `bson:"issue_cover_year" json:"issue_cover_year"`
+	IssueCoverMonth                    int8                          `bson:"issue_cover_month" json:"issue_cover_month"`
+	PublisherName                      int8                          `bson:"publisher_name" json:"publisher_name"`
+	PublisherNameOther                 string                        `bson:"publisher_name_other" json:"publisher_name_other"`
+	SpecialNotes                       string                        `bson:"special_notes" json:"special_notes"`
+	GradingNotes                       string                        `bson:"grading_notes" json:"grading_notes"`
+	IsCpsIndieMintGem                  bool                          `bson:"is_cps_indie_mint_gem" json:"is_cps_indie_mint_gem"`
+	CreasesFinding                     string                        `bson:"creases_finding" json:"creases_finding"`
+	TearsFinding                       string                        `bson:"tears_finding" json:"tears_finding"`
+	MissingPartsFinding                string                        `bson:"missing_parts_finding" json:"missing_parts_finding"`
+	StainsFinding                      string                        `bson:"stains_finding" json:"stains_finding"`
+	DistortionFinding                  string                        `bson:"distortion_finding" json:"distortion_finding"`
+	PaperQualityFinding                string                        `bson:"paper_quality_finding" json:"paper_quality_finding"`
+	SpineFinding                       string                        `bson:"spine_finding" json:"spine_finding"`
+	CoverFinding                       string                        `bson:"cover_finding" json:"cover_finding"`
+	ShowsSignsOfTamperingOrRestoration int8                          `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
+	GradingScale                       int8                          `bson:"grading_scale" json:"grading_scale"`
+	OverallLetterGrade                 string                        `bson:"overall_letter_grade" json:"overall_letter_grade"`
+	OverallNumberGrade                 float64                       `bson:"overall_number_grade" json:"overall_number_grade"`
+	CpsPercentageGrade                 float64                       `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
+	IsOverallLetterGradeNearMintPlus   bool                          `bson:"is_overall_letter_grade_near_mint_plus" json:"is_overall_letter_grade_near_mint_plus"`
+	CollectibleType                    int8                          `bson:"collectible_type" json:"collectible_type"`
+	Status                             int8                          `bson:"status" json:"status"`
+	Signatures                         []*domain.SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
 }
 
 func comicSubmissionFromModify(req *ComicSubmissionUpdateRequestIDO) *s_d.ComicSubmission {
@@ -84,6 +85,7 @@ func comicSubmissionFromModify(req *ComicSubmissionUpdateRequestIDO) *s_d.ComicS
 		IsOverallLetterGradeNearMintPlus:   req.IsOverallLetterGradeNearMintPlus,
 		CollectibleType:                    req.CollectibleType,
 		Status:                             req.Status,
+		Signatures:                         req.Signatures,
 	}
 }
 
@@ -181,6 +183,7 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	// os.UserOrganizationName = ns.UserOrganizationName // NO NEED TO CHANGE AFTER FACT.
 	os.Filename = ns.Filename
 	os.Item = fmt.Sprintf("%v, %v, %v", ns.SeriesTitle, ns.IssueVol, ns.IssueNo)
+	os.Signatures = ns.Signatures
 
 	// Save to the database the modified submission.
 	if err := c.ComicSubmissionStorer.UpdateByID(ctx, os); err != nil {
@@ -245,6 +248,7 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			UserFirstName:                      os.UserFirstName,
 			UserLastName:                       os.UserLastName,
 			UserOrganizationName:               os.OrganizationName,
+			Signatures:                         os.Signatures,
 		}
 		pdfResponse, err = c.CBFFBuilder.GeneratePDF(r)
 		if err != nil {
@@ -286,6 +290,7 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			UserFirstName:                      os.UserFirstName,
 			UserLastName:                       os.UserLastName,
 			UserOrganizationName:               os.OrganizationName,
+			Signatures:                         os.Signatures,
 		}
 		pdfResponse, err = c.PCBuilder.GeneratePDF(r)
 		if err != nil {

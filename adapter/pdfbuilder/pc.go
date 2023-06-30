@@ -21,36 +21,37 @@ import (
 // CPS PEDIGREE COLLECTION
 
 type PCBuilderRequestDTO struct {
-	CPSRN                              string    `bson:"cpsrn" json:"cpSrn"`
-	Filename                           string    `bson:"filename" json:"filename"`
-	SubmissionDate                     time.Time `bson:"submission_date" json:"submission_date"`
-	Item                               string    `bson:"item" json:"item"`
-	SeriesTitle                        string    `bson:"series_title" json:"series_title"`
-	IssueVol                           string    `bson:"issue_vol" json:"issue_vol"`
-	IssueNo                            string    `bson:"issue_no" json:"issue_no"`
-	IssueCoverYear                     int64     `bson:"issue_cover_year" json:"issue_cover_year"`
-	IssueCoverMonth                    int8      `bson:"issue_cover_month" json:"issue_cover_month"`
-	PublisherName                      string    `bson:"publisher_name" json:"publisher_name"`
-	SpecialNotes                       string    `bson:"special_notes" json:"special_notes"`
-	GradingNotes                       string    `bson:"grading_notes" json:"grading_notes"`
-	CreasesFinding                     string    `bson:"creases_finding" json:"creases_finding"`
-	TearsFinding                       string    `bson:"tears_finding" json:"tears_finding"`
-	MissingPartsFinding                string    `bson:"missing_parts_finding" json:"missing_parts_finding"`
-	StainsFinding                      string    `bson:"stains_finding" json:"stains_finding"`
-	DistortionFinding                  string    `bson:"distortion_finding" json:"distortion_finding"`
-	PaperQualityFinding                string    `bson:"paper_quality_finding" json:"paper_quality_finding"`
-	SpineFinding                       string    `bson:"spine_finding" json:"spine_finding"`
-	CoverFinding                       string    `bson:"cover_finding" json:"cover_finding"`
-	ShowsSignsOfTamperingOrRestoration bool      `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
-	GradingScale                       int8      `bson:"grading_scale" json:"grading_scale"`
-	OverallLetterGrade                 string    `bson:"overall_letter_grade" json:"overall_letter_grade"`
-	IsOverallLetterGradeNearMintPlus   bool      `bson:"is_overall_letter_grade_near_mint_plus" json:"is_overall_letter_grade_near_mint_plus"`
-	IsCpsIndieMintGem                  bool      `bson:"is_cps_indie_mint_gem" json:"is_cps_indie_mint_gem"`
-	OverallNumberGrade                 float64   `bson:"overall_number_grade" json:"overall_number_grade"`
-	CpsPercentageGrade                 float64   `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
-	UserFirstName                      string    `bson:"user_first_name" json:"user_first_name"`
-	UserLastName                       string    `bson:"user_last_name" json:"user_last_name"`
-	UserOrganizationName               string    `bson:"user_organization_name" json:"user_organization_name"`
+	CPSRN                              string                     `bson:"cpsrn" json:"cpSrn"`
+	Filename                           string                     `bson:"filename" json:"filename"`
+	SubmissionDate                     time.Time                  `bson:"submission_date" json:"submission_date"`
+	Item                               string                     `bson:"item" json:"item"`
+	SeriesTitle                        string                     `bson:"series_title" json:"series_title"`
+	IssueVol                           string                     `bson:"issue_vol" json:"issue_vol"`
+	IssueNo                            string                     `bson:"issue_no" json:"issue_no"`
+	IssueCoverYear                     int64                      `bson:"issue_cover_year" json:"issue_cover_year"`
+	IssueCoverMonth                    int8                       `bson:"issue_cover_month" json:"issue_cover_month"`
+	PublisherName                      string                     `bson:"publisher_name" json:"publisher_name"`
+	SpecialNotes                       string                     `bson:"special_notes" json:"special_notes"`
+	GradingNotes                       string                     `bson:"grading_notes" json:"grading_notes"`
+	CreasesFinding                     string                     `bson:"creases_finding" json:"creases_finding"`
+	TearsFinding                       string                     `bson:"tears_finding" json:"tears_finding"`
+	MissingPartsFinding                string                     `bson:"missing_parts_finding" json:"missing_parts_finding"`
+	StainsFinding                      string                     `bson:"stains_finding" json:"stains_finding"`
+	DistortionFinding                  string                     `bson:"distortion_finding" json:"distortion_finding"`
+	PaperQualityFinding                string                     `bson:"paper_quality_finding" json:"paper_quality_finding"`
+	SpineFinding                       string                     `bson:"spine_finding" json:"spine_finding"`
+	CoverFinding                       string                     `bson:"cover_finding" json:"cover_finding"`
+	ShowsSignsOfTamperingOrRestoration bool                       `bson:"shows_signs_of_tampering_or_restoration" json:"shows_signs_of_tampering_or_restoration"`
+	GradingScale                       int8                       `bson:"grading_scale" json:"grading_scale"`
+	OverallLetterGrade                 string                     `bson:"overall_letter_grade" json:"overall_letter_grade"`
+	IsOverallLetterGradeNearMintPlus   bool                       `bson:"is_overall_letter_grade_near_mint_plus" json:"is_overall_letter_grade_near_mint_plus"`
+	IsCpsIndieMintGem                  bool                       `bson:"is_cps_indie_mint_gem" json:"is_cps_indie_mint_gem"`
+	OverallNumberGrade                 float64                    `bson:"overall_number_grade" json:"overall_number_grade"`
+	CpsPercentageGrade                 float64                    `bson:"cps_percentage_grade" json:"cps_percentage_grade"`
+	UserFirstName                      string                     `bson:"user_first_name" json:"user_first_name"`
+	UserLastName                       string                     `bson:"user_last_name" json:"user_last_name"`
+	UserOrganizationName               string                     `bson:"user_organization_name" json:"user_organization_name"`
+	Signatures                         []*s_d.SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
 }
 
 type PCBuilder interface {

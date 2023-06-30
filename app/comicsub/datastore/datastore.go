@@ -96,8 +96,9 @@ type ComicSubmission struct {
 	Filename                           string             `bson:"filename" json:"filename"`
 	FileUploadS3ObjectKey              string             `bson:"file_upload_s3_key" json:"file_upload_s3_object_key"`
 	FileUploadDownloadableFileURL      string
-	Comments                           []*SubmissionComment `bson:"comments" json:"comments,omitempty"`
-	CollectibleType                    int8                 `bson:"collectible_type" json:"collectible_type"`
+	Comments                           []*SubmissionComment   `bson:"comments" json:"comments,omitempty"`
+	CollectibleType                    int8                   `bson:"collectible_type" json:"collectible_type"`
+	Signatures                         []*SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
 }
 
 type SubmissionComment struct {
@@ -110,6 +111,11 @@ type SubmissionComment struct {
 	ModifiedByUserID primitive.ObjectID `bson:"modified_by_user_id" json:"modified_by_user_id"`
 	ModifiedByName   string             `bson:"modified_by_name" json:"modified_by_name"`
 	Content          string             `bson:"content" json:"content"`
+}
+
+type SubmissionSignature struct {
+	Role string `bson:"role" json:"role"`
+	Name string `bson:"name" json:"name"`
 }
 
 type ComicSubmissionListFilter struct {
