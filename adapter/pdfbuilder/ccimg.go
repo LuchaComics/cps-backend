@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+
 	// "strings"
 	"time"
 
@@ -98,24 +99,92 @@ func (bdr *ccimgBuilder) GeneratePDF(r *CCIMGBuilderRequestDTO) (*PDFBuilderResp
 	// CPS REGISTRY NUMBER
 	//
 
-	// pdf.SetFont("Courier", "", 12)
-	// pdf.SetXY(17, 21)
-	// pdf.Cell(0, 0, r.CPSRN)
+	pdf.SetFont("Courier", "", 12)
 
-	// //
-	// // LEFT SIDE
-	// //
+	// Set the transformation matrix to rotate 180 degrees
+	pdf.TransformBegin()
+	pdf.TransformRotate(180, 190, 27) // angle=180, x=190, y=27
+
+	// Print the text
+	pdf.Text(190, 27, r.CPSRN) // x=190, y=27
+
+	pdf.TransformEnd()
+
 	//
-	// pdf.SetFont("Helvetica", "B", 12)
+	// TITLE
 	//
-	// // ROW 1
-	// pdf.SetXY(113, 39)
+
+	pdf.SetFont("Helvetica", "B", 16)
+	pdf.SetXY(80, 51)
+	pdf.Cell(0, 0, r.PublisherName)
+
+	//
+	// LEFT SIDE
+	//
+
+	pdf.SetFont("Helvetica", "B", 14)
+
+	// ROW 1
+	pdf.SetXY(60, 60)
+	pdf.Cell(0, 0, fmt.Sprintf("Volume: %v", r.IssueVol))
+
+	var issueDate string = "Date: -"
+	if r.IssueCoverMonth < 12 && r.IssueCoverMonth > 0 {
+		month := fmt.Sprintf("%v", time.Month(int(r.IssueCoverMonth)))
+		if r.IssueCoverYear > 1 {
+			if r.IssueCoverYear == 2 {
+				issueDate = "Date: 1899 or before"
+			} else {
+				issueDate = fmt.Sprintf("Date: %v %v", month, int(r.IssueCoverYear))
+			}
+		} else { // No cover date year.
+			// Do nothing
+		}
+	} else {
+		// No cover year date.
+		// Do nothing.
+	}
+	pdf.SetXY(60, 66)
+	pdf.Cell(0, 0, issueDate)
+
+	////
+	//// RIGHT SIDE
+	////
+
+	pdf.SetFont("Helvetica", "", 10)
+
+	pdf.SetXY(115, 59)
+	switch r.SpecialDetails {
+	case s_d.SpecialDetailsOther:
+		pdf.Cell(0, 0, r.SpecialDetailsOther)
+	case s_d.SpecialDetailsRegularEdition:
+		pdf.Cell(0, 0, "Regular Edition")
+	case s_d.SpecialDetailsDirectEdition:
+		pdf.Cell(0, 0, "Direct Edition")
+	case s_d.SpecialDetailsNewsstandEdition:
+		pdf.Cell(0, 0, "Newstand Edition")
+	case s_d.SpecialDetailsVariantCover:
+		pdf.Cell(0, 0, "Variant Cover")
+	case s_d.SpecialDetailsCanadianPriceVariant:
+		pdf.Cell(0, 0, "Canadian Price Variant")
+	case s_d.SpecialDetailsFacsimile:
+		pdf.Cell(0, 0, "Facsimile")
+	case s_d.SpecialDetailsReprint:
+		pdf.Cell(0, 0, "Reprint")
+	default:
+		return nil, fmt.Errorf("missing value for crease finding with %v", r.CreasesFinding)
+	}
+
+	title := fmt.Sprintf("%v %v %v", r.SeriesTitle, r.IssueVol, r.IssueNo)
+	pdf.SetXY(115, 65)
+	pdf.Cell(0, 0, title)
+
 	// pdf.Cell(0, 0, fmt.Sprintf("%v", r.SubmissionDate.Day())) // Day
-	// pdf.SetXY(126, 39)
+	// pdf.SetXY(80, 60)
 	// pdf.Cell(0, 0, fmt.Sprintf("%v", int(r.SubmissionDate.Month()))) // Month (number)
-	// pdf.SetXY(135, 39)
+	// pdf.SetXY(90, 60)
 	// pdf.Cell(0, 0, fmt.Sprintf("%v", r.SubmissionDate.Year())) // Day
-	//
+
 	// // ROW 2
 	// pdf.SetXY(82, 47)
 	// pdf.Cell(0, 0, r.UserFirstName)

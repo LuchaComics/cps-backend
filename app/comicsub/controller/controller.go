@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	// "log"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
@@ -82,7 +81,7 @@ func NewController(
 	// // FOR TESTING PURPOSES ONLY.
 	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
 	// r := &pdfbuilder.CBFFBuilderRequestDTO{
-	// 	CPSRN:                              "788346-26649-1-1000-testing",
+	// 	CPSRN:                              "788346-26649-1-1000",
 	// 	ComicSubmissionDate:                     time.Now(),
 	// 	SeriesTitle:                        "Winter World",
 	// 	IssueVol:                           "Vol 1",
@@ -118,7 +117,7 @@ func NewController(
 	// // // FOR TESTING PURPOSES ONLY.
 	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
 	// r := &pdfbuilder.PCBuilderRequestDTO{
-	// 	CPSRN:                              "788346-26649-1-1000-testing",
+	// 	CPSRN:                              "788346-26649-1-1000",
 	// 	ComicSubmissionDate:                time.Now(),
 	// 	SeriesTitle:                        "Winter World",
 	// 	IssueVol:                           "Vol 1",
@@ -152,33 +151,16 @@ func NewController(
 	//------------------------------------------------------------------------//
 
 	// // // FOR TESTING PURPOSES ONLY.
-	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
 	// r := &pdfbuilder.CCIMGBuilderRequestDTO{
-	// 	CPSRN:                              "788346-26649-1-1000-testing",
-	// 	// ComicSubmissionDate:             time.Now(),
-	// 	SeriesTitle:                        "Winter World",
-	// 	IssueVol:                           "Vol 1",
-	// 	IssueNo:                            "#1",
-	// 	IssueCoverYear:                     2023,
-	// 	IssueCoverMonth:                    1,
-	// 	PublisherName:                      "Some publisher",
-	// 	SpecialNotes:                       text,
-	// 	GradingNotes:                       text,
-	// 	CreasesFinding:                     "PR",
-	// 	TearsFinding:                       "FN",
-	// 	MissingPartsFinding:                "PR",
-	// 	StainsFinding:                      "NM",
-	// 	DistortionFinding:                  "NM",
-	// 	PaperQualityFinding:                "VF",
-	// 	SpineFinding:                       "FN",
-	// 	CoverFinding:                       "VG",
-	// 	GradingScale:                       1,
-	// 	ShowsSignsOfTamperingOrRestoration: true,
-	// 	OverallLetterGrade:                 "NM",
-	// 	IsOverallLetterGradeNearMintPlus:   true,
-	// 	UserFirstName:                      "Bartlomiej",
-	// 	UserLastName:                       "Miks",
-	// 	UserOrganizationName:               "Mika Software Corporation",
+	// 	CPSRN:           "788346-26649-1-1000",
+	// 	SeriesTitle:     "Winter World",
+	// 	IssueVol:        "Vol 1",
+	// 	IssueNo:         "#1",
+	// 	IssueCoverYear:  2023,
+	// 	IssueCoverMonth: 1,
+	// 	PublisherName:   "Some publisher",
+	// 	SpecialDetails:  2, // 2=Regular Edition
+	//
 	// }
 	// res, err := ccimg.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
@@ -188,33 +170,15 @@ func NewController(
 	//------------------------------------------------------------------------//
 
 	// // // FOR TESTING PURPOSES ONLY.
-	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
 	// r := &pdfbuilder.CCSCBuilderRequestDTO{
-	// 	CPSRN:                              "788346-26649-1-1000-testing",
-	// 	// ComicSubmissionDate:                     time.Now(),
-	// 	SeriesTitle:                        "Winter World",
-	// 	IssueVol:                           "Vol 1",
-	// 	IssueNo:                            "#1",
-	// 	IssueCoverYear:                     2023,
-	// 	IssueCoverMonth:                    1,
-	// 	PublisherName:                      "Some publisher",
-	// 	SpecialNotes:                       text,
-	// 	GradingNotes:                       text,
-	// 	CreasesFinding:                     "PR",
-	// 	TearsFinding:                       "FN",
-	// 	MissingPartsFinding:                "PR",
-	// 	StainsFinding:                      "NM",
-	// 	DistortionFinding:                  "NM",
-	// 	PaperQualityFinding:                "VF",
-	// 	SpineFinding:                       "FN",
-	// 	CoverFinding:                       "VG",
-	// 	GradingScale:                       1,
-	// 	ShowsSignsOfTamperingOrRestoration: true,
-	// 	OverallLetterGrade:                 "NM",
-	// 	IsOverallLetterGradeNearMintPlus:   true,
-	// 	UserFirstName:                      "Bartlomiej",
-	// 	UserLastName:                       "Miks",
-	// 	UserOrganizationName:               "Mika Software Corporation",
+	// 	CPSRN:           "788346-26649-1-1000",
+	// 	SeriesTitle:     "Winter World",
+	// 	IssueVol:        "Vol 1",
+	// 	IssueNo:         "#1",
+	// 	IssueCoverYear:  2023,
+	// 	IssueCoverMonth: 1,
+	// 	PublisherName:   "Some publisher",
+	// 	SpecialDetails:  2, // 2=Regular Edition
 	// }
 	// res, err := ccsc.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
@@ -224,33 +188,15 @@ func NewController(
 	//------------------------------------------------------------------------//
 
 	// // // FOR TESTING PURPOSES ONLY.
-	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
 	// r := &pdfbuilder.CCBuilderRequestDTO{
-	// 	CPSRN:                              "788346-26649-1-1000-testing",
-	// 	// ComicSubmissionDate:                     time.Now(),
-	// 	SeriesTitle:                        "Winter World",
-	// 	IssueVol:                           "Vol 1",
-	// 	IssueNo:                            "#1",
-	// 	IssueCoverYear:                     2023,
-	// 	IssueCoverMonth:                    1,
-	// 	PublisherName:                      "Some publisher",
-	// 	SpecialNotes:                       text,
-	// 	GradingNotes:                       text,
-	// 	CreasesFinding:                     "PR",
-	// 	TearsFinding:                       "FN",
-	// 	MissingPartsFinding:                "PR",
-	// 	StainsFinding:                      "NM",
-	// 	DistortionFinding:                  "NM",
-	// 	PaperQualityFinding:                "VF",
-	// 	SpineFinding:                       "FN",
-	// 	CoverFinding:                       "VG",
-	// 	GradingScale:                       1,
-	// 	ShowsSignsOfTamperingOrRestoration: true,
-	// 	OverallLetterGrade:                 "NM",
-	// 	IsOverallLetterGradeNearMintPlus:   true,
-	// 	UserFirstName:                      "Bartlomiej",
-	// 	UserLastName:                       "Miks",
-	// 	UserOrganizationName:               "Mika Software Corporation",
+	// 	CPSRN:           "788346-26649-1-1000",
+	// 	SeriesTitle:     "Winter World",
+	// 	IssueVol:        "Vol 1",
+	// 	IssueNo:         "#1",
+	// 	IssueCoverYear:  2023,
+	// 	IssueCoverMonth: 1,
+	// 	PublisherName:   "Some publisher",
+	// 	SpecialDetails:  2, // 2=Regular Edition
 	// }
 	// res, err := cc.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
@@ -272,7 +218,7 @@ func NewController(
 		CCIMGBuilder:          ccimg,
 		CCSCBuilder:           ccsc,
 		CCBuilder:             cc,
-		CCUGBuilder:             ccug,
+		CCUGBuilder:           ccug,
 		Emailer:               emailer,
 		UserStorer:            usr_storer,
 		ComicSubmissionStorer: sub_storer,
