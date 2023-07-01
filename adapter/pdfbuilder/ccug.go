@@ -18,7 +18,7 @@ import (
 	"github.com/LuchaComics/cps-backend/provider/uuid"
 )
 
-type CCBuilderRequestDTO struct {
+type CCUGBuilderRequestDTO struct {
 	CPSRN                              string                     `bson:"cpsrn" json:"cpSrn"`
 	Filename                           string                     `bson:"filename" json:"filename"`
 	SubmissionDate                     time.Time                  `bson:"submission_date" json:"submission_date"`
@@ -54,35 +54,35 @@ type CCBuilderRequestDTO struct {
 	SpecialDetailsOther                string                     `bson:"special_details_other" json:"special_details_other"`
 }
 
-// CCBuilder interface for building the "CPS C-Capsule Indie Mint Gem" edition document.
-type CCBuilder interface {
-	GeneratePDF(dto *CCBuilderRequestDTO) (*PDFBuilderResponseDTO, error)
+// CCUGBuilder interface for building the "CPS C-Capsule Indie Mint Gem" edition document.
+type CCUGBuilder interface {
+	GeneratePDF(dto *CCUGBuilderRequestDTO) (*PDFBuilderResponseDTO, error)
 }
 
-type ccBuilder struct {
+type ccugBuilder struct {
 	PDFTemplateFilePath string
 	DataDirectoryPath   string
 	UUID                uuid.Provider
 	Logger              *slog.Logger
 }
 
-func NewCCBuilder(cfg *c.Conf, logger *slog.Logger, uuidp uuid.Provider) CCBuilder {
+func NewCCUGBuilder(cfg *c.Conf, logger *slog.Logger, uuidp uuid.Provider) CCUGBuilder {
 	// Defensive code: Make sure we have access to the file before proceeding any further with the code.
-	logger.Debug("pdf builder for CC initializing...")
-	_, err := os.Stat(cfg.PDFBuilder.CCTemplatePath)
+	logger.Debug("pdf builder for CCUG initializing...")
+	_, err := os.Stat(cfg.PDFBuilder.CCUGTemplatePath)
 	if os.IsNotExist(err) {
 		log.Fatal(errors.New("file does not exist"))
 	}
 
-	return &ccBuilder{
-		PDFTemplateFilePath: cfg.PDFBuilder.CCTemplatePath,
+	return &ccugBuilder{
+		PDFTemplateFilePath: cfg.PDFBuilder.CCUGTemplatePath,
 		DataDirectoryPath:   cfg.PDFBuilder.DataDirectoryPath,
 		UUID:                uuidp,
 		Logger:              logger,
 	}
 }
 
-func (bdr *ccBuilder) GeneratePDF(r *CCBuilderRequestDTO) (*PDFBuilderResponseDTO, error) {
+func (bdr *ccugBuilder) GeneratePDF(r *CCUGBuilderRequestDTO) (*PDFBuilderResponseDTO, error) {
 	var err error
 
 	// Open our PDF invoice template and create clone it for the PDF invoice we will be building with.

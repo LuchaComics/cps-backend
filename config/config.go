@@ -49,6 +49,7 @@ type pdfBuilderConfig struct {
 	CCIMGTemplatePath string
 	CCSCTemplatePath  string
 	CCTemplatePath    string
+	CCUGTemplatePath    string
 	DataDirectoryPath string
 }
 
@@ -86,6 +87,7 @@ func New() *Conf {
 	c.PDFBuilder.CCIMGTemplatePath = getEnv("CPS_BACKEND_PDF_BUILDER_CCIMG_TEMPLATE_FILE_PATH", true)
 	c.PDFBuilder.CCSCTemplatePath = getEnv("CPS_BACKEND_PDF_BUILDER_CCSC_TEMPLATE_FILE_PATH", true)
 	c.PDFBuilder.CCTemplatePath = getEnv("CPS_BACKEND_PDF_BUILDER_CC_TEMPLATE_FILE_PATH", true)
+	c.PDFBuilder.CCUGTemplatePath = getEnv("CPS_BACKEND_PDF_BUILDER_CCUG_TEMPLATE_FILE_PATH", true)
 	c.PDFBuilder.DataDirectoryPath = getEnv("CPS_BACKEND_PDF_BUILDER_DATA_DIRECTORY_PATH", true)
 
 	c.Emailer.APIKey = getEnv("CPS_BACKEND_MAILGUN_API_KEY", true)

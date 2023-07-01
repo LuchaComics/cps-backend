@@ -46,6 +46,7 @@ type ComicSubmissionControllerImpl struct {
 	CCIMGBuilder          pdfbuilder.CCIMGBuilder
 	CCSCBuilder           pdfbuilder.CCSCBuilder
 	CCBuilder             pdfbuilder.CCBuilder
+	CCUGBuilder           pdfbuilder.CCUGBuilder
 	Emailer               mg.Emailer
 	Kmutex                kmutex.Provider
 	UserStorer            user_s.UserStorer
@@ -66,12 +67,17 @@ func NewController(
 	ccimg pdfbuilder.CCIMGBuilder,
 	ccsc pdfbuilder.CCSCBuilder,
 	cc pdfbuilder.CCBuilder,
+	ccug pdfbuilder.CCUGBuilder,
 	emailer mg.Emailer,
 	usr_storer user_s.UserStorer,
 	sub_storer submission_s.ComicSubmissionStorer,
 	org_storer organization_s.OrganizationStorer,
 ) ComicSubmissionController {
 	loggerp.Debug("submission controller initialization started...")
+
+	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
 
 	// // FOR TESTING PURPOSES ONLY.
 	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
@@ -106,12 +112,14 @@ func NewController(
 	// log.Println("===--->", res, err, "<---===")
 
 	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
 
 	// // // FOR TESTING PURPOSES ONLY.
 	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
 	// r := &pdfbuilder.PCBuilderRequestDTO{
 	// 	CPSRN:                              "788346-26649-1-1000-testing",
-	// 	ComicSubmissionDate:                     time.Now(),
+	// 	ComicSubmissionDate:                time.Now(),
 	// 	SeriesTitle:                        "Winter World",
 	// 	IssueVol:                           "Vol 1",
 	// 	IssueNo:                            "#1",
@@ -139,13 +147,15 @@ func NewController(
 	// res, err := pcb.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
 
-	// //------------------------------------------------------------------------//
-	//
+	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
+
 	// // // FOR TESTING PURPOSES ONLY.
 	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
 	// r := &pdfbuilder.CCIMGBuilderRequestDTO{
 	// 	CPSRN:                              "788346-26649-1-1000-testing",
-	// 	// ComicSubmissionDate:                     time.Now(),
+	// 	// ComicSubmissionDate:             time.Now(),
 	// 	SeriesTitle:                        "Winter World",
 	// 	IssueVol:                           "Vol 1",
 	// 	IssueNo:                            "#1",
@@ -173,8 +183,10 @@ func NewController(
 	// res, err := ccimg.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
 
-	// //------------------------------------------------------------------------//
-	//
+	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
+
 	// // // FOR TESTING PURPOSES ONLY.
 	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
 	// r := &pdfbuilder.CCSCBuilderRequestDTO{
@@ -206,8 +218,10 @@ func NewController(
 	// }
 	// res, err := ccsc.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
-	//
-	// // ------------------------------------------------------------------------//
+
+	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
 
 	// // // FOR TESTING PURPOSES ONLY.
 	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
@@ -241,7 +255,9 @@ func NewController(
 	// res, err := cc.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
 
-	// ------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
+	//------------------------------------------------------------------------//
 
 	s := &ComicSubmissionControllerImpl{
 		Config:                appCfg,
@@ -256,6 +272,7 @@ func NewController(
 		CCIMGBuilder:          ccimg,
 		CCSCBuilder:           ccsc,
 		CCBuilder:             cc,
+		CCUGBuilder:             ccug,
 		Emailer:               emailer,
 		UserStorer:            usr_storer,
 		ComicSubmissionStorer: sub_storer,

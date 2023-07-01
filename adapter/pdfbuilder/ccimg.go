@@ -86,13 +86,13 @@ func (bdr *ccimgBuilder) GeneratePDF(r *CCIMGBuilderRequestDTO) (*PDFBuilderResp
 	var err error
 
 	// Open our PDF invoice template and create clone it for the PDF invoice we will be building with.
-	pdf := gofpdf.New("L", "mm", "A6", "")
+	pdf := gofpdf.New("P", "mm", "A4", "")
 	tpl1 := gofpdi.ImportPage(pdf, bdr.PDFTemplateFilePath, 1, "/MediaBox")
 
 	pdf.AddPage()
 
 	// Draw imported template onto page
-	gofpdi.UseImportedTemplate(pdf, tpl1, 0, 0, 297, 210)
+	gofpdi.UseImportedTemplate(pdf, tpl1, 0, 0, 210, 300)
 
 	//
 	// CPS REGISTRY NUMBER

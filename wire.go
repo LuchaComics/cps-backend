@@ -61,6 +61,7 @@ func InitializeEvent() Application {
 		pdfbuilder.NewCCIMGBuilder,
 		pdfbuilder.NewCCSCBuilder,
 		pdfbuilder.NewCCBuilder,
+		pdfbuilder.NewCCUGBuilder,
 		user_s.NewDatastore,
 		user_c.NewController,
 		customer_c.NewController,
