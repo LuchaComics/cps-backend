@@ -299,12 +299,30 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 	case s_d.ServiceTypeCPSCapsule:
 		panic("IMPL")
 		//TODO: IMPLEMENT
-	case s_d.ServiceTypeCPSCapsuleIndieMintGem:
-		panic("IMPL")
-		//TODO: IMPLEMENT
 	case s_d.ServiceTypeCPSCapsuleSignatureCollection:
 		panic("IMPL")
 		//TODO: IMPLEMENT
+	case s_d.ServiceTypeCPSCapsuleIndieMintGem:
+		r := &pdfbuilder.CCIMGBuilderRequestDTO{
+			CPSRN:           m.CPSRN,
+			Filename:        fmt.Sprintf("%v.pdf", m.ID.Hex()),
+			SeriesTitle:     m.SeriesTitle,
+			IssueVol:        m.IssueVol,
+			IssueNo:         m.IssueNo,
+			IssueCoverYear:  m.IssueCoverYear,
+			IssueCoverMonth: m.IssueCoverMonth,
+			PublisherName:   publisherNameDisplay,
+			SpecialDetails:  m.SpecialDetails,
+		}
+		pdfResponse, err = c.CCIMGBuilder.GeneratePDF(r)
+		if err != nil {
+			c.Logger.Error("generate pdf error", slog.Any("error", err))
+			return nil, err
+		}
+		if pdfResponse == nil {
+			c.Logger.Error("generate pdf error does not return a response")
+			return nil, errors.New("no response from pdf generator")
+		}
 	default:
 		panic("UNSUPPORTED")
 	}

@@ -224,10 +224,10 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 
 	pdfResponse := &pdfbuilder.PDFBuilderResponseDTO{}
 
+	// The next following lines of code will create the PDF file gnerator
+	// request to be submitted into our PDF file generator to generate the data.
 	switch os.ServiceType {
 	case s_d.ServiceTypePreScreening:
-		// The next following lines of code will create the PDF file gnerator
-		// request to be submitted into our PDF file generator to generate the data.
 		r := &pdfbuilder.CBFFBuilderRequestDTO{
 			CPSRN:                              os.CPSRN,
 			Filename:                           fmt.Sprintf("%v.pdf", os.ID.Hex()),
@@ -271,8 +271,6 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			return nil, errors.New("no response from pdf generator")
 		}
 	case s_d.ServiceTypePedigree:
-		// The next following lines of code will create the PDF file gnerator
-		// request to be submitted into our PDF file generator to generate the data.
 		r := &pdfbuilder.PCBuilderRequestDTO{
 			CPSRN:                              os.CPSRN,
 			Filename:                           fmt.Sprintf("%v.pdf", os.ID.Hex()),
@@ -317,12 +315,34 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	case s_d.ServiceTypeCPSCapsule:
 		panic("IMPL")
 		//TODO: IMPLEMENT
-	case s_d.ServiceTypeCPSCapsuleIndieMintGem:
-		panic("IMPL")
-		//TODO: IMPLEMENT
 	case s_d.ServiceTypeCPSCapsuleSignatureCollection:
 		panic("IMPL")
 		//TODO: IMPLEMENT
+	case s_d.ServiceTypeCPSCapsuleIndieMintGem:
+		c.Logger.Debug("beginning to generate `ccimg` pdf")
+
+		// // FOR TESTING PURPOSES ONLY.
+		r := &pdfbuilder.CCIMGBuilderRequestDTO{
+			CPSRN:           os.CPSRN,
+			Filename:        fmt.Sprintf("%v.pdf", os.ID.Hex()),
+			SeriesTitle:     os.SeriesTitle,
+			IssueVol:        os.IssueVol,
+			IssueNo:         os.IssueNo,
+			IssueCoverYear:  os.IssueCoverYear,
+			IssueCoverMonth: os.IssueCoverMonth,
+			PublisherName:   publisherNameDisplay,
+			SpecialDetails:  os.SpecialDetails,
+		}
+		pdfResponse, err = c.CCIMGBuilder.GeneratePDF(r)
+		if err != nil {
+			c.Logger.Error("generate pdf error", slog.Any("error", err))
+			return nil, err
+		}
+		if pdfResponse == nil {
+			c.Logger.Error("generate pdf error does not return a response")
+			return nil, errors.New("no response from pdf generator")
+		}
+		c.Logger.Debug("finished generate `ccimg` pdf")
 	default:
 		panic("UNSUPPORTED")
 	}
@@ -333,7 +353,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	path := fmt.Sprintf("uploads/%v", pdfResponse.FileName)
 
 	c.Logger.Debug("S3 will upload...",
-		slog.String("path", path))
+		slog.String("path", path),
+		slog.String("filename", pdfResponse.FileName))
 
 	err = c.S3.UploadContent(ctx, path, pdfResponse.Content)
 	if err != nil {
