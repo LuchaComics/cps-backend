@@ -8,11 +8,20 @@ FROM golang:1.20.4-alpine as build-env
 # Create a directory for the app
 RUN mkdir /app
 
-# Copy all files from the current directory to the app directory
-COPY . /app
-
 # Set working directory
 WORKDIR /app
+
+# Special thanks to speeding up the docker builds using steps (1) (2) and (3) via:
+# https://stackoverflow.com/questions/50520103/speeding-up-go-builds-with-go-1-10-build-cache-in-docker-containers
+
+# (1) Copy your dependency list
+COPY go.mod go.sum ./
+
+# (2) Install dependencies
+RUN go mod download
+
+# (3) Copy all files from the current directory to the `/app` directory which we are currently in.
+COPY . .
 
 # Run command as described:
 # go build will build a 64bit Linux executable binary file named server in the current directory

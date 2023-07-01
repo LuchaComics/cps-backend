@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	// "log"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/slog"
@@ -42,6 +43,9 @@ type ComicSubmissionControllerImpl struct {
 	CPSRN                 cpsrn.Provider
 	CBFFBuilder           pdfbuilder.CBFFBuilder
 	PCBuilder             pdfbuilder.PCBuilder
+	CCIMGBuilder          pdfbuilder.CCIMGBuilder
+	CCSCBuilder           pdfbuilder.CCSCBuilder
+	CCBuilder             pdfbuilder.CCBuilder
 	Emailer               mg.Emailer
 	Kmutex                kmutex.Provider
 	UserStorer            user_s.UserStorer
@@ -59,6 +63,9 @@ func NewController(
 	cpsrnP cpsrn.Provider,
 	cbffb pdfbuilder.CBFFBuilder,
 	pcb pdfbuilder.PCBuilder,
+	ccimg pdfbuilder.CCIMGBuilder,
+	ccsc pdfbuilder.CCSCBuilder,
+	cc pdfbuilder.CCBuilder,
 	emailer mg.Emailer,
 	usr_storer user_s.UserStorer,
 	sub_storer submission_s.ComicSubmissionStorer,
@@ -132,7 +139,109 @@ func NewController(
 	// res, err := pcb.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
 
-	//------------------------------------------------------------------------//
+	// //------------------------------------------------------------------------//
+	//
+	// // // FOR TESTING PURPOSES ONLY.
+	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
+	// r := &pdfbuilder.CCIMGBuilderRequestDTO{
+	// 	CPSRN:                              "788346-26649-1-1000-testing",
+	// 	// ComicSubmissionDate:                     time.Now(),
+	// 	SeriesTitle:                        "Winter World",
+	// 	IssueVol:                           "Vol 1",
+	// 	IssueNo:                            "#1",
+	// 	IssueCoverYear:                     2023,
+	// 	IssueCoverMonth:                    1,
+	// 	PublisherName:                      "Some publisher",
+	// 	SpecialNotes:                       text,
+	// 	GradingNotes:                       text,
+	// 	CreasesFinding:                     "PR",
+	// 	TearsFinding:                       "FN",
+	// 	MissingPartsFinding:                "PR",
+	// 	StainsFinding:                      "NM",
+	// 	DistortionFinding:                  "NM",
+	// 	PaperQualityFinding:                "VF",
+	// 	SpineFinding:                       "FN",
+	// 	CoverFinding:                       "VG",
+	// 	GradingScale:                       1,
+	// 	ShowsSignsOfTamperingOrRestoration: true,
+	// 	OverallLetterGrade:                 "NM",
+	// 	IsOverallLetterGradeNearMintPlus:   true,
+	// 	UserFirstName:                      "Bartlomiej",
+	// 	UserLastName:                       "Miks",
+	// 	UserOrganizationName:               "Mika Software Corporation",
+	// }
+	// res, err := ccimg.GeneratePDF(r)
+	// log.Println("===--->", res, err, "<---===")
+
+	// //------------------------------------------------------------------------//
+	//
+	// // // FOR TESTING PURPOSES ONLY.
+	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
+	// r := &pdfbuilder.CCSCBuilderRequestDTO{
+	// 	CPSRN:                              "788346-26649-1-1000-testing",
+	// 	// ComicSubmissionDate:                     time.Now(),
+	// 	SeriesTitle:                        "Winter World",
+	// 	IssueVol:                           "Vol 1",
+	// 	IssueNo:                            "#1",
+	// 	IssueCoverYear:                     2023,
+	// 	IssueCoverMonth:                    1,
+	// 	PublisherName:                      "Some publisher",
+	// 	SpecialNotes:                       text,
+	// 	GradingNotes:                       text,
+	// 	CreasesFinding:                     "PR",
+	// 	TearsFinding:                       "FN",
+	// 	MissingPartsFinding:                "PR",
+	// 	StainsFinding:                      "NM",
+	// 	DistortionFinding:                  "NM",
+	// 	PaperQualityFinding:                "VF",
+	// 	SpineFinding:                       "FN",
+	// 	CoverFinding:                       "VG",
+	// 	GradingScale:                       1,
+	// 	ShowsSignsOfTamperingOrRestoration: true,
+	// 	OverallLetterGrade:                 "NM",
+	// 	IsOverallLetterGradeNearMintPlus:   true,
+	// 	UserFirstName:                      "Bartlomiej",
+	// 	UserLastName:                       "Miks",
+	// 	UserOrganizationName:               "Mika Software Corporation",
+	// }
+	// res, err := ccsc.GeneratePDF(r)
+	// log.Println("===--->", res, err, "<---===")
+	//
+	// // ------------------------------------------------------------------------//
+
+	// // // FOR TESTING PURPOSES ONLY.
+	// text := `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae`
+	// r := &pdfbuilder.CCBuilderRequestDTO{
+	// 	CPSRN:                              "788346-26649-1-1000-testing",
+	// 	// ComicSubmissionDate:                     time.Now(),
+	// 	SeriesTitle:                        "Winter World",
+	// 	IssueVol:                           "Vol 1",
+	// 	IssueNo:                            "#1",
+	// 	IssueCoverYear:                     2023,
+	// 	IssueCoverMonth:                    1,
+	// 	PublisherName:                      "Some publisher",
+	// 	SpecialNotes:                       text,
+	// 	GradingNotes:                       text,
+	// 	CreasesFinding:                     "PR",
+	// 	TearsFinding:                       "FN",
+	// 	MissingPartsFinding:                "PR",
+	// 	StainsFinding:                      "NM",
+	// 	DistortionFinding:                  "NM",
+	// 	PaperQualityFinding:                "VF",
+	// 	SpineFinding:                       "FN",
+	// 	CoverFinding:                       "VG",
+	// 	GradingScale:                       1,
+	// 	ShowsSignsOfTamperingOrRestoration: true,
+	// 	OverallLetterGrade:                 "NM",
+	// 	IsOverallLetterGradeNearMintPlus:   true,
+	// 	UserFirstName:                      "Bartlomiej",
+	// 	UserLastName:                       "Miks",
+	// 	UserOrganizationName:               "Mika Software Corporation",
+	// }
+	// res, err := cc.GeneratePDF(r)
+	// log.Println("===--->", res, err, "<---===")
+
+	// ------------------------------------------------------------------------//
 
 	s := &ComicSubmissionControllerImpl{
 		Config:                appCfg,
@@ -144,6 +253,9 @@ func NewController(
 		CPSRN:                 cpsrnP,
 		CBFFBuilder:           cbffb,
 		PCBuilder:             pcb,
+		CCIMGBuilder:          ccimg,
+		CCSCBuilder:           ccsc,
+		CCBuilder:             cc,
 		Emailer:               emailer,
 		UserStorer:            usr_storer,
 		ComicSubmissionStorer: sub_storer,

@@ -46,6 +46,9 @@ type awsConfig struct {
 type pdfBuilderConfig struct {
 	CBFFTemplatePath  string
 	PCTemplatePath    string
+	CCIMGTemplatePath string
+	CCSCTemplatePath  string
+	CCTemplatePath    string
 	DataDirectoryPath string
 }
 
@@ -80,6 +83,9 @@ func New() *Conf {
 
 	c.PDFBuilder.CBFFTemplatePath = getEnv("CPS_BACKEND_PDF_BUILDER_CBFF_TEMPLATE_FILE_PATH", true)
 	c.PDFBuilder.PCTemplatePath = getEnv("CPS_BACKEND_PDF_BUILDER_PC_TEMPLATE_FILE_PATH", true)
+	c.PDFBuilder.CCIMGTemplatePath = getEnv("CPS_BACKEND_PDF_BUILDER_CCIMG_TEMPLATE_FILE_PATH", true)
+	c.PDFBuilder.CCSCTemplatePath = getEnv("CPS_BACKEND_PDF_BUILDER_CCSC_TEMPLATE_FILE_PATH", true)
+	c.PDFBuilder.CCTemplatePath = getEnv("CPS_BACKEND_PDF_BUILDER_CC_TEMPLATE_FILE_PATH", true)
 	c.PDFBuilder.DataDirectoryPath = getEnv("CPS_BACKEND_PDF_BUILDER_DATA_DIRECTORY_PATH", true)
 
 	c.Emailer.APIKey = getEnv("CPS_BACKEND_MAILGUN_API_KEY", true)
