@@ -314,6 +314,17 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			c.Logger.Error("generate pdf error does not return a response")
 			return nil, errors.New("no response from pdf generator")
 		}
+	case s_d.ServiceTypeCPSCapsule:
+		panic("IMPL")
+		//TODO: IMPLEMENT
+	case s_d.ServiceTypeCPSCapsuleIndieMintGem:
+		panic("IMPL")
+		//TODO: IMPLEMENT
+	case s_d.ServiceTypeCPSCapsuleSignatureCollection:
+		panic("IMPL")
+		//TODO: IMPLEMENT
+	default:
+		panic("UNSUPPORTED")
 	}
 
 	// The next few lines will upload our PDF to our remote storage. Once the
