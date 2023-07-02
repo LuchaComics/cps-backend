@@ -209,6 +209,7 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 
 	switch m.ServiceType {
 	case s_d.ServiceTypePreScreening:
+		c.Logger.Debug("beginning to generate `pre-screening` pdf")
 		// The next following lines of code will create the PDF file gnerator
 		// request to be submitted into our PDF file generator to generate the data.
 		r := &pdfbuilder.CBFFBuilderRequestDTO{
@@ -252,7 +253,9 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			c.Logger.Error("generate pdf error does not return a response")
 			return nil, errors.New("no response from pdf generator")
 		}
+		c.Logger.Debug("finished generate `pre-screening` pdf")
 	case s_d.ServiceTypePedigree:
+		c.Logger.Debug("beginning to generate `pedigree` pdf")
 		// The next following lines of code will create the PDF file gnerator
 		// request to be submitted into our PDF file generator to generate the data.
 		r := &pdfbuilder.PCBuilderRequestDTO{
@@ -296,7 +299,9 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			c.Logger.Error("generate pdf error does not return a response")
 			return nil, errors.New("no response from pdf generator")
 		}
+		c.Logger.Debug("finished generate `pedigree` pdf")
 	case s_d.ServiceTypeCPSCapsule:
+		c.Logger.Debug("beginning to generate `cc` pdf")
 		r := &pdfbuilder.CCBuilderRequestDTO{
 			CPSRN:                            m.CPSRN,
 			Filename:                         fmt.Sprintf("%v.pdf", m.ID.Hex()),
@@ -324,7 +329,9 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			c.Logger.Error("generate pdf error does not return a response")
 			return nil, errors.New("no response from pdf generator")
 		}
+		c.Logger.Debug("finished generate `cc` pdf")
 	case s_d.ServiceTypeCPSCapsuleSignatureCollection:
+		c.Logger.Debug("beginning to generate `ccsc` pdf")
 		r := &pdfbuilder.CCSCBuilderRequestDTO{
 			CPSRN:                            m.CPSRN,
 			Filename:                         fmt.Sprintf("%v.pdf", m.ID.Hex()),
@@ -352,7 +359,9 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			c.Logger.Error("generate pdf error does not return a response")
 			return nil, errors.New("no response from pdf generator")
 		}
+		c.Logger.Debug("finished generate `ccsc` pdf")
 	case s_d.ServiceTypeCPSCapsuleIndieMintGem:
+		c.Logger.Debug("beginning to generate `ccimg` pdf")
 		r := &pdfbuilder.CCIMGBuilderRequestDTO{
 			CPSRN:                            m.CPSRN,
 			Filename:                         fmt.Sprintf("%v.pdf", m.ID.Hex()),
@@ -380,6 +389,37 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			c.Logger.Error("generate pdf error does not return a response")
 			return nil, errors.New("no response from pdf generator")
 		}
+		c.Logger.Debug("finished generate `ccimg` pdf")
+	case s_d.ServiceTypeCPSCapsuleYouGrade:
+		c.Logger.Debug("beginning to generate `ccug` pdf")
+		r := &pdfbuilder.CCUGBuilderRequestDTO{
+			CPSRN:                            m.CPSRN,
+			Filename:                         fmt.Sprintf("%v.pdf", m.ID.Hex()),
+			SeriesTitle:                      m.SeriesTitle,
+			IssueVol:                         m.IssueVol,
+			IssueNo:                          m.IssueNo,
+			IssueCoverYear:                   m.IssueCoverYear,
+			IssueCoverMonth:                  m.IssueCoverMonth,
+			PublisherName:                    publisherNameDisplay,
+			SpecialNotes:                     modifiedSpecialNotes,
+			SpecialDetails:                   m.SpecialDetails,
+			SpecialDetailsOther:              m.SpecialDetailsOther,
+			GradingScale:                     m.GradingScale,
+			OverallLetterGrade:               m.OverallLetterGrade,
+			IsOverallLetterGradeNearMintPlus: m.IsOverallLetterGradeNearMintPlus,
+			OverallNumberGrade:               m.OverallNumberGrade,
+			CpsPercentageGrade:               m.CpsPercentageGrade,
+		}
+		pdfResponse, err = c.CCUGBuilder.GeneratePDF(r)
+		if err != nil {
+			c.Logger.Error("generate pdf error", slog.Any("error", err))
+			return nil, err
+		}
+		if pdfResponse == nil {
+			c.Logger.Error("generate pdf error does not return a response")
+			return nil, errors.New("no response from pdf generator")
+		}
+		c.Logger.Debug("finished generate `ccug` pdf")
 	default:
 		panic("UNSUPPORTED")
 	}

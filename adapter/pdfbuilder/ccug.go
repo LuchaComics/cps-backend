@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 
 	// "strings"
 	"time"
@@ -16,6 +17,7 @@ import (
 
 	s_d "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	c "github.com/LuchaComics/cps-backend/config"
+	"github.com/LuchaComics/cps-backend/config/constants"
 	"github.com/LuchaComics/cps-backend/provider/uuid"
 )
 
@@ -178,6 +180,63 @@ func (bdr *ccugBuilder) GeneratePDF(r *CCUGBuilderRequestDTO) (*PDFBuilderRespon
 	title := fmt.Sprintf("%v %v %v", r.SeriesTitle, r.IssueVol, r.IssueNo)
 	pdf.SetXY(115, 65)
 	pdf.Cell(0, 0, title)
+
+	//
+	// GRADING
+	//
+
+	switch r.GradingScale {
+	case s_d.GradingScaleLetter:
+		// If user has chosen the "NM+" option then run the following...
+		if r.IsOverallLetterGradeNearMintPlus {
+			pdf.SetFont("Helvetica", "", 30)
+			pdf.SetXY(26, 57)
+			pdf.Cell(0, 0, "NM")
+
+			pdf.SetFont("Helvetica", "", 10)
+			pdf.SetXY(22.5, 65)
+			pdf.Cell(0, 0, "Near Mint Plus")
+
+			pdf.SetFont("Helvetica", "B", 22) // Start subscript.
+			pdf.SetXY(41, 50)
+			pdf.Cell(0, 0, "+")
+		} else {
+			pdf.SetFont("Helvetica", "", 30)
+			pdf.SetXY(27, 56)
+			pdf.Cell(0, 0, strings.ToUpper(r.OverallLetterGrade))
+
+			pdf.SetFont("Helvetica", "", 14)
+			switch r.OverallLetterGrade {
+			case "pr", "PR":
+				fallthrough
+			case "fr", "FR":
+				fallthrough
+			case "fn", "FN":
+				fallthrough
+			case "gd", "GD":
+				// CASE 1 OF 2: One word description. (Ex: "Fine")
+				pdf.SetXY(29, 65)
+				pdf.Cell(0, 0, constants.SubmissionOverallLetterGrades[r.OverallLetterGrade])
+			case "vg", "VG":
+				fallthrough
+			case "vf", "VF":
+				fallthrough
+			case "nm", "NM":
+				// CASE 1 OF 2: Two word description. (Ex: "Very Fine")
+				pdf.SetXY(23, 65)
+				pdf.Cell(0, 0, constants.SubmissionOverallLetterGrades[r.OverallLetterGrade])
+			}
+		}
+
+		// case s_d.GradingScaleNumber:
+		// 	pdf.SetXY(171, 153.5)
+		// 	pdf.Cell(0, 0, fmt.Sprintf("%v", r.OverallNumberGrade))
+		// case s_d.GradingScaleCPSPercentage:
+		// 	pdf.SetXY(171, 153.5)
+		// 	pdf.Cell(0, 0, fmt.Sprintf("%v%%", r.CpsPercentageGrade))
+	}
+
+	pdf.SetFont("Helvetica", "", 10) // Set back the previous font.
 
 	////
 	//// Generate the file and save it to the file.

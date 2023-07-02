@@ -21,6 +21,7 @@ const (
 	ServiceTypeCPSCapsule                         = 3
 	ServiceTypeCPSCapsuleIndieMintGem             = 4
 	ServiceTypeCPSCapsuleSignatureCollection      = 5
+	ServiceTypeCPSCapsuleYouGrade                 = 6
 	FindingPoor                                   = 1
 	FindingFair                                   = 2
 	FindingGood                                   = 3
