@@ -169,16 +169,20 @@ func NewController(
 	//------------------------------------------------------------------------//
 	//------------------------------------------------------------------------//
 
-	// // // FOR TESTING PURPOSES ONLY.
+	// // FOR TESTING PURPOSES ONLY.
 	// r := &pdfbuilder.CCSCBuilderRequestDTO{
-	// 	CPSRN:           "788346-26649-1-1000",
-	// 	SeriesTitle:     "Winter World",
-	// 	IssueVol:        "Vol 1",
-	// 	IssueNo:         "#1",
-	// 	IssueCoverYear:  2023,
-	// 	IssueCoverMonth: 1,
-	// 	PublisherName:   "Some publisher",
-	// 	SpecialDetails:  2, // 2=Regular Edition
+	// 	CPSRN:                              "788346-26649-1-1000",
+	// 	SeriesTitle:                        "Winter World",
+	// 	IssueVol:                           "Vol 1",
+	// 	IssueNo:                            "#1",
+	// 	IssueCoverYear:                     2023,
+	// 	IssueCoverMonth:                    1,
+	// 	PublisherName:                      "Some publisher",
+	// 	SpecialDetails:                     2, // 2=Regular Edition
+	// 	GradingScale:                       1,
+	// 	ShowsSignsOfTamperingOrRestoration: true,
+	// 	OverallLetterGrade:                 "NM",
+	// 	IsOverallLetterGradeNearMintPlus:   true,
 	// }
 	// res, err := ccsc.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
@@ -189,14 +193,19 @@ func NewController(
 
 	// // // FOR TESTING PURPOSES ONLY.
 	// r := &pdfbuilder.CCBuilderRequestDTO{
-	// 	CPSRN:           "788346-26649-1-1000",
-	// 	SeriesTitle:     "Winter World",
-	// 	IssueVol:        "Vol 1",
-	// 	IssueNo:         "#1",
-	// 	IssueCoverYear:  2023,
-	// 	IssueCoverMonth: 1,
-	// 	PublisherName:   "Some publisher",
-	// 	SpecialDetails:  2, // 2=Regular Edition
+	// 	CPSRN:                            "788346-26649-1-1000",
+	// 	SeriesTitle:                      "Winter World",
+	// 	IssueVol:                         "Vol 1",
+	// 	IssueNo:                          "#1",
+	// 	IssueCoverYear:                   2023,
+	// 	IssueCoverMonth:                  1,
+	// 	PublisherName:                    "Some publisher",
+	// 	SpecialDetails:                   2, // 2=Regular Edition
+	// 	GradingScale:                     1,
+	// 	OverallLetterGrade:               "vf",
+	// 	IsOverallLetterGradeNearMintPlus: false,
+	// 	OverallNumberGrade:               10,
+	// 	CpsPercentageGrade:               100,
 	// }
 	// res, err := cc.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")

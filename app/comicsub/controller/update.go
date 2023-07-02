@@ -149,6 +149,19 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	os.OrganizationName = org.Name
 
 	//
+	// Signatures.
+	//
+
+	var modifiedSpecialNotes = ns.SpecialNotes
+	if len(ns.Signatures) > 0 {
+		var str string
+		for _, s := range ns.Signatures {
+			str += fmt.Sprintf("Role: %v, Signed by: %v\r", s.Role, s.Name)
+		}
+		modifiedSpecialNotes = fmt.Sprintf("%v %v", str, ns.SpecialNotes)
+	}
+
+	//
 	// Update records in database.
 	//
 
@@ -165,7 +178,7 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	os.IssueCoverMonth = ns.IssueCoverMonth
 	os.PublisherName = ns.PublisherName
 	os.PublisherNameOther = ns.PublisherNameOther
-	os.SpecialNotes = ns.SpecialNotes
+	os.SpecialNotes = modifiedSpecialNotes
 	os.GradingNotes = ns.GradingNotes
 	os.IsCpsIndieMintGem = ns.IsCpsIndieMintGem
 	os.CreasesFinding = ns.CreasesFinding
@@ -238,7 +251,7 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			IssueCoverYear:                     os.IssueCoverYear,
 			IssueCoverMonth:                    os.IssueCoverMonth,
 			PublisherName:                      publisherNameDisplay,
-			SpecialNotes:                       os.SpecialNotes,
+			SpecialNotes:                       modifiedSpecialNotes,
 			GradingNotes:                       os.GradingNotes,
 			CreasesFinding:                     os.CreasesFinding,
 			TearsFinding:                       os.TearsFinding,
@@ -281,7 +294,7 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			IssueCoverYear:                     os.IssueCoverYear,
 			IssueCoverMonth:                    os.IssueCoverMonth,
 			PublisherName:                      publisherNameDisplay,
-			SpecialNotes:                       os.SpecialNotes,
+			SpecialNotes:                       modifiedSpecialNotes,
 			GradingNotes:                       os.GradingNotes,
 			CreasesFinding:                     os.CreasesFinding,
 			TearsFinding:                       os.TearsFinding,
@@ -313,25 +326,82 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			return nil, errors.New("no response from pdf generator")
 		}
 	case s_d.ServiceTypeCPSCapsule:
-		panic("IMPL")
-		//TODO: IMPLEMENT
+		r := &pdfbuilder.CCBuilderRequestDTO{
+			CPSRN:                            os.CPSRN,
+			Filename:                         fmt.Sprintf("%v.pdf", os.ID.Hex()),
+			SeriesTitle:                      os.SeriesTitle,
+			IssueVol:                         os.IssueVol,
+			IssueNo:                          os.IssueNo,
+			IssueCoverYear:                   os.IssueCoverYear,
+			IssueCoverMonth:                  os.IssueCoverMonth,
+			PublisherName:                    publisherNameDisplay,
+			SpecialNotes:                     modifiedSpecialNotes,
+			SpecialDetails:                   os.SpecialDetails,
+			SpecialDetailsOther:              os.SpecialDetailsOther,
+			GradingScale:                     os.GradingScale,
+			OverallLetterGrade:               os.OverallLetterGrade,
+			IsOverallLetterGradeNearMintPlus: os.IsOverallLetterGradeNearMintPlus,
+			OverallNumberGrade:               os.OverallNumberGrade,
+			CpsPercentageGrade:               os.CpsPercentageGrade,
+		}
+		pdfResponse, err = c.CCBuilder.GeneratePDF(r)
+		if err != nil {
+			c.Logger.Error("generate pdf error", slog.Any("error", err))
+			return nil, err
+		}
+		if pdfResponse == nil {
+			c.Logger.Error("generate pdf error does not return a response")
+			return nil, errors.New("no response from pdf generator")
+		}
 	case s_d.ServiceTypeCPSCapsuleSignatureCollection:
-		panic("IMPL")
-		//TODO: IMPLEMENT
+		r := &pdfbuilder.CCSCBuilderRequestDTO{
+			CPSRN:                            os.CPSRN,
+			Filename:                         fmt.Sprintf("%v.pdf", os.ID.Hex()),
+			SeriesTitle:                      os.SeriesTitle,
+			IssueVol:                         os.IssueVol,
+			IssueNo:                          os.IssueNo,
+			IssueCoverYear:                   os.IssueCoverYear,
+			IssueCoverMonth:                  os.IssueCoverMonth,
+			PublisherName:                    publisherNameDisplay,
+			SpecialNotes:                     modifiedSpecialNotes,
+			SpecialDetails:                   os.SpecialDetails,
+			SpecialDetailsOther:              os.SpecialDetailsOther,
+			GradingScale:                     os.GradingScale,
+			OverallLetterGrade:               os.OverallLetterGrade,
+			IsOverallLetterGradeNearMintPlus: os.IsOverallLetterGradeNearMintPlus,
+			OverallNumberGrade:               os.OverallNumberGrade,
+			CpsPercentageGrade:               os.CpsPercentageGrade,
+		}
+		pdfResponse, err = c.CCSCBuilder.GeneratePDF(r)
+		if err != nil {
+			c.Logger.Error("generate pdf error", slog.Any("error", err))
+			return nil, err
+		}
+		if pdfResponse == nil {
+			c.Logger.Error("generate pdf error does not return a response")
+			return nil, errors.New("no response from pdf generator")
+		}
 	case s_d.ServiceTypeCPSCapsuleIndieMintGem:
 		c.Logger.Debug("beginning to generate `ccimg` pdf")
 
 		// // FOR TESTING PURPOSES ONLY.
 		r := &pdfbuilder.CCIMGBuilderRequestDTO{
-			CPSRN:           os.CPSRN,
-			Filename:        fmt.Sprintf("%v.pdf", os.ID.Hex()),
-			SeriesTitle:     os.SeriesTitle,
-			IssueVol:        os.IssueVol,
-			IssueNo:         os.IssueNo,
-			IssueCoverYear:  os.IssueCoverYear,
-			IssueCoverMonth: os.IssueCoverMonth,
-			PublisherName:   publisherNameDisplay,
-			SpecialDetails:  os.SpecialDetails,
+			CPSRN:                            os.CPSRN,
+			Filename:                         fmt.Sprintf("%v.pdf", os.ID.Hex()),
+			SeriesTitle:                      os.SeriesTitle,
+			IssueVol:                         os.IssueVol,
+			IssueNo:                          os.IssueNo,
+			IssueCoverYear:                   os.IssueCoverYear,
+			IssueCoverMonth:                  os.IssueCoverMonth,
+			PublisherName:                    publisherNameDisplay,
+			SpecialNotes:                     modifiedSpecialNotes,
+			SpecialDetails:                   os.SpecialDetails,
+			SpecialDetailsOther:              os.SpecialDetailsOther,
+			GradingScale:                     os.GradingScale,
+			OverallLetterGrade:               os.OverallLetterGrade,
+			IsOverallLetterGradeNearMintPlus: os.IsOverallLetterGradeNearMintPlus,
+			OverallNumberGrade:               os.OverallNumberGrade,
+			CpsPercentageGrade:               os.CpsPercentageGrade,
 		}
 		pdfResponse, err = c.CCIMGBuilder.GeneratePDF(r)
 		if err != nil {
