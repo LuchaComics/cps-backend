@@ -224,10 +224,10 @@ func NewController(
 	// 	IssueCoverMonth:                  1,
 	// 	PublisherName:                    "Some publisher",
 	// 	SpecialDetails:                   2, // 2=Regular Edition
-	// 	GradingScale:                     1,
+	// 	GradingScale:                     3, // 1=Letter 2=Number 3=CPS
 	// 	OverallLetterGrade:               "vf",
 	// 	IsOverallLetterGradeNearMintPlus: false,
-	// 	OverallNumberGrade:               10,
+	// 	OverallNumberGrade:               7,
 	// 	CpsPercentageGrade:               100,
 	// }
 	// res, err := ccug.GeneratePDF(r)

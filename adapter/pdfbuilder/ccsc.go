@@ -171,6 +171,27 @@ func (bdr *ccscBuilder) GeneratePDF(r *CCSCBuilderRequestDTO) (*PDFBuilderRespon
 	//
 
 	switch r.GradingScale {
+	case s_d.GradingScaleCPSPercentage:
+		pdf.SetFont("Helvetica", "", 24)
+		if r.CpsPercentageGrade <= 9 {
+			pdf.SetXY(29, 59)
+			pdf.Cell(0, 0, fmt.Sprintf("%v%%", r.CpsPercentageGrade))
+		} else if r.CpsPercentageGrade <= 99 && r.CpsPercentageGrade > 9 {
+			pdf.SetXY(27, 59)
+			pdf.Cell(0, 0, fmt.Sprintf("%v%%", r.CpsPercentageGrade))
+		} else {
+			pdf.SetXY(24, 59)
+			pdf.Cell(0, 0, fmt.Sprintf("%v%%", r.CpsPercentageGrade))
+		}
+	case s_d.GradingScaleNumber:
+		pdf.SetFont("Helvetica", "", 60)
+		if r.OverallNumberGrade == 10 {
+			pdf.SetXY(21.5, 59)
+			pdf.Cell(0, 0, fmt.Sprintf("%v", r.OverallNumberGrade))
+		} else {
+			pdf.SetXY(28, 59)
+			pdf.Cell(0, 0, fmt.Sprintf("%v", r.OverallNumberGrade))
+		}
 	case s_d.GradingScaleLetter:
 		// If user has chosen the "NM+" option then run the following...
 		if r.IsOverallLetterGradeNearMintPlus {
