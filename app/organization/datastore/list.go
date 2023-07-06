@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/exp/slog"
 )
 
 func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *OrganizationListFilter) (*OrganizationListResult, error) {
@@ -27,11 +28,24 @@ func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *Organiza
 	if f.ExcludeArchived {
 		filter["status"] = bson.M{"$ne": OrganizationArchivedStatus} // Do not list archived items! This code
 	}
+	if f.Status != 0 {
+		filter["status"] = f.Status
+	}
+
+	impl.Logger.Debug("listing filter:",
+		slog.Any("filter", filter))
 
 	// Include additional filters for our cursor-based pagination pertaining to sorting and limit.
 	options := options.Find().
 		SetSort(bson.M{f.SortField: f.SortOrder}).
 		SetLimit(f.PageSize)
+
+	// Include Full-text search
+	if f.SearchText != "" {
+		filter["$text"] = bson.M{"$search": f.SearchText}
+		options.SetProjection(bson.M{"score": bson.M{"$meta": "textScore"}})
+		options.SetSort(bson.D{{"score", bson.M{"$meta": "textScore"}}})
+	}
 
 	// Execute the query
 	cursor, err := impl.Collection.Find(ctx, filter, options)
@@ -40,7 +54,7 @@ func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *Organiza
 	}
 	defer cursor.Close(ctx)
 
-	// var results = []*Organization{}
+	// var results = []*ComicSubmission{}
 	// if err = cursor.All(ctx, &results); err != nil {
 	// 	panic(err)
 	// }

@@ -2,8 +2,10 @@ package datastore
 
 import (
 	"context"
+	"log"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/exp/slog"
@@ -143,7 +145,9 @@ type ComicSubmissionListFilter struct {
 	UserID            primitive.ObjectID
 	UserEmail         string
 	CreatedByUserRole int8
+	Status            int8
 	ExcludeArchived   bool
+	SearchText        string
 }
 
 type SubmissionUser struct {
@@ -204,6 +208,26 @@ type ComicSubmissionStorerImpl struct {
 func NewDatastore(appCfg *c.Conf, loggerp *slog.Logger, client *mongo.Client) ComicSubmissionStorer {
 	// ctx := context.Background()
 	uc := client.Database(appCfg.DB.Name).Collection("comic_submissions")
+
+	// The following few lines of code will create the index for our app for this
+	// colleciton.
+	indexModel := mongo.IndexModel{
+		Keys: bson.D{
+			{"organization_name", "text"},
+			{"cpsrn", "text"},
+			{"item", "text"},
+			{"publisher_name_other", "text"},
+			{"special_notes", "text"},
+			{"grading_notes", "text"},
+			{"special_details_other", "text"},
+		},
+	}
+	_, err := uc.Indexes().CreateOne(context.TODO(), indexModel)
+	if err != nil {
+		// It is important that we crash the app on startup to meet the
+		// requirements of `google/wire` framework.
+		log.Fatal(err)
+	}
 
 	s := &ComicSubmissionStorerImpl{
 		Logger:     loggerp,

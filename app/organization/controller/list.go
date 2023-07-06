@@ -25,6 +25,15 @@ func (c *OrganizationControllerImpl) ListByFilter(ctx context.Context, f *domain
 	}
 
 	c.Logger.Debug("fetching organizations now...", slog.Any("userID", userID))
+	c.Logger.Debug("listing using filter options:",
+		slog.Any("OrganizationID", f.OrganizationID),
+		slog.Any("Cursor", f.Cursor),
+		slog.Int64("PageSize", f.PageSize),
+		slog.String("SortField", f.SortField),
+		slog.Int("SortOrder", int(f.SortOrder)),
+		slog.Any("Status", f.Status),
+		slog.String("SearchText", f.SearchText),
+		slog.Bool("ExcludeArchived", f.ExcludeArchived))
 
 	m, err := c.OrganizationStorer.ListByFilter(ctx, f)
 	if err != nil {

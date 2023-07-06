@@ -7,3 +7,5 @@ Note: Brochure Site - https://cpscapsule.com
 
 - https://stephenn.com/2023/06/gopher-wrangling.-effective-error-handling-in-go/
 https://github.com/golang/go/wiki/CodeReviewComments#initialisms
+
+https://github.com/golang/go/wiki/CodeReviewComments#initialisms

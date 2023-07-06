@@ -25,6 +25,16 @@ func (c *ComicSubmissionControllerImpl) ListByFilter(ctx context.Context, f *dom
 			slog.Any("user_role", userRole))
 	}
 
+	c.Logger.Debug("listing using filter options:",
+		slog.Any("OrganizationID", f.OrganizationID),
+		slog.Any("Cursor", f.Cursor),
+		slog.Int64("PageSize", f.PageSize),
+		slog.String("SortField", f.SortField),
+		slog.Int("SortOrder", int(f.SortOrder)),
+		slog.Any("Status", f.Status),
+		slog.String("SearchText", f.SearchText),
+		slog.Bool("ExcludeArchived", f.ExcludeArchived))
+
 	m, err := c.ComicSubmissionStorer.ListByFilter(ctx, f)
 	if err != nil {
 		c.Logger.Error("database list by filter error", slog.Any("error", err))

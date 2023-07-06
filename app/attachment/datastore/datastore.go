@@ -2,8 +2,10 @@ package datastore
 
 import (
 	"context"
+	"log"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/exp/slog"
@@ -86,6 +88,23 @@ type AttachmentStorerImpl struct {
 func NewDatastore(appCfg *c.Conf, loggerp *slog.Logger, client *mongo.Client) AttachmentStorer {
 	// ctx := context.Background()
 	uc := client.Database(appCfg.DB.Name).Collection("attachments")
+
+	// The following few lines of code will create the index for our app for this
+	// colleciton.
+	indexModel := mongo.IndexModel{
+		Keys: bson.D{
+			{"organization_name", "text"},
+			{"name", "text"},
+			{"description", "text"},
+			{"filename", "text"},
+		},
+	}
+	_, err := uc.Indexes().CreateOne(context.TODO(), indexModel)
+	if err != nil {
+		// It is important that we crash the app on startup to meet the
+		// requirements of `google/wire` framework.
+		log.Fatal(err)
+	}
 
 	s := &AttachmentStorerImpl{
 		Logger:     loggerp,

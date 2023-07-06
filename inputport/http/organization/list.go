@@ -43,6 +43,17 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 		f.PageSize = pageSize
 	}
 
+	searchText := query.Get("search")
+	if searchText != "" {
+		f.SearchText = searchText
+	}
+
+	statusStr := query.Get("status")
+	if statusStr != "" {
+		status, _ := strconv.ParseInt(statusStr, 10, 64)
+		f.Status = int8(status)
+	}
+
 	m, err := h.Controller.ListByFilter(ctx, f)
 	if err != nil {
 		httperror.ResponseError(w, err)

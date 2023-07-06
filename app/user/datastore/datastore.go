@@ -2,7 +2,7 @@ package datastore
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -134,16 +134,24 @@ func NewDatastore(appCfg *c.Conf, loggerp *slog.Logger, client *mongo.Client) Us
 	// colleciton.
 	indexModel := mongo.IndexModel{
 		Keys: bson.D{
+			{"organization_name", "text"},
 			{"name", "text"},
-			{"email", "text"},
 			{"lexical_name", "text"},
+			{"email", "text"},
+			{"phone", "text"},
+			{"country", "text"},
+			{"region", "text"},
+			{"city", "text"},
+			{"postal_code", "text"},
+			{"address_line_1", "text"},
 		},
 	}
-	name, err := uc.Indexes().CreateOne(context.TODO(), indexModel)
+	_, err := uc.Indexes().CreateOne(context.TODO(), indexModel)
 	if err != nil {
-		panic(err)
+		// It is important that we crash the app on startup to meet the
+		// requirements of `google/wire` framework.
+		log.Fatal(err)
 	}
-	fmt.Println("Name of Index Created: " + name)
 
 	s := &UserStorerImpl{
 		Logger:     loggerp,
