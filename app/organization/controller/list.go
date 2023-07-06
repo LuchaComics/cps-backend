@@ -32,6 +32,7 @@ func (c *OrganizationControllerImpl) ListByFilter(ctx context.Context, f *domain
 		slog.String("SortField", f.SortField),
 		slog.Int("SortOrder", int(f.SortOrder)),
 		slog.Any("Status", f.Status),
+		slog.Time("CreatedAtGTE", f.CreatedAtGTE),
 		slog.String("SearchText", f.SearchText),
 		slog.Bool("ExcludeArchived", f.ExcludeArchived))
 

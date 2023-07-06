@@ -31,6 +31,9 @@ func (impl OrganizationStorerImpl) ListByFilter(ctx context.Context, f *Organiza
 	if f.Status != 0 {
 		filter["status"] = f.Status
 	}
+	if !f.CreatedAtGTE.IsZero() {
+		filter["created_at"] = bson.M{"$gt": f.CreatedAtGTE} // Add the cursor condition to the filter
+	}
 
 	impl.Logger.Debug("listing filter:",
 		slog.Any("filter", filter))

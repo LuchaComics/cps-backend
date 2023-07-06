@@ -7,6 +7,7 @@ import (
 
 	sub_s "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
+	"github.com/bartmika/timekit"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -72,6 +73,15 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	if statusStr != "" {
 		status, _ := strconv.ParseInt(statusStr, 10, 64)
 		f.Status = int8(status)
+	}
+	createdAtGTEStr := query.Get("created_at_gte")
+	if createdAtGTEStr != "" {
+		createdAtGTE, err := timekit.ParseJavaScriptTimeString(createdAtGTEStr)
+		if err != nil {
+			httperror.ResponseError(w, err)
+			return
+		}
+		f.CreatedAtGTE = createdAtGTE
 	}
 
 	// Fet

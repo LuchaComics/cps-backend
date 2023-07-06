@@ -7,6 +7,7 @@ import (
 
 	sub_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
+	"github.com/bartmika/timekit"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -74,6 +75,28 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		f.OrganizationID = organizationID
+	}
+
+	statusStr := query.Get("status")
+	if statusStr != "" {
+		status, _ := strconv.ParseInt(statusStr, 10, 64)
+		f.Status = int8(status)
+	}
+
+	roleStr := query.Get("role")
+	if roleStr != "" {
+		role, _ := strconv.ParseInt(roleStr, 10, 64)
+		f.Role = int8(role)
+	}
+
+	createdAtGTEStr := query.Get("created_at_gte")
+	if createdAtGTEStr != "" {
+		createdAtGTE, err := timekit.ParseJavaScriptTimeString(createdAtGTEStr)
+		if err != nil {
+			httperror.ResponseError(w, err)
+			return
+		}
+		f.CreatedAtGTE = createdAtGTE
 	}
 
 	// Perform our database operation.

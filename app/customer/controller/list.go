@@ -18,8 +18,9 @@ func (c *CustomerControllerImpl) ListByFilter(ctx context.Context, f *user_s.Use
 	// Apply filtering based on ownership and role.
 	if userRole == user_s.UserRoleRetailer {
 		f.OrganizationID = organizationID
-		f.Role = user_s.UserRoleCustomer
 	}
+
+	f.Role = user_s.UserRoleCustomer // Manditory
 
 	m, err := c.UserStorer.ListByFilter(ctx, f)
 	if err != nil {

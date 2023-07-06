@@ -81,16 +81,17 @@ type UserListFilter struct {
 	SortOrder int8 // 1=ascending | -1=descending
 
 	// Filter related.
-	OrganizationID  primitive.ObjectID `bson:"organization_id" json:"organization_id,omitempty"`
-	Role            int8               `bson:"role" json:"role"`
-	Statuss         []int8             `json:"statuss"`
-	UUIDs           []string           `json:"uuids"`
-	ExcludeArchived bool               `json:"exclude_archived"`
-	SearchText      string             `json:"search_text"`
-	FirstName       string             `json:"first_name"`
-	LastName        string             `json:"last_name"`
-	Email           string             `json:"email"`
-	Phone           string             `json:"phone"`
+	OrganizationID  primitive.ObjectID
+	Role            int8
+	Status          int8
+	UUIDs           []string
+	ExcludeArchived bool
+	SearchText      string
+	FirstName       string
+	LastName        string
+	Email           string
+	Phone           string
+	CreatedAtGTE    time.Time
 }
 
 type UserListResult struct {

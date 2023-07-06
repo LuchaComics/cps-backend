@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/exp/slog"
 )
 
 func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) (*UserListResult, error) {
@@ -42,6 +43,15 @@ func (impl UserStorerImpl) ListByFilter(ctx context.Context, f *UserListFilter) 
 	if f.ExcludeArchived {
 		filter["status"] = bson.M{"$ne": UserStatusArchived} // Do not list archived items! This code
 	}
+	if f.Status != 0 {
+		filter["status"] = f.Status
+	}
+	if !f.CreatedAtGTE.IsZero() {
+		filter["created_at"] = bson.M{"$gt": f.CreatedAtGTE} // Add the cursor condition to the filter
+	}
+
+	impl.Logger.Debug("listing filter:",
+		slog.Any("filter", filter))
 
 	// Include additional filters for our cursor-based pagination pertaining to sorting and limit.
 	options := options.Find().

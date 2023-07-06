@@ -7,6 +7,7 @@ import (
 
 	sub_s "github.com/LuchaComics/cps-backend/app/user/datastore"
 	"github.com/LuchaComics/cps-backend/utils/httperror"
+	"github.com/bartmika/timekit"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -74,6 +75,15 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		f.OrganizationID = organizationID
+	}
+	createdAtGTEStr := query.Get("created_at_gte")
+	if createdAtGTEStr != "" {
+		createdAtGTE, err := timekit.ParseJavaScriptTimeString(createdAtGTEStr)
+		if err != nil {
+			httperror.ResponseError(w, err)
+			return
+		}
+		f.CreatedAtGTE = createdAtGTE
 	}
 
 	// Perform our database operation.

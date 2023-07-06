@@ -148,6 +148,7 @@ type ComicSubmissionListFilter struct {
 	Status            int8
 	ExcludeArchived   bool
 	SearchText        string
+	CreatedAtGTE      time.Time
 }
 
 type SubmissionUser struct {
