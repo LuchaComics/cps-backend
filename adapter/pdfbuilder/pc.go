@@ -15,6 +15,7 @@ import (
 
 	s_d "github.com/LuchaComics/cps-backend/app/comicsub/datastore"
 	c "github.com/LuchaComics/cps-backend/config"
+	"github.com/LuchaComics/cps-backend/config/constants"
 	"github.com/LuchaComics/cps-backend/provider/uuid"
 )
 
@@ -138,7 +139,11 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 
 	// ROW 3
 	pdf.SetXY(100, 40)
-	pdf.Cell(0, 0, specialNotesLines[0])
+	if r.SpecialDetails == 1 {
+		pdf.Cell(0, 0, r.SpecialDetailsOther)
+	} else {
+		pdf.Cell(0, 0, constants.SubmissionSpecialDetails[r.SpecialDetails])
+	}
 
 	pdf.SetFont("Helvetica", "B", 55)
 

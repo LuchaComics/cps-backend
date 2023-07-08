@@ -124,6 +124,8 @@ func NewController(
 	// 	IssueCoverYear:                     2023,
 	// 	IssueCoverMonth:                    1,
 	// 	PublisherName:                      "Some publisher",
+	// 	SpecialDetails:                     1, // 2=Regular Edition
+	// 	SpecialDetailsOther:                "this is a test, lalalala",
 	// 	SpecialNotes:                       text,
 	// 	GradingNotes:                       text,
 	// 	CreasesFinding:                     "PR",

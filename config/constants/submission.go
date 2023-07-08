@@ -32,3 +32,14 @@ var SubmissionOverallLetterGrades = map[string]string{
 	"VF": "Very Fine",
 	"NM": "Near Mint",
 }
+
+var SubmissionSpecialDetails = map[int8]string{
+	1: "Other",
+	2: "Regular Edition",
+	3: "Direct Edition",
+	4: "Newsstand Edition",
+	5: "Variant Cover",
+	6: "Canadian Price Variant",
+	7: "Facsimile",
+	8: "Reprint",
+}
