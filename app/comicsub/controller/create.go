@@ -193,19 +193,23 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 	}
 
 	//
-	// Generate the PDF file based on the `service type`.
+	// Signatures - Update `special notes` for the PDF. (PDF only!)
 	//
-
-	pdfResponse := &pdfbuilder.PDFBuilderResponseDTO{}
 
 	var modifiedSpecialNotes = m.SpecialNotes
 	if len(m.Signatures) > 0 {
 		var str string
 		for _, s := range m.Signatures {
-			str += fmt.Sprintf("Role: %v, Signed by: %v\r", s.Role, s.Name)
+			str += fmt.Sprintf("Signature of %v %v authenticated by CPS.", s.Role, s.Name)
 		}
 		modifiedSpecialNotes = fmt.Sprintf("%v %v", str, m.SpecialNotes)
 	}
+
+	//
+	// Generate the PDF file based on the `service type`.
+	//
+
+	pdfResponse := &pdfbuilder.PDFBuilderResponseDTO{}
 
 	switch m.ServiceType {
 	case s_d.ServiceTypePreScreening:

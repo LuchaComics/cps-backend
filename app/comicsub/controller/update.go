@@ -149,19 +149,6 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	os.OrganizationName = org.Name
 
 	//
-	// Signatures.
-	//
-
-	var modifiedSpecialNotes = ns.SpecialNotes
-	if len(ns.Signatures) > 0 {
-		var str string
-		for _, s := range ns.Signatures {
-			str += fmt.Sprintf("Role: %v, Signed by: %v\r", s.Role, s.Name)
-		}
-		modifiedSpecialNotes = fmt.Sprintf("%v %v", str, ns.SpecialNotes)
-	}
-
-	//
 	// Update records in database.
 	//
 
@@ -178,7 +165,7 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	os.IssueCoverMonth = ns.IssueCoverMonth
 	os.PublisherName = ns.PublisherName
 	os.PublisherNameOther = ns.PublisherNameOther
-	os.SpecialNotes = modifiedSpecialNotes
+	os.SpecialNotes = ns.SpecialNotes
 	os.GradingNotes = ns.GradingNotes
 	os.IsCpsIndieMintGem = ns.IsCpsIndieMintGem
 	os.CreasesFinding = ns.CreasesFinding
@@ -208,6 +195,19 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	if err := c.ComicSubmissionStorer.UpdateByID(ctx, os); err != nil {
 		c.Logger.Error("database update by id error", slog.Any("error", err))
 		return nil, err
+	}
+
+	//
+	// Signatures - Update `special notes` for the PDF.
+	//
+
+	var modifiedSpecialNotes = ns.SpecialNotes
+	if len(ns.Signatures) > 0 {
+		var str string
+		for _, s := range ns.Signatures {
+			str += fmt.Sprintf("Signature of %v %v authenticated by CPS.", s.Role, s.Name)
+		}
+		os.SpecialNotes = fmt.Sprintf("%v %v", str, ns.SpecialNotes)
 	}
 
 	//
