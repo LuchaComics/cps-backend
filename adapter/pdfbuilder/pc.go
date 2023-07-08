@@ -117,12 +117,24 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 	pdf.SetXY(126, 32.5)
 	pdf.Cell(0, 0, r.IssueNo)
 
-	pdf.SetXY(187, 32.5)
-	pdf.Cell(0, 0, fmt.Sprintf("%v / %v / %v", r.SubmissionDate.Day(), int(r.SubmissionDate.Month()), r.SubmissionDate.Year())) // Day
-	// pdf.SetXY(180, 32.5)
-	// pdf.Cell(0, 0, fmt.Sprintf("%v", ))) // Month (number)
-	// pdf.SetXY(190, 32.5)
-	// pdf.Cell(0, 0, fmt.Sprintf("%v", r.SubmissionDate.Year())) // Day
+	if r.IssueCoverMonth < 12 && r.IssueCoverMonth > 0 {
+		pdf.SetXY(187, 32.5)
+		pdf.Cell(0, 0, fmt.Sprintf("%v", time.Month(int(r.IssueCoverMonth))))
+	} else {
+		pdf.SetXY(187, 32.5)
+		pdf.Cell(0, 0, "-") // No cover year date.
+	}
+	if r.IssueCoverYear > 1 {
+		pdf.SetXY(205, 32.5)
+		if r.IssueCoverYear == 2 {
+			pdf.Cell(0, 0, "1899 or before")
+		} else {
+			pdf.Cell(0, 0, fmt.Sprintf("%v", int(r.IssueCoverYear)))
+		}
+	} else { // No cover date year.
+		pdf.SetXY(187, 32.5)
+		pdf.Cell(0, 0, "-")
+	}
 
 	// ROW 3
 	pdf.SetXY(100, 40)
