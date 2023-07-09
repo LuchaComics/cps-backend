@@ -48,8 +48,8 @@ type ComicSubmissionCreateRequestIDO struct {
 	CollectibleType                    int8                          `bson:"collectible_type" json:"collectible_type"`
 	Status                             int8                          `bson:"status" json:"status"`
 	Signatures                         []*domain.SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
-	SpecialDetails                     int8                          `bson:"special_details" json:"special_details"`
-	SpecialDetailsOther                string                        `bson:"special_details_other" json:"special_details_other"`
+	PrimaryLabelDetails                     int8                          `bson:"primary_label_details" json:"primary_label_details"`
+	PrimaryLabelDetailsOther                string                        `bson:"primary_label_details_other" json:"primary_label_details_other"`
 }
 
 func comicSubmissionFromCreate(req *ComicSubmissionCreateRequestIDO) *s_d.ComicSubmission {
@@ -84,8 +84,8 @@ func comicSubmissionFromCreate(req *ComicSubmissionCreateRequestIDO) *s_d.ComicS
 		CollectibleType:                    req.CollectibleType,
 		Status:                             req.Status,
 		Signatures:                         req.Signatures,
-		SpecialDetails:                     req.SpecialDetails,
-		SpecialDetailsOther:                req.SpecialDetailsOther,
+		PrimaryLabelDetails:                     req.PrimaryLabelDetails,
+		PrimaryLabelDetailsOther:                req.PrimaryLabelDetailsOther,
 	}
 }
 
@@ -245,8 +245,8 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			UserLastName:                       m.UserLastName,
 			UserOrganizationName:               m.OrganizationName,
 			Signatures:                         m.Signatures,
-			SpecialDetails:                     m.SpecialDetails,
-			SpecialDetailsOther:                m.SpecialDetailsOther,
+			PrimaryLabelDetails:                     m.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:                m.PrimaryLabelDetailsOther,
 		}
 		pdfResponse, err = c.CBFFBuilder.GeneratePDF(r)
 		if err != nil {
@@ -291,8 +291,8 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			UserLastName:                       m.UserLastName,
 			UserOrganizationName:               m.OrganizationName,
 			Signatures:                         m.Signatures,
-			SpecialDetails:                     m.SpecialDetails,
-			SpecialDetailsOther:                m.SpecialDetailsOther,
+			PrimaryLabelDetails:                     m.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:                m.PrimaryLabelDetailsOther,
 		}
 		pdfResponse, err = c.PCBuilder.GeneratePDF(r)
 		if err != nil {
@@ -316,8 +316,8 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IssueCoverMonth:                  m.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
 			SpecialNotes:                     modifiedSpecialNotes,
-			SpecialDetails:                   m.SpecialDetails,
-			SpecialDetailsOther:              m.SpecialDetailsOther,
+			PrimaryLabelDetails:                   m.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:              m.PrimaryLabelDetailsOther,
 			GradingScale:                     m.GradingScale,
 			OverallLetterGrade:               m.OverallLetterGrade,
 			IsOverallLetterGradeNearMintPlus: m.IsOverallLetterGradeNearMintPlus,
@@ -346,8 +346,8 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IssueCoverMonth:                  m.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
 			SpecialNotes:                     modifiedSpecialNotes,
-			SpecialDetails:                   m.SpecialDetails,
-			SpecialDetailsOther:              m.SpecialDetailsOther,
+			PrimaryLabelDetails:                   m.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:              m.PrimaryLabelDetailsOther,
 			GradingScale:                     m.GradingScale,
 			OverallLetterGrade:               m.OverallLetterGrade,
 			IsOverallLetterGradeNearMintPlus: m.IsOverallLetterGradeNearMintPlus,
@@ -376,8 +376,8 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IssueCoverMonth:                  m.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
 			SpecialNotes:                     modifiedSpecialNotes,
-			SpecialDetails:                   m.SpecialDetails,
-			SpecialDetailsOther:              m.SpecialDetailsOther,
+			PrimaryLabelDetails:                   m.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:              m.PrimaryLabelDetailsOther,
 			GradingScale:                     m.GradingScale,
 			OverallLetterGrade:               m.OverallLetterGrade,
 			IsOverallLetterGradeNearMintPlus: m.IsOverallLetterGradeNearMintPlus,
@@ -406,8 +406,8 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IssueCoverMonth:                  m.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
 			SpecialNotes:                     modifiedSpecialNotes,
-			SpecialDetails:                   m.SpecialDetails,
-			SpecialDetailsOther:              m.SpecialDetailsOther,
+			PrimaryLabelDetails:                   m.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:              m.PrimaryLabelDetailsOther,
 			GradingScale:                     m.GradingScale,
 			OverallLetterGrade:               m.OverallLetterGrade,
 			IsOverallLetterGradeNearMintPlus: m.IsOverallLetterGradeNearMintPlus,

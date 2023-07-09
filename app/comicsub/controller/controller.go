@@ -124,8 +124,8 @@ func NewController(
 	// 	IssueCoverYear:                     2023,
 	// 	IssueCoverMonth:                    1,
 	// 	PublisherName:                      "Some publisher",
-	// 	SpecialDetails:                     1, // 2=Regular Edition
-	// 	SpecialDetailsOther:                "this is a test, lalalala",
+	// 	PrimaryLabelDetails:                     1, // 2=Regular Edition
+	// 	PrimaryLabelDetailsOther:                "this is a test, lalalala",
 	// 	SpecialNotes:                       text,
 	// 	GradingNotes:                       text,
 	// 	CreasesFinding:                     "PR",
@@ -160,7 +160,7 @@ func NewController(
 	// 	IssueCoverYear:  2023,
 	// 	IssueCoverMonth: 1,
 	// 	PublisherName:   "Some publisher",
-	// 	SpecialDetails:  2, // 2=Regular Edition
+	// 	PrimaryLabelDetails:  2, // 2=Regular Edition
 	//
 	// }
 	// res, err := ccimg.GeneratePDF(r)
@@ -179,7 +179,7 @@ func NewController(
 	// 	IssueCoverYear:                     2023,
 	// 	IssueCoverMonth:                    1,
 	// 	PublisherName:                      "Some publisher",
-	// 	SpecialDetails:                     2, // 2=Regular Edition
+	// 	PrimaryLabelDetails:                     2, // 2=Regular Edition
 	// 	GradingScale:                       1,
 	// 	ShowsSignsOfTamperingOrRestoration: true,
 	// 	OverallLetterGrade:                 "NM",
@@ -201,7 +201,7 @@ func NewController(
 	// 	IssueCoverYear:                   2023,
 	// 	IssueCoverMonth:                  1,
 	// 	PublisherName:                    "Some publisher",
-	// 	SpecialDetails:                   2, // 2=Regular Edition
+	// 	PrimaryLabelDetails:                   2, // 2=Regular Edition
 	// 	GradingScale:                     1,
 	// 	OverallLetterGrade:               "vf",
 	// 	IsOverallLetterGradeNearMintPlus: false,
@@ -224,7 +224,7 @@ func NewController(
 	// 	IssueCoverYear:                   2023,
 	// 	IssueCoverMonth:                  1,
 	// 	PublisherName:                    "Some publisher",
-	// 	SpecialDetails:                   2, // 2=Regular Edition
+	// 	PrimaryLabelDetails:                   2, // 2=Regular Edition
 	// 	GradingScale:                     3, // 1=Letter 2=Number 3=CPS
 	// 	OverallLetterGrade:               "vf",
 	// 	IsOverallLetterGradeNearMintPlus: false,

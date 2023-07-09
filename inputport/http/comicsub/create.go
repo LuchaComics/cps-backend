@@ -120,11 +120,11 @@ func ValidateCreateRequest(dirtyData *sub_c.ComicSubmissionCreateRequestIDO) err
 	if dirtyData.CollectibleType == 0 {
 		e["collectible_type"] = "missing choice"
 	}
-	if dirtyData.SpecialDetails == 0 {
-		e["special_details"] = "missing choice"
+	if dirtyData.PrimaryLabelDetails == 0 {
+		e["primary_label_details"] = "missing choice"
 	}
-	if dirtyData.SpecialDetailsOther == "" && dirtyData.SpecialDetails == 1 {
-		e["special_details_other"] = "missing choice"
+	if dirtyData.PrimaryLabelDetailsOther == "" && dirtyData.PrimaryLabelDetails == 1 {
+		e["primary_label_details_other"] = "missing choice"
 	}
 
 	if len(e) != 0 {

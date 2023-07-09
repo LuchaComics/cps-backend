@@ -51,8 +51,8 @@ type ComicSubmissionUpdateRequestIDO struct {
 	CollectibleType                    int8                          `bson:"collectible_type" json:"collectible_type"`
 	Status                             int8                          `bson:"status" json:"status"`
 	Signatures                         []*domain.SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
-	SpecialDetails                     int8                          `bson:"special_details" json:"special_details"`
-	SpecialDetailsOther                string                        `bson:"special_details_other" json:"special_details_other"`
+	PrimaryLabelDetails                     int8                          `bson:"primary_label_details" json:"primary_label_details"`
+	PrimaryLabelDetailsOther                string                        `bson:"primary_label_details_other" json:"primary_label_details_other"`
 }
 
 func comicSubmissionFromModify(req *ComicSubmissionUpdateRequestIDO) *s_d.ComicSubmission {
@@ -88,8 +88,8 @@ func comicSubmissionFromModify(req *ComicSubmissionUpdateRequestIDO) *s_d.ComicS
 		CollectibleType:                    req.CollectibleType,
 		Status:                             req.Status,
 		Signatures:                         req.Signatures,
-		SpecialDetails:                     req.SpecialDetails,
-		SpecialDetailsOther:                req.SpecialDetailsOther,
+		PrimaryLabelDetails:                     req.PrimaryLabelDetails,
+		PrimaryLabelDetailsOther:                req.PrimaryLabelDetailsOther,
 	}
 }
 
@@ -188,8 +188,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 	os.Filename = ns.Filename
 	os.Item = fmt.Sprintf("%v, %v, %v", ns.SeriesTitle, ns.IssueVol, ns.IssueNo)
 	os.Signatures = ns.Signatures
-	os.SpecialDetails = ns.SpecialDetails
-	os.SpecialDetailsOther = ns.SpecialDetailsOther
+	os.PrimaryLabelDetails = ns.PrimaryLabelDetails
+	os.PrimaryLabelDetailsOther = ns.PrimaryLabelDetailsOther
 
 	// Save to the database the modified submission.
 	if err := c.ComicSubmissionStorer.UpdateByID(ctx, os); err != nil {
@@ -272,8 +272,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			UserLastName:                       os.UserLastName,
 			UserOrganizationName:               os.OrganizationName,
 			Signatures:                         os.Signatures,
-			SpecialDetails:                     os.SpecialDetails,
-			SpecialDetailsOther:                os.SpecialDetailsOther,
+			PrimaryLabelDetails:                     os.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:                os.PrimaryLabelDetailsOther,
 		}
 		pdfResponse, err = c.CBFFBuilder.GeneratePDF(r)
 		if err != nil {
@@ -316,8 +316,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			UserLastName:                       os.UserLastName,
 			UserOrganizationName:               os.OrganizationName,
 			Signatures:                         os.Signatures,
-			SpecialDetails:                     os.SpecialDetails,
-			SpecialDetailsOther:                os.SpecialDetailsOther,
+			PrimaryLabelDetails:                     os.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:                os.PrimaryLabelDetailsOther,
 		}
 		pdfResponse, err = c.PCBuilder.GeneratePDF(r)
 		if err != nil {
@@ -341,8 +341,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			IssueCoverMonth:                  os.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
 			SpecialNotes:                     modifiedSpecialNotes,
-			SpecialDetails:                   os.SpecialDetails,
-			SpecialDetailsOther:              os.SpecialDetailsOther,
+			PrimaryLabelDetails:                   os.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:              os.PrimaryLabelDetailsOther,
 			GradingScale:                     os.GradingScale,
 			OverallLetterGrade:               os.OverallLetterGrade,
 			IsOverallLetterGradeNearMintPlus: os.IsOverallLetterGradeNearMintPlus,
@@ -371,8 +371,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			IssueCoverMonth:                  os.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
 			SpecialNotes:                     modifiedSpecialNotes,
-			SpecialDetails:                   os.SpecialDetails,
-			SpecialDetailsOther:              os.SpecialDetailsOther,
+			PrimaryLabelDetails:                   os.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:              os.PrimaryLabelDetailsOther,
 			GradingScale:                     os.GradingScale,
 			OverallLetterGrade:               os.OverallLetterGrade,
 			IsOverallLetterGradeNearMintPlus: os.IsOverallLetterGradeNearMintPlus,
@@ -403,8 +403,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			IssueCoverMonth:                  os.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
 			SpecialNotes:                     modifiedSpecialNotes,
-			SpecialDetails:                   os.SpecialDetails,
-			SpecialDetailsOther:              os.SpecialDetailsOther,
+			PrimaryLabelDetails:                   os.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:              os.PrimaryLabelDetailsOther,
 			GradingScale:                     os.GradingScale,
 			OverallLetterGrade:               os.OverallLetterGrade,
 			IsOverallLetterGradeNearMintPlus: os.IsOverallLetterGradeNearMintPlus,
@@ -435,8 +435,8 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			IssueCoverMonth:                  os.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
 			SpecialNotes:                     modifiedSpecialNotes,
-			SpecialDetails:                   os.SpecialDetails,
-			SpecialDetailsOther:              os.SpecialDetailsOther,
+			PrimaryLabelDetails:                   os.PrimaryLabelDetails,
+			PrimaryLabelDetailsOther:              os.PrimaryLabelDetailsOther,
 			GradingScale:                     os.GradingScale,
 			OverallLetterGrade:               os.OverallLetterGrade,
 			IsOverallLetterGradeNearMintPlus: os.IsOverallLetterGradeNearMintPlus,

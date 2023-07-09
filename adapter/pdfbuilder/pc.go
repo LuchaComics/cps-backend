@@ -53,8 +53,8 @@ type PCBuilderRequestDTO struct {
 	UserLastName                       string                     `bson:"user_last_name" json:"user_last_name"`
 	UserOrganizationName               string                     `bson:"user_organization_name" json:"user_organization_name"`
 	Signatures                         []*s_d.SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
-	SpecialDetails                     int8                       `bson:"special_details" json:"special_details"`
-	SpecialDetailsOther                string                     `bson:"special_details_other" json:"special_details_other"`
+	PrimaryLabelDetails                     int8                       `bson:"primary_label_details" json:"primary_label_details"`
+	PrimaryLabelDetailsOther                string                     `bson:"primary_label_details_other" json:"primary_label_details_other"`
 }
 
 type PCBuilder interface {
@@ -139,10 +139,10 @@ func (bdr *pcBuilder) GeneratePDF(r *PCBuilderRequestDTO) (*PDFBuilderResponseDT
 
 	// ROW 3
 	pdf.SetXY(100, 40)
-	if r.SpecialDetails == 1 {
-		pdf.Cell(0, 0, r.SpecialDetailsOther)
+	if r.PrimaryLabelDetails == 1 {
+		pdf.Cell(0, 0, r.PrimaryLabelDetailsOther)
 	} else {
-		pdf.Cell(0, 0, constants.SubmissionSpecialDetails[r.SpecialDetails])
+		pdf.Cell(0, 0, constants.SubmissionPrimaryLabelDetails[r.PrimaryLabelDetails])
 	}
 
 	pdf.SetFont("Helvetica", "B", 55)

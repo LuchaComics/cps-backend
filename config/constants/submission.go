@@ -33,7 +33,7 @@ var SubmissionOverallLetterGrades = map[string]string{
 	"NM": "Near Mint",
 }
 
-var SubmissionSpecialDetails = map[int8]string{
+var SubmissionPrimaryLabelDetails = map[int8]string{
 	1: "Other",
 	2: "Regular Edition",
 	3: "Direct Edition",

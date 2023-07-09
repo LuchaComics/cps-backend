@@ -51,8 +51,8 @@ type CCIMGBuilderRequestDTO struct {
 	UserLastName                       string                     `bson:"user_last_name" json:"user_last_name"`
 	UserOrganizationName               string                     `bson:"user_organization_name" json:"user_organization_name"`
 	Signatures                         []*s_d.SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
-	SpecialDetails                     int8                       `bson:"special_details" json:"special_details"`
-	SpecialDetailsOther                string                     `bson:"special_details_other" json:"special_details_other"`
+	PrimaryLabelDetails                     int8                       `bson:"primary_label_details" json:"primary_label_details"`
+	PrimaryLabelDetailsOther                string                     `bson:"primary_label_details_other" json:"primary_label_details_other"`
 }
 
 // CCIMGBuilder interface for building the "CPS C-Capsule Indie Mint Gem" edition document.
@@ -154,22 +154,22 @@ func (bdr *ccimgBuilder) GeneratePDF(r *CCIMGBuilderRequestDTO) (*PDFBuilderResp
 	pdf.SetFont("Helvetica", "", 10)
 
 	pdf.SetXY(115, 59)
-	switch r.SpecialDetails {
-	case s_d.SpecialDetailsOther:
-		pdf.Cell(0, 0, r.SpecialDetailsOther)
-	case s_d.SpecialDetailsRegularEdition:
+	switch r.PrimaryLabelDetails {
+	case s_d.PrimaryLabelDetailsOther:
+		pdf.Cell(0, 0, r.PrimaryLabelDetailsOther)
+	case s_d.PrimaryLabelDetailsRegularEdition:
 		pdf.Cell(0, 0, "Regular Edition")
-	case s_d.SpecialDetailsDirectEdition:
+	case s_d.PrimaryLabelDetailsDirectEdition:
 		pdf.Cell(0, 0, "Direct Edition")
-	case s_d.SpecialDetailsNewsstandEdition:
+	case s_d.PrimaryLabelDetailsNewsstandEdition:
 		pdf.Cell(0, 0, "Newstand Edition")
-	case s_d.SpecialDetailsVariantCover:
+	case s_d.PrimaryLabelDetailsVariantCover:
 		pdf.Cell(0, 0, "Variant Cover")
-	case s_d.SpecialDetailsCanadianPriceVariant:
+	case s_d.PrimaryLabelDetailsCanadianPriceVariant:
 		pdf.Cell(0, 0, "Canadian Price Variant")
-	case s_d.SpecialDetailsFacsimile:
+	case s_d.PrimaryLabelDetailsFacsimile:
 		pdf.Cell(0, 0, "Facsimile")
-	case s_d.SpecialDetailsReprint:
+	case s_d.PrimaryLabelDetailsReprint:
 		pdf.Cell(0, 0, "Reprint")
 	default:
 		return nil, fmt.Errorf("missing value for crease finding with %v", r.CreasesFinding)

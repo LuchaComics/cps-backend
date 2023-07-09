@@ -37,14 +37,14 @@ const (
 	GradingScaleNumber                            = 2
 	GradingScaleCPSPercentage                     = 3
 	CollectibleTypeGeneric                        = 1
-	SpecialDetailsRegularEdition                  = 2
-	SpecialDetailsDirectEdition                   = 3
-	SpecialDetailsNewsstandEdition                = 4
-	SpecialDetailsVariantCover                    = 5
-	SpecialDetailsCanadianPriceVariant            = 6
-	SpecialDetailsFacsimile                       = 7
-	SpecialDetailsReprint                         = 8
-	SpecialDetailsOther                           = 1
+	PrimaryLabelDetailsRegularEdition                  = 2
+	PrimaryLabelDetailsDirectEdition                   = 3
+	PrimaryLabelDetailsNewsstandEdition                = 4
+	PrimaryLabelDetailsVariantCover                    = 5
+	PrimaryLabelDetailsCanadianPriceVariant            = 6
+	PrimaryLabelDetailsFacsimile                       = 7
+	PrimaryLabelDetailsReprint                         = 8
+	PrimaryLabelDetailsOther                           = 1
 )
 
 type ComicSubmission struct {
@@ -69,6 +69,8 @@ type ComicSubmission struct {
 	IssueCoverMonth                    int8               `bson:"issue_cover_month" json:"issue_cover_month"`
 	PublisherName                      int8               `bson:"publisher_name" json:"publisher_name"`
 	PublisherNameOther                 string             `bson:"publisher_name_other" json:"publisher_name_other"`
+	PrimaryLabelDetails                     int8               `bson:"primary_label_details" json:"primary_label_details"`
+	PrimaryLabelDetailsOther                string             `bson:"primary_label_details_other" json:"primary_label_details_other"`
 	SpecialNotes                       string             `bson:"special_notes" json:"special_notes"`
 	GradingNotes                       string             `bson:"grading_notes" json:"grading_notes"`
 	CreasesFinding                     string             `bson:"creases_finding" json:"creases_finding"`
@@ -112,8 +114,6 @@ type ComicSubmission struct {
 	Comments                           []*SubmissionComment   `bson:"comments" json:"comments,omitempty"`
 	CollectibleType                    int8                   `bson:"collectible_type" json:"collectible_type"`
 	Signatures                         []*SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
-	SpecialDetails                     int8                   `bson:"special_details" json:"special_details"`
-	SpecialDetailsOther                string                 `bson:"special_details_other" json:"special_details_other"`
 }
 
 type SubmissionComment struct {
@@ -220,7 +220,7 @@ func NewDatastore(appCfg *c.Conf, loggerp *slog.Logger, client *mongo.Client) Co
 			{"publisher_name_other", "text"},
 			{"special_notes", "text"},
 			{"grading_notes", "text"},
-			{"special_details_other", "text"},
+			{"primary_label_details_other", "text"},
 		},
 	}
 	_, err := uc.Indexes().CreateOne(context.TODO(), indexModel)
