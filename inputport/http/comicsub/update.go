@@ -101,9 +101,33 @@ func ValidateUpdateRequest(dirtyData *sub_c.ComicSubmissionUpdateRequestIDO) err
 		e["shows_signs_of_tampering_or_restoration"] = "missing value"
 	}
 
-	// Process optional validation for `Special Notes`.
-	if dirtyData.SpecialNotes != "" && len(dirtyData.SpecialNotes) > 638 {
-		e["special_notes"] = "over 638 characters"
+	// Process optional validation for `Special Notes` based on PDF requirements (see `adapter/pdfbuilder` package).
+	if dirtyData.SpecialNotes != "" {
+		if dirtyData.ServiceType == sub_s.ServiceTypePreScreening || dirtyData.ServiceType == sub_s.ServiceTypePedigree {
+			if len(dirtyData.SpecialNotes) > 638 {
+				e["special_notes"] = "over 638 characters"
+			}
+		}
+		if dirtyData.ServiceType == sub_s.ServiceTypeCPSCapsule {
+			if len(dirtyData.SpecialNotes) > 172 {
+				e["special_notes"] = "over 172 characters"
+			}
+		}
+		if dirtyData.ServiceType == sub_s.ServiceTypeCPSCapsuleYouGrade {
+			if len(dirtyData.SpecialNotes) > 100 {
+				e["special_notes"] = "over 100 characters"
+			}
+		}
+		if dirtyData.ServiceType == sub_s.ServiceTypeCPSCapsuleSignatureCollection {
+			if len(dirtyData.SpecialNotes) > 43 {
+				e["special_notes"] = "over 43 characters"
+			}
+		}
+		if dirtyData.ServiceType == sub_s.ServiceTypeCPSCapsuleIndieMintGem {
+			if len(dirtyData.SpecialNotes) > 26 {
+				e["special_notes"] = "over 26 characters"
+			}
+		}
 	}
 
 	// Process optional validation for `Grading Notes`.
