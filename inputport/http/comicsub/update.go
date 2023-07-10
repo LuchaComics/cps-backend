@@ -147,6 +147,13 @@ func ValidateUpdateRequest(dirtyData *sub_c.ComicSubmissionUpdateRequestIDO) err
 		e["primary_label_details_other"] = "missing choice"
 	}
 
+	// Special case: Signatures only supported in certain cases.
+	if len(dirtyData.Signatures) > 0 {
+		if dirtyData.ServiceType != sub_s.ServiceTypeCPSCapsuleIndieMintGem && dirtyData.ServiceType != sub_s.ServiceTypeCPSCapsuleSignatureCollection {
+			e["service_type"] = "cannot have signatures"
+		}
+	}
+
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)
 	}
@@ -173,8 +180,6 @@ func (h *Handler) UpdateByID(w http.ResponseWriter, r *http.Request, id string) 
 		httperror.ResponseError(w, err)
 		return
 	}
-
-	log.Println("--->", submission)
 
 	MarshalUpdateResponse(submission, w)
 }

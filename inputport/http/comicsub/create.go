@@ -151,6 +151,13 @@ func ValidateCreateRequest(dirtyData *sub_c.ComicSubmissionCreateRequestIDO) err
 		e["primary_label_details_other"] = "missing choice"
 	}
 
+	// Special case: Signatures only supported in certain cases.
+	if len(dirtyData.Signatures) > 0 {
+		if dirtyData.ServiceType != sub_s.ServiceTypeCPSCapsuleIndieMintGem && dirtyData.ServiceType != sub_s.ServiceTypeCPSCapsuleSignatureCollection {
+			e["service_type"] = "cannot have signatures"
+		}
+	}
+
 	if len(e) != 0 {
 		return httperror.NewForBadRequest(&e)
 	}
