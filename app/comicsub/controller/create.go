@@ -195,19 +195,6 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 	}
 
 	//
-	// Signatures - Update `special notes` for the PDF. (PDF only!)
-	//
-
-	var modifiedSpecialNotes = m.SpecialNotes
-	if len(m.Signatures) > 0 {
-		var str string
-		for _, s := range m.Signatures {
-			str += fmt.Sprintf("Signature of %v %v authenticated by CPS.", s.Role, s.Name)
-		}
-		modifiedSpecialNotes = fmt.Sprintf("%v %v", str, m.SpecialNotes)
-	}
-
-	//
 	// Generate the PDF file based on the `service type`.
 	//
 
@@ -228,7 +215,7 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IssueCoverYear:                     m.IssueCoverYear,
 			IssueCoverMonth:                    m.IssueCoverMonth,
 			PublisherName:                      publisherNameDisplay,
-			SpecialNotes:                       modifiedSpecialNotes,
+			SpecialNotes:                       m.SpecialNotes,
 			GradingNotes:                       m.GradingNotes,
 			CreasesFinding:                     m.CreasesFinding,
 			TearsFinding:                       m.TearsFinding,
@@ -274,7 +261,7 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IssueCoverYear:                     m.IssueCoverYear,
 			IssueCoverMonth:                    m.IssueCoverMonth,
 			PublisherName:                      publisherNameDisplay,
-			SpecialNotes:                       modifiedSpecialNotes,
+			SpecialNotes:                       m.SpecialNotes,
 			GradingNotes:                       m.GradingNotes,
 			CreasesFinding:                     m.CreasesFinding,
 			TearsFinding:                       m.TearsFinding,
@@ -317,7 +304,7 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IssueCoverYear:                   m.IssueCoverYear,
 			IssueCoverMonth:                  m.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
-			SpecialNotes:                     modifiedSpecialNotes,
+			SpecialNotes:                     m.SpecialNotes,
 			PrimaryLabelDetails:              m.PrimaryLabelDetails,
 			PrimaryLabelDetailsOther:         m.PrimaryLabelDetailsOther,
 			GradingScale:                     m.GradingScale,
@@ -325,6 +312,10 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IsOverallLetterGradeNearMintPlus: m.IsOverallLetterGradeNearMintPlus,
 			OverallNumberGrade:               m.OverallNumberGrade,
 			CpsPercentageGrade:               m.CpsPercentageGrade,
+			UserFirstName:                    m.UserFirstName,
+			UserLastName:                     m.UserLastName,
+			UserOrganizationName:             m.OrganizationName,
+			Signatures:                       m.Signatures,
 		}
 		pdfResponse, err = c.CCBuilder.GeneratePDF(r)
 		if err != nil {
@@ -347,7 +338,7 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IssueCoverYear:                   m.IssueCoverYear,
 			IssueCoverMonth:                  m.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
-			SpecialNotes:                     modifiedSpecialNotes,
+			SpecialNotes:                     m.SpecialNotes,
 			PrimaryLabelDetails:              m.PrimaryLabelDetails,
 			PrimaryLabelDetailsOther:         m.PrimaryLabelDetailsOther,
 			GradingScale:                     m.GradingScale,
@@ -355,6 +346,10 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IsOverallLetterGradeNearMintPlus: m.IsOverallLetterGradeNearMintPlus,
 			OverallNumberGrade:               m.OverallNumberGrade,
 			CpsPercentageGrade:               m.CpsPercentageGrade,
+			UserFirstName:                    m.UserFirstName,
+			UserLastName:                     m.UserLastName,
+			UserOrganizationName:             m.OrganizationName,
+			Signatures:                       m.Signatures,
 		}
 		pdfResponse, err = c.CCSCBuilder.GeneratePDF(r)
 		if err != nil {
@@ -377,7 +372,7 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IssueCoverYear:                   m.IssueCoverYear,
 			IssueCoverMonth:                  m.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
-			SpecialNotes:                     modifiedSpecialNotes,
+			SpecialNotes:                     m.SpecialNotes,
 			PrimaryLabelDetails:              m.PrimaryLabelDetails,
 			PrimaryLabelDetailsOther:         m.PrimaryLabelDetailsOther,
 			GradingScale:                     m.GradingScale,
@@ -385,6 +380,10 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IsOverallLetterGradeNearMintPlus: m.IsOverallLetterGradeNearMintPlus,
 			OverallNumberGrade:               m.OverallNumberGrade,
 			CpsPercentageGrade:               m.CpsPercentageGrade,
+			UserFirstName:                    m.UserFirstName,
+			UserLastName:                     m.UserLastName,
+			UserOrganizationName:             m.OrganizationName,
+			Signatures:                       m.Signatures,
 		}
 		pdfResponse, err = c.CCIMGBuilder.GeneratePDF(r)
 		if err != nil {
@@ -407,7 +406,7 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IssueCoverYear:                   m.IssueCoverYear,
 			IssueCoverMonth:                  m.IssueCoverMonth,
 			PublisherName:                    publisherNameDisplay,
-			SpecialNotes:                     modifiedSpecialNotes,
+			SpecialNotes:                     m.SpecialNotes,
 			PrimaryLabelDetails:              m.PrimaryLabelDetails,
 			PrimaryLabelDetailsOther:         m.PrimaryLabelDetailsOther,
 			GradingScale:                     m.GradingScale,
@@ -415,6 +414,10 @@ func (c *ComicSubmissionControllerImpl) Create(ctx context.Context, req *ComicSu
 			IsOverallLetterGradeNearMintPlus: m.IsOverallLetterGradeNearMintPlus,
 			OverallNumberGrade:               m.OverallNumberGrade,
 			CpsPercentageGrade:               m.CpsPercentageGrade,
+			UserFirstName:                    m.UserFirstName,
+			UserLastName:                     m.UserLastName,
+			UserOrganizationName:             m.OrganizationName,
+			Signatures:                       m.Signatures,
 		}
 		pdfResponse, err = c.CCUGBuilder.GeneratePDF(r)
 		if err != nil {

@@ -151,17 +151,30 @@ func NewController(
 	//------------------------------------------------------------------------//
 	//------------------------------------------------------------------------//
 
-	// // // FOR TESTING PURPOSES ONLY.
+	// // FOR TESTING PURPOSES ONLY.
 	// r := &pdfbuilder.CCIMGBuilderRequestDTO{
-	// 	CPSRN:           "788346-26649-1-1000",
-	// 	SeriesTitle:     "Winter World",
-	// 	IssueVol:        "Vol 1",
-	// 	IssueNo:         "#1",
-	// 	IssueCoverYear:  2023,
-	// 	IssueCoverMonth: 1,
-	// 	PublisherName:   "Some publisher",
+	// 	CPSRN:                "788346-26649-1-1000",
+	// 	SeriesTitle:          "Winter World",
+	// 	IssueVol:             "Vol 1",
+	// 	IssueNo:              "#1",
+	// 	IssueCoverYear:       2023,
+	// 	IssueCoverMonth:      1,
+	// 	PublisherName:        "Some publisher",
 	// 	PrimaryLabelDetails:  2, // 2=Regular Edition
-	//
+	// 	UserOrganizationName: "Mika Software Corp.",
+	// 	SpecialNotes:         "XXXXXXXX XXXXXXX XXXXXXXX",
+	// 	Signatures: []*s_d.SubmissionSignature{
+	// 		{
+	// 			Role: "Writer",
+	// 			Name: "Frank Herbert",
+	// 		}, {
+	// 			Role: "Writer",
+	// 			Name: "Brian Herbert",
+	// 		}, {
+	// 			Role: "Writer",
+	// 			Name: "Zoe Herbert",
+	// 		},
+	// 	},
 	// }
 	// res, err := ccimg.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
@@ -179,12 +192,27 @@ func NewController(
 	// 	IssueCoverYear:                     2023,
 	// 	IssueCoverMonth:                    1,
 	// 	PublisherName:                      "Some publisher",
-	// 	PrimaryLabelDetails:                     2, // 2=Regular Edition
+	// 	PrimaryLabelDetails:                2, // 2=Regular Edition
 	// 	GradingScale:                       1,
 	// 	ShowsSignsOfTamperingOrRestoration: true,
 	// 	OverallLetterGrade:                 "NM",
 	// 	IsOverallLetterGradeNearMintPlus:   true,
+	// 	UserOrganizationName:               "Mika Software Corp.",
+	// 	SpecialNotes:                       "XXXXXXXX XXXXXXX XXXXXXXX XXXXXXX XXXXXXXXX",
+	// 	Signatures: []*s_d.SubmissionSignature{
+	// 		{
+	// 			Role: "Writer",
+	// 			Name: "Frank Herbert",
+	// 		}, {
+	// 			Role: "Writer",
+	// 			Name: "Brian Herbert",
+	// 		}, {
+	// 			Role: "Writer",
+	// 			Name: "Zoe Herbert",
+	// 		},
+	// 	},
 	// }
+	//
 	// res, err := ccsc.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
 
@@ -192,7 +220,7 @@ func NewController(
 	//------------------------------------------------------------------------//
 	//------------------------------------------------------------------------//
 
-	// // // FOR TESTING PURPOSES ONLY.
+	// // FOR TESTING PURPOSES ONLY.
 	// r := &pdfbuilder.CCBuilderRequestDTO{
 	// 	CPSRN:                            "788346-26649-1-1000",
 	// 	SeriesTitle:                      "Winter World",
@@ -201,12 +229,14 @@ func NewController(
 	// 	IssueCoverYear:                   2023,
 	// 	IssueCoverMonth:                  1,
 	// 	PublisherName:                    "Some publisher",
-	// 	PrimaryLabelDetails:                   2, // 2=Regular Edition
+	// 	PrimaryLabelDetails:              2, // 2=Regular Edition
 	// 	GradingScale:                     1,
 	// 	OverallLetterGrade:               "vf",
 	// 	IsOverallLetterGradeNearMintPlus: false,
 	// 	OverallNumberGrade:               10,
 	// 	CpsPercentageGrade:               100,
+	// 	UserOrganizationName:             "Mika Software Corp.",
+	// 	SpecialNotes:                     "XXXXXXXX XXXXXXX XXXXXXXX XXXXXXX XXXXXXXXX XXXXXXXXXXXX XXXXXXXXXXXXXX XXXXXXXXX XXXXXXXX XXXXXXX XXXXXXXX XXXXXXX XXXXXXXXX XXXXXXXXXXXX XXXXXXXXXXXXXX XXXXXXXXX XXXXXXXXXXXXXX XXXXXXXXX",
 	// }
 	// res, err := cc.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")
@@ -215,7 +245,7 @@ func NewController(
 	//------------------------------------------------------------------------//
 	//------------------------------------------------------------------------//
 
-	// // // FOR TESTING PURPOSES ONLY.
+	// // FOR TESTING PURPOSES ONLY.
 	// r := &pdfbuilder.CCUGBuilderRequestDTO{
 	// 	CPSRN:                            "788346-26649-1-1000",
 	// 	SeriesTitle:                      "Winter World",
@@ -224,12 +254,14 @@ func NewController(
 	// 	IssueCoverYear:                   2023,
 	// 	IssueCoverMonth:                  1,
 	// 	PublisherName:                    "Some publisher",
-	// 	PrimaryLabelDetails:                   2, // 2=Regular Edition
+	// 	PrimaryLabelDetails:              2, // 2=Regular Edition
 	// 	GradingScale:                     3, // 1=Letter 2=Number 3=CPS
 	// 	OverallLetterGrade:               "vf",
 	// 	IsOverallLetterGradeNearMintPlus: false,
 	// 	OverallNumberGrade:               7,
 	// 	CpsPercentageGrade:               100,
+	// 	UserOrganizationName:             "Mika Software Corp.",
+	// 	SpecialNotes:                     "XXXXXXXX XXXXXXX XXXXXXXX XXXXXXX XXXXXXXXX XXXXXXXXXXXX XXXXXXXXXXXXXX XXXXXXXXX",
 	// }
 	// res, err := ccug.GeneratePDF(r)
 	// log.Println("===--->", res, err, "<---===")

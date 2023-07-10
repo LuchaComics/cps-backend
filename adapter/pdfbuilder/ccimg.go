@@ -51,8 +51,8 @@ type CCIMGBuilderRequestDTO struct {
 	UserLastName                       string                     `bson:"user_last_name" json:"user_last_name"`
 	UserOrganizationName               string                     `bson:"user_organization_name" json:"user_organization_name"`
 	Signatures                         []*s_d.SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
-	PrimaryLabelDetails                     int8                       `bson:"primary_label_details" json:"primary_label_details"`
-	PrimaryLabelDetailsOther                string                     `bson:"primary_label_details_other" json:"primary_label_details_other"`
+	PrimaryLabelDetails                int8                       `bson:"primary_label_details" json:"primary_label_details"`
+	PrimaryLabelDetailsOther           string                     `bson:"primary_label_details_other" json:"primary_label_details_other"`
 }
 
 // CCIMGBuilder interface for building the "CPS C-Capsule Indie Mint Gem" edition document.
@@ -115,7 +115,11 @@ func (bdr *ccimgBuilder) GeneratePDF(r *CCIMGBuilderRequestDTO) (*PDFBuilderResp
 	//
 
 	pdf.SetFont("Helvetica", "B", 16)
-	pdf.SetXY(80, 51)
+	pdf.SetXY(60, 51)
+	pdf.Cell(0, 0, fmt.Sprintf("%v %v", r.SeriesTitle, r.IssueNo))
+
+	pdf.SetFont("Helvetica", "B", 8)
+	pdf.SetXY(115, 51)
 	pdf.Cell(0, 0, r.PublisherName)
 
 	//
@@ -126,16 +130,20 @@ func (bdr *ccimgBuilder) GeneratePDF(r *CCIMGBuilderRequestDTO) (*PDFBuilderResp
 
 	// ROW 1
 	pdf.SetXY(60, 60)
-	pdf.Cell(0, 0, fmt.Sprintf("Volume: %v", r.IssueVol))
+	pdf.Cell(0, 0, "Volume:")
+	pdf.SetXY(81, 60)
+	// pdf.SetTextColor(178, 34, 34) // Set font color to firebrick red. (see: https://www.rapidtables.com/web/color/red-color.html)
+	pdf.Cell(0, 0, fmt.Sprintf("%v", r.IssueVol))
+	// pdf.SetTextColor(0, 0, 0) // Set font color to black.
 
-	var issueDate string = "Date: -"
+	var issueDate string = "-"
 	if r.IssueCoverMonth < 12 && r.IssueCoverMonth > 0 {
 		month := fmt.Sprintf("%v", time.Month(int(r.IssueCoverMonth)))
 		if r.IssueCoverYear > 1 {
 			if r.IssueCoverYear == 2 {
-				issueDate = "Date: 1899 or before"
+				issueDate = "1899 or before"
 			} else {
-				issueDate = fmt.Sprintf("Date: %v %v", month, int(r.IssueCoverYear))
+				issueDate = fmt.Sprintf("%v %v", month, int(r.IssueCoverYear))
 			}
 		} else { // No cover date year.
 			// Do nothing
@@ -145,7 +153,11 @@ func (bdr *ccimgBuilder) GeneratePDF(r *CCIMGBuilderRequestDTO) (*PDFBuilderResp
 		// Do nothing.
 	}
 	pdf.SetXY(60, 66)
+	pdf.Cell(0, 0, "Date:")
+	pdf.SetXY(75, 66)
+	// pdf.SetTextColor(178, 34, 34) // Set font color to firebrick red. (see: https://www.rapidtables.com/web/color/red-color.html)
 	pdf.Cell(0, 0, issueDate)
+	// pdf.SetTextColor(0, 0, 0) // Set font color to black.
 
 	////
 	//// RIGHT SIDE
@@ -175,9 +187,33 @@ func (bdr *ccimgBuilder) GeneratePDF(r *CCIMGBuilderRequestDTO) (*PDFBuilderResp
 		return nil, fmt.Errorf("missing value for crease finding with %v", r.CreasesFinding)
 	}
 
-	title := fmt.Sprintf("%v %v %v", r.SeriesTitle, r.IssueVol, r.IssueNo)
+	// Special notes. Max 100 characters.
+	pdf.SetFont("Helvetica", "", 6)
 	pdf.SetXY(115, 65)
-	pdf.Cell(0, 0, title)
+	pdf.Cell(0, 0, r.SpecialNotes)
+
+	//
+	// Signature
+	//
+
+	pdf.SetFont("Helvetica", "", 4)
+	if len(r.Signatures) >= 1 {
+		ln1 := fmt.Sprintf("Signature of %v %v authenticated by CPS.", r.Signatures[0].Role, r.Signatures[0].Name)
+		pdf.SetXY(115, 65+3)
+		pdf.Cell(0, 0, ln1)
+	}
+	if len(r.Signatures) >= 2 {
+		ln2 := fmt.Sprintf("Signature of %v %v authenticated by CPS.", r.Signatures[1].Role, r.Signatures[1].Name)
+		pdf.SetXY(115, 65+6)
+		pdf.Cell(0, 0, ln2)
+	}
+	if len(r.Signatures) >= 3 {
+		ln3 := fmt.Sprintf("Signature of %v %v authenticated by CPS.", r.Signatures[2].Role, r.Signatures[2].Name)
+		pdf.SetXY(115, 65+9)
+		pdf.Cell(0, 0, ln3)
+	}
+
+	pdf.SetTextColor(0, 0, 0) // Set font color to black.
 
 	////
 	//// Generate the file and save it to the file.

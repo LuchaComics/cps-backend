@@ -53,8 +53,8 @@ type CCBuilderRequestDTO struct {
 	UserLastName                       string                     `bson:"user_last_name" json:"user_last_name"`
 	UserOrganizationName               string                     `bson:"user_organization_name" json:"user_organization_name"`
 	Signatures                         []*s_d.SubmissionSignature `bson:"signatures" json:"signatures,omitempty"`
-	PrimaryLabelDetails                     int8                       `bson:"primary_label_details" json:"primary_label_details"`
-	PrimaryLabelDetailsOther                string                     `bson:"primary_label_details_other" json:"primary_label_details_other"`
+	PrimaryLabelDetails                int8                       `bson:"primary_label_details" json:"primary_label_details"`
+	PrimaryLabelDetailsOther           string                     `bson:"primary_label_details_other" json:"primary_label_details_other"`
 }
 
 // CCBuilder interface for building the "CPS C-Capsule Indie Mint Gem" edition document.
@@ -107,8 +107,12 @@ func (bdr *ccBuilder) GeneratePDF(r *CCBuilderRequestDTO) (*PDFBuilderResponseDT
 	pdf.TransformBegin()
 	pdf.TransformRotate(180, 190, 27) // angle=180, x=190, y=27
 
+	pdf.SetTextColor(178, 34, 34) // Set font color to firebrick red. (see: https://www.rapidtables.com/web/color/red-color.html)
+
 	// Print the text
 	pdf.Text(190, 27, r.CPSRN) // x=190, y=27
+
+	pdf.SetTextColor(0, 0, 0) // Set font color to black.
 
 	pdf.TransformEnd()
 
@@ -117,7 +121,11 @@ func (bdr *ccBuilder) GeneratePDF(r *CCBuilderRequestDTO) (*PDFBuilderResponseDT
 	//
 
 	pdf.SetFont("Helvetica", "B", 16)
-	pdf.SetXY(80, 51)
+	pdf.SetXY(60, 51)
+	pdf.Cell(0, 0, fmt.Sprintf("%v %v", r.SeriesTitle, r.IssueNo))
+
+	pdf.SetFont("Helvetica", "B", 8)
+	pdf.SetXY(115, 51)
 	pdf.Cell(0, 0, r.PublisherName)
 
 	//
@@ -128,16 +136,20 @@ func (bdr *ccBuilder) GeneratePDF(r *CCBuilderRequestDTO) (*PDFBuilderResponseDT
 
 	// ROW 1
 	pdf.SetXY(60, 60)
-	pdf.Cell(0, 0, fmt.Sprintf("Volume: %v", r.IssueVol))
+	pdf.Cell(0, 0, "Volume:")
+	pdf.SetXY(81, 60)
+	pdf.SetTextColor(178, 34, 34) // Set font color to firebrick red. (see: https://www.rapidtables.com/web/color/red-color.html)
+	pdf.Cell(0, 0, fmt.Sprintf("%v", r.IssueVol))
+	pdf.SetTextColor(0, 0, 0) // Set font color to black.
 
-	var issueDate string = "Date: -"
+	var issueDate string = "-"
 	if r.IssueCoverMonth < 12 && r.IssueCoverMonth > 0 {
 		month := fmt.Sprintf("%v", time.Month(int(r.IssueCoverMonth)))
 		if r.IssueCoverYear > 1 {
 			if r.IssueCoverYear == 2 {
-				issueDate = "Date: 1899 or before"
+				issueDate = "1899 or before"
 			} else {
-				issueDate = fmt.Sprintf("Date: %v %v", month, int(r.IssueCoverYear))
+				issueDate = fmt.Sprintf("%v %v", month, int(r.IssueCoverYear))
 			}
 		} else { // No cover date year.
 			// Do nothing
@@ -147,14 +159,18 @@ func (bdr *ccBuilder) GeneratePDF(r *CCBuilderRequestDTO) (*PDFBuilderResponseDT
 		// Do nothing.
 	}
 	pdf.SetXY(60, 66)
+	pdf.Cell(0, 0, "Date:")
+	pdf.SetXY(75, 66)
+	pdf.SetTextColor(178, 34, 34) // Set font color to firebrick red. (see: https://www.rapidtables.com/web/color/red-color.html)
 	pdf.Cell(0, 0, issueDate)
+	pdf.SetTextColor(0, 0, 0) // Set font color to black.
 
 	////
 	//// RIGHT SIDE
 	////
 
 	pdf.SetFont("Helvetica", "", 10)
-
+	pdf.SetTextColor(178, 34, 34) // Set font color to firebrick red. (see: https://www.rapidtables.com/web/color/red-color.html)
 	pdf.SetXY(115, 59)
 	switch r.PrimaryLabelDetails {
 	case s_d.PrimaryLabelDetailsOther:
@@ -176,10 +192,37 @@ func (bdr *ccBuilder) GeneratePDF(r *CCBuilderRequestDTO) (*PDFBuilderResponseDT
 	default:
 		return nil, fmt.Errorf("missing value for crease finding with %v", r.CreasesFinding)
 	}
+	pdf.SetTextColor(0, 0, 0) // Set font color to black.
 
-	title := fmt.Sprintf("%v %v %v", r.SeriesTitle, r.IssueVol, r.IssueNo)
-	pdf.SetXY(115, 65)
-	pdf.Cell(0, 0, title)
+	// Special notes. Max is 43*4=172 characters.
+	specialNotesLines := splitText(r.SpecialNotes, 43)
+
+	pdf.SetFont("Helvetica", "", 6)
+	pdf.SetTextColor(178, 34, 34)                                       // Set font color to firebrick red. (see: https://www.rapidtables.com/web/color/red-color.html)
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 0); ok { // ROW 1
+		pdf.SetXY(115, 65)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 1); ok {
+		pdf.SetXY(115, 65+3)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 2); ok {
+		pdf.SetXY(115, 65+6)
+		pdf.Cell(0, 0, specialNote)
+	}
+	if specialNote, ok := getElementAtIndex(specialNotesLines, 3); ok {
+		pdf.SetXY(115, 65+9)
+		pdf.Cell(0, 0, specialNote)
+	}
+	pdf.SetTextColor(0, 0, 0) // Set font color to black.
+
+	// // Retailer organization name.
+	// pdf.SetTextColor(178, 34, 34) // Set font color to firebrick red. (see: https://www.rapidtables.com/web/color/red-color.html)
+	// pdf.SetXY(0, 73)
+	// pdf.CellFormat(0, 0, r.UserOrganizationName, "", 0, "R", false, 0, "") // Draw the right-aligned text
+	// // pdf.Cell(0, 0,)
+	// pdf.SetTextColor(0, 0, 0) // Set font color to black.
 
 	//
 	// GRADING

@@ -351,6 +351,10 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			IsOverallLetterGradeNearMintPlus: os.IsOverallLetterGradeNearMintPlus,
 			OverallNumberGrade:               os.OverallNumberGrade,
 			CpsPercentageGrade:               os.CpsPercentageGrade,
+			UserFirstName:                    os.UserFirstName,
+			UserLastName:                     os.UserLastName,
+			UserOrganizationName:             os.OrganizationName,
+			Signatures:                       os.Signatures,
 		}
 		pdfResponse, err = c.CCBuilder.GeneratePDF(r)
 		if err != nil {
@@ -381,6 +385,10 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			IsOverallLetterGradeNearMintPlus: os.IsOverallLetterGradeNearMintPlus,
 			OverallNumberGrade:               os.OverallNumberGrade,
 			CpsPercentageGrade:               os.CpsPercentageGrade,
+			UserFirstName:                    os.UserFirstName,
+			UserLastName:                     os.UserLastName,
+			UserOrganizationName:             os.OrganizationName,
+			Signatures:                       os.Signatures,
 		}
 		pdfResponse, err = c.CCSCBuilder.GeneratePDF(r)
 		if err != nil {
@@ -413,6 +421,10 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			IsOverallLetterGradeNearMintPlus: os.IsOverallLetterGradeNearMintPlus,
 			OverallNumberGrade:               os.OverallNumberGrade,
 			CpsPercentageGrade:               os.CpsPercentageGrade,
+			UserFirstName:                    os.UserFirstName,
+			UserLastName:                     os.UserLastName,
+			UserOrganizationName:             os.OrganizationName,
+			Signatures:                       os.Signatures,
 		}
 		pdfResponse, err = c.CCIMGBuilder.GeneratePDF(r)
 		if err != nil {
@@ -445,6 +457,10 @@ func (c *ComicSubmissionControllerImpl) UpdateByID(ctx context.Context, req *Com
 			IsOverallLetterGradeNearMintPlus: os.IsOverallLetterGradeNearMintPlus,
 			OverallNumberGrade:               os.OverallNumberGrade,
 			CpsPercentageGrade:               os.CpsPercentageGrade,
+			UserFirstName:                    os.UserFirstName,
+			UserLastName:                     os.UserLastName,
+			UserOrganizationName:             os.OrganizationName,
+			Signatures:                       os.Signatures,
 		}
 		pdfResponse, err = c.CCUGBuilder.GeneratePDF(r)
 		if err != nil {
